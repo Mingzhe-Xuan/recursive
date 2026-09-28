@@ -46,3 +46,5 @@
 - 统一运行时根目录定为 `/dev/shm/xmz-recursive`，环境放在 `envs/{mattersim,mace,dpa2}`，缓存放在 `cache/`，checkpoint 放在 `checkpoints/`；
 - 该目录是节点本地 tmpfs，不视为持久存储。环境和 checkpoint 必须可由文档中的命令重建；小型 JSON/日志结果仍写回项目 `results/` 并由 scp 拉回本地；
 - sbatch 允许通过 `RECURSIVE_RUNTIME_ROOT` 覆盖默认值，但提交前必须验证目标计算节点可见同一路径。
+
+MatterSim 环境由 `scripts/slurm/setup_mattersim_env.sbatch` 创建。提交时显式设置 `RECURSIVE_PROXY_PORT`；作业先通过 SOCKS curl 验证计算节点网络路径，再安装依赖。若网络探针失败，作业必须在改动环境前退出。

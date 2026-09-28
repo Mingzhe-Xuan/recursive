@@ -23,3 +23,4 @@
 - 2026-09-28：第三次尝试已成功离线安装 PySocks，但 SSH 命令在升级 pip 的下载阶段提前结束，MatterSim 尚未开始安装。计划再次使用独立 1081：首先代理 pull；只读 `pip show` 核对 venv，跳过安装器升级，直接用现有 pip、关闭进度条并 binary-only 安装 MatterSim，随后安装本项目并记录版本。不运行推理或源码编译。
 - 2026-09-28：核对发现 pip 升级实际已完成至 26.2.1，该版本经 SOCKS 请求索引时触发内部 `PoolKey key_proxy_ssl_context` 异常。计划再次使用独立 1081：首先代理 pull；校验目标严格位于 `/dev/shm/xmz-recursive/envs/mattersim` 后用 `python3 -m venv --clear` 重建专用环境，离线装 PySocks，保留系统 pip 22 并 binary-only 安装 MatterSim。不运行推理或源码编译。
 - 2026-09-28：重建后的 pip 22 与 PySocks 工作正常，但确认 PyPI 不存在 1.2.5；项目已校正并验证为 `mattersim==1.2.3`。计划再次使用独立 1081：首先代理 pull；复用已清理的任务 venv，以 binary-only 安装 1.2.3、安装本项目并用 `pip show` 核对版本。不运行推理或源码编译。
+- 2026-09-28：MatterSim 1.2.3 长安装再次随短 SSH 命令提前结束，尚未完成。计划建立一个本地隐藏 `ssh -N` keeper，仅在 Guqq 回环 1081 提供任务代理；另建管理连接时仓库存在，首先经 1081 `git pull`，随后提交 Slurm 网络探针与 MatterSim setup 作业。所有长安装/潜在编译均由 Slurm 承担，不在登录节点运行。

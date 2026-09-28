@@ -280,3 +280,14 @@ MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near u
 - `pyproject.toml` 和环境文档均精确锁定 `mattersim==1.2.3`，未残留 1.2.5 安装 pin；
 - `python -m pytest -q`：16 项通过，仅有本地 `.pytest_cache` 写权限 warning；
 - `python -m compileall -q src tests scripts` 和 `git diff --check`：通过。
+
+## 2026-09-28：MatterSim Slurm 环境安装器（计划）
+
+检查范围与预期结果：新增专用 setup sbatch，在计算作业内先验证显式回环 SOCKS 路径，再引导 PySocks、binary-only 安装 MatterSim 1.2.3、editable 安装本项目并执行 `pip check`/导入检查；shell 语法、资源声明和全部本地测试通过。安装日志和 job ID 必须记录，不在登录节点继续运行长 pip 命令。
+
+## 2026-09-28：MatterSim Slurm 环境安装器（结果）
+
+- `python -m pytest -q`：16 项通过，仅有本地 pytest cache 权限 warning；
+- Python 编译检查与 setup/inference 两个 sbatch 的 `bash -n`：通过；
+- 静态检查确认 setup 作业要求显式代理端口、先执行计算节点公网探针、只安装 binary wheels，并在结束前执行 `pip check` 和版本导入检查；
+- `git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 提示。可以提交 Slurm 网络探针与环境安装作业。
