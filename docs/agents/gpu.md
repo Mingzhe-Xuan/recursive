@@ -18,3 +18,4 @@
 - 2026-09-28：用户已将 `ExitOnForwardFailure` 调整为 `no` 并更新多连接共享规则。计划连接 `Guqq`：即使出现 1080 占用警告也继续登录；仓库存在，首先执行带代理且有限超时的 `git pull`，随后只读检查现有 SOCKS 可用性、挂载点、配额和任务相关目录占用。不终止未知会话，不运行推理或编译。
 - 2026-09-28：上次连接确认现有 1080 监听不可代理、根分区仅余约 2.7 GiB、`~/.cache` 占 152 GiB。计划使用 `ClearAllForwardings=yes` 加一次性回环 `RemoteForward 127.0.0.1:1081` 建立独立代理：仓库存在，首先经 1081 执行 `git pull`；随后只读拆分 cache 占用，并提交轻量 Slurm `/dev/shm` 可见性探针。不会删除缓存、不会公开代理端口，模型推理仍不在登录节点执行。
 - 2026-09-28：一次性回环 1081 代理、Git pull 和 Slurm tmpfs 探针已成功。计划下一次连接仍使用独立 1081：仓库存在，首先代理 pull；随后在 `/dev/shm/xmz-recursive` 创建 MatterSim 专用 Python venv、缓存和 checkpoint 目录并安装依赖。环境创建/依赖安装属于允许的登录节点管理操作，不运行模型推理；若安装触发源码编译则停止并改为 Slurm。
+- 2026-09-28：首次 MatterSim 环境命令因末尾内联 Python 的嵌套引号在 shell 解析阶段失败，任何远端子命令均未执行。计划重试独立 1081 连接：首先代理 pull，再创建 venv，并用 `--only-binary=:all:` 安装 MatterSim；去掉内联 Python，改用 `pip show` 检查版本，避免触发源码编译或登录节点推理。

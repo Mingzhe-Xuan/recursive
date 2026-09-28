@@ -261,3 +261,5 @@
 - `bash -n` 检查三个 sbatch：通过；
 - 静态检查确认三个作业均请求一张 GPU、使用可配置 runtime root、隔离环境与任务缓存，并通过 `srun python` 启动；
 - `git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 转换提示。检查通过。
+
+MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near unexpected token mattersim.__version__`；由于 shell 在执行前即拒绝整行，没有创建环境或安装包。本次不计作环境成功，下一次以不含内联 Python 的命令重试。
