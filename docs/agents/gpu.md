@@ -48,3 +48,4 @@
 - 2026-09-28：作业 502 正常推进但大 wheel 较慢。计划下一连接先 `git pull`，随后仅创建 `/dev/shm/xmz-recursive/wheelhouse/mace`；再通过短 scp 传输 MACE 的 `PYPI_URLS`、`SHA256SUMS` 和 39 KiB 审计 wheel。总量很小，不启动第二个公网下载作业，不争抢 502 带宽。
 - 2026-09-28：MACE 两个清单和审计 wheel 已完成服务器 staging 与行数/哈希校验，未启动大下载。计划下一连接先 `git pull`，继续只读监控 MatterSim 502；502 完成前不提交 MACE 下载。
 - 2026-09-28：跨 wheelhouse 哈希播种脚本已推送。计划下一连接使用短时独立回环端口，仓库存在时首先执行 `git pull`；随后只读检查 MatterSim 作业 502 的队列状态、日志和完整 wheel 数。若已成功，则执行完整 SHA-256 校验并提交完全离线的 MatterSim setup；若仍运行则不启动 MACE 下载，继续保持公网独占。
+- 2026-09-28：作业 502 上次检查为 RUNNING、84/144，checkpoint 任务目录下载改动已推送。计划下一连接使用新的短时回环端口并首先 `git pull`；随后检查 502。若下载完成，先执行 144 项完整哈希校验，再在 node221 提交 MatterSim 完全离线环境安装；若仍运行则仅监控，不并发下载。
