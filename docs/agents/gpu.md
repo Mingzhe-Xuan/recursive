@@ -9,3 +9,6 @@
 - 2026-09-28：计划连接 `Guqq` 同步已确认的 `https://github.com/Mingzhe-Xuan/recursive.git`。连接后的第一项远端操作为对 `~/recursive` 执行 `git pull`；若工作树尚不存在，则随后 clone。之后仅创建任务专用虚拟环境、下载官方 checkpoint，并通过 Slurm 提交 MatterSim、MACE、DPA-2 的 K=0/K=1 验收，禁止在登录节点运行模型推理。
 - 2026-09-28：上次连接首先执行 `git -C ~/recursive pull`，返回目录不存在。计划再次连接；仍首先尝试同一 `git pull`，确认失败后 clone `https://github.com/Mingzhe-Xuan/recursive.git` 到 `~/recursive`，随后只做仓库同步和环境管理，不在登录节点运行推理。
 - 2026-09-28：服务器已从确认的 remote clone 到 `~/recursive`。计划再次连接并首先执行 `git pull`，随后只读检查 Python、CUDA/驱动、Slurm 分区和可用磁盘，再据此创建任务专用虚拟环境；本次不在登录节点运行模型推理。
+- 2026-09-28：计划连接 `Guqq` 验证 SSH 反向动态转发；用户明确要求本次忽略 `bash net.sh` 和 `sleep 180`。连接前先将 `RemoteForward 127.0.0.1:1080` 写入本地 `Host Guqq` 配置，连接后首先执行 `git -C ~/recursive pull`，再仅做 SOCKS 端口和公网出口的轻量测试；不运行计算任务，不修改服务器受 Git 管理的源码。
+- 2026-09-28：计划连接 `Guqq` 诊断 SSH 在启用会话级反向 SOCKS 后无法登录的原因。仅执行 SSH 配置展开、详细连接日志和端口转发诊断；不运行 `net.sh`，不在登录节点运行计算任务。若能登录，按规范先检查仓库并执行 `git pull`或确认需要 clone。
+- 2026-09-28：重新读取更新后的 `AGENTS.md` 后计划连接 `Guqq` 恢复项目工作树。先检查 `~/recursive`：存在则第一项执行带 `socks5h://127.0.0.1:1080` 代理的 `git pull`，不存在则通过同一代理 clone 已确认的 remote；随后仅做仓库、Python、GPU、Slurm 和磁盘的轻量检查，不在登录节点运行推理或编译。

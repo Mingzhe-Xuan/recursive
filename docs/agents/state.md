@@ -1,15 +1,22 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现。norm alignment 覆盖同一 irrep 类型的多个不连续 packed 段并共享 gamma；当前 16 项测试通过。工作区已关联 `https://github.com/Mingzhe-Xuan/recursive.git`，本地 `main` 与 `origin/main` 同步且工作区干净。三个真实 checkpoint 的验收脚本和 Slurm 文件均已准备，正在进入服务器同步、隔离环境创建和 K=0/K=1 GPU 验收阶段。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现。norm alignment 覆盖同一 irrep 类型的多个不连续 packed 段并共享 gamma；当前 16 项测试通过。工作区已关联 `https://github.com/Mingzhe-Xuan/recursive.git`，本地 `main` 与 `origin/main` 同步。本地 `Host Guqq` 已配置会话级反向 SOCKS：每次连接自动建立 Guqq `127.0.0.1:1080`，断开后自动关闭，公网出口一致性和断开回收均已实测通过。三个真实 checkpoint 的验收脚本和 Slurm 文件均已准备，但 Guqq 当前不存在 `~/recursive`，服务器同步需先恢复该工作树。
 
 # 当前计划
 
-1. 在服务器首先执行 `git pull`；若项目工作树尚不存在，则 clone 已确认的 remote。
+1. 使用 SSH 会话级 SOCKS 恢复服务器工作树：存在则首先 pull，不存在则从已确认 remote clone，并验证仓库根目录、HEAD 和 remote URL。
 2. 创建并记录三个任务专用虚拟环境，下载官方 checkpoint，通过 Slurm 依次跑 MatterSim、MACE、DPA-2 的 K=0/K=1。
 3. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
 4. 随后下载论文对齐数据集并进入递增 depth scan。
 
 # 变更记录
+
+- 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
+- 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
+- 2026-09-28：完成 SSH 会话级反向 SOCKS 配置和验证；Guqq 经 `127.0.0.1:1080` 获得的出口 IP 与本地一致，并在会话退出后拒绝连接。测试同时发现 Guqq 的 `/home/xmz/recursive` 已不存在；后续服务器实验需先恢复工作树。
+- 2026-09-28：开始修订 Guqq 网络操作规范；原因是会话级反向 SOCKS 已实测可用，不再需要 `bash net.sh` 和固定 180 秒等待。下一步是修改 `AGENTS.md` 并检查命令、路径、Markdown 和旧流程残留。
+- 2026-09-28：完成 Guqq 网络操作规范修订；`AGENTS.md` 现要求登录节点联网命令显式使用会话级 SOCKS，禁止运行 `bash net.sh` 和固定等待，并区分了登录节点与 Slurm 计算节点的网络边界。
+- 2026-09-28：用户确认网络已重新配置并要求继续；已重读更新后的 `AGENTS.md`，SSH/反向 SOCKS 故障诊断阶段结束。下一步按新规范恢复服务器仓库并检查运行环境。
 
 - 2026-09-23：开始修订计划文档；下一步是补充完整数学形式并删除指定章节。
 - 2026-09-23：完成数学形式、adapter 固定点分析和评价量定义；删除原第 10、11 节并通过格式检查。

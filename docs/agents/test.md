@@ -12,7 +12,13 @@
 
 ## 2026-09-28：服务器 clone（结果）
 
-再次连接后首先重试 `git pull`，随后从确认的 GitHub remote 成功 clone 到 `/home/xmz/recursive`。未直接编辑服务器受 Git 管理源码，未在登录节点运行计算任务。
+再次连接后首先重试 `git pull`，随后启动从确认的 GitHub remote clone 到 `/home/xmz/recursive`；后续连接确认该目录未保留，因此只有 `Cloning into` 提示不足以证明 clone 成功，本条原结论撤回。未直接编辑服务器受 Git 管理源码，未在登录节点运行计算任务。
+
+## 2026-09-28：更新后服务器同步与资源检查（计划）
+
+检查范围：SSH 会话内 SOCKS 端口；工作树存在时先 pull、不存在时代理 clone；仓库根目录、HEAD、remote URL；Python、GPU、Slurm 和磁盘。预期所有检查均为登录节点轻量操作，不运行模型推理或编译。
+
+提交前文档检查结果：`git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 提示；`AGENTS.md` 包含 SOCKS URL、三个代理变量、计算节点网络边界和仓库不存在时 clone 的规则；未发现旧的 `sleep 180` 或“等待 3 分钟后再”流程。通过。
 
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
@@ -157,3 +163,41 @@
 - scoped install 退出后恢复原生 forward；
 - 真实 OpenLAM 脚本已经静态编译，显式检查 `_cal_h2g2` 以拒绝错误 DeePMD ABI，并比较 energy/force 的 K=0、K=1、eval/frozen 状态；
 - 真实 CUDA/checkpoint 结果仍须在 Git 同步后由 Slurm 作业生成，不能用本地 fake 结果替代。
+# 2026-09-28：SSH 会话级反向 SOCKS 转发（计划）
+
+检查范围与预期结果：
+
+- `ssh -G Guqq` 展开配置包含 `RemoteForward 127.0.0.1:1080`、`ExitOnForwardFailure yes` 和 keepalive 设置；
+- 建立 `ssh Guqq` 会话时，Guqq 的 `127.0.0.1:1080` 可用且 `curl --proxy socks5h://127.0.0.1:1080` 返回本地公网出口；
+- 关闭该 SSH 会话后，相应反向转发随会话停止；
+- 本次仅执行轻量网络与配置检查，不在登录节点运行计算负载。
+
+## 2026-09-28：SSH 会话级反向 SOCKS 转发（结果）
+
+- `ssh -G Guqq` 已展开为 `remoteforward [127.0.0.1]:1080 [socks]:0`，且 `exitonforwardfailure yes`、`serveraliveinterval 30`、`serveralivecountmax 3` 均生效；
+- 本地 `curl https://api.ipify.org` 返回 `3.1.58.103`，Guqq 通过 `socks5h://127.0.0.1:1080` 返回相同 IP，出口一致性通过；
+- 正常会话退出后，使用 `ClearAllForwardings=yes` 的独立检查连接访问 `127.0.0.1:1080` 获得 `Connection refused`，会话回收通过；
+- 连接后均先尝试 `git -C ~/recursive pull`，但服务器返回 `/home/xmz/recursive` 不存在；该问题与流量转发无关。
+# 2026-09-28：Guqq 代理流程文档修订（计划）
+
+检查范围与预期结果：
+
+- `AGENTS.md` 不再要求执行 `bash net.sh`、`sleep 180` 或固定等待 3 分钟；
+- 文档明确本地 `ssh Guqq` 自动建立 `socks5h://127.0.0.1:1080`，且只在 SSH 会话存活期间有效；
+- 需联网的 Guqq 登录节点命令有可复制的 `ALL_PROXY`/`HTTP_PROXY`/`HTTPS_PROXY` 用法，DNS 通过 `socks5h` 解析；
+- 明确 Slurm 计算节点不能默认访问登录节点回环端口，需单独验证网络路径；
+- 执行 Markdown 结构、关键文本、路径和 `git diff --check` 检查。
+
+## 2026-09-28：Guqq 代理流程文档修订（结果）
+
+- 关键文本检查通过：代理 URL、三个代理环境变量、`RemoteForward` 故障检查和 Slurm 计算节点边界均存在；
+- 旧的“运行 `bash net.sh` 并等待 3 分钟”强制流程已删除，现明确规定不运行该脚本或固定等待；
+- Markdown 代码块和段落结构已通过差异复核；`git diff --check` 通过，仅有现有 Windows 工作树的 LF/CRLF 转换警告，无空白错误。
+# 2026-09-28：Guqq SSH 连接故障诊断（计划）
+
+检查范围与预期结果：
+
+- `ssh -G Guqq` 能展开主机、ProxyJump、密钥、RemoteForward 和转发失败策略；
+- 用非交互、有限超时的 SSH 连接复现故障，日志能区分跳板机、Guqq 认证、远程命令和反向转发失败；
+- 使用 `ClearAllForwardings=yes` 的对照连接判断是否由新增转发配置导致；
+- 诊断期间不运行计算任务，不执行 `net.sh`。
