@@ -405,3 +405,9 @@ MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel �
 MACE 控制文件 staging 计划：服务器连接先 pull，再创建任务 tmpfs 目录；只传 48 项官方 URL 清单、49 项总哈希清单和 39 KiB 审计 wheel。传输后核对清单行数和审计 wheel SHA-256；不提交 MACE 下载作业，保持 MatterSim 502 独占计算节点公网。
 
 staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp 成功。服务器端 `wc -l` 为 `PYPI_URLS=48`、`SHA256SUMS=49`，审计 wheel SHA-256 校验 `OK`。未提交 MACE 下载作业；同期 MatterSim 502 仍 RUNNING，已推进到 `m` 开头的依赖。
+
+## 2026-09-28：跨 wheelhouse 哈希播种（计划）
+
+新增通用脚本，以目标 `SHA256SUMS` 为准扫描源 wheelhouse；仅当目标缺失、文件名安全、源文件存在且 SHA-256 精确匹配时创建硬链接。目标已存在且哈希正确时跳过，存在但哈希错误时失败，不覆盖；源/目标跨文件系统导致硬链接失败时也失败，不静默复制。用微型 CRLF 清单测试匹配播种、已存在跳过、非匹配忽略和错误目标保护；再执行 Bash 语法、完整回归和 whitespace 检查。
+
+实际结果：Bash 语法通过；CRLF 微型清单输出 `seeded=1 existing=1`，匹配项完成播种、正确既有项跳过、非匹配项保持缺失；`fsutil hardlink list` 确认源与目标是同一硬链接；预置错误目标时脚本以状态 1 退出且未覆盖文件。提交前将文件名约束收紧为以字母或数字开头、以 `.whl` 结尾的安全字符集，并增加 `..` 路径逃逸清单拒绝测试。完整 `pytest` 为 16 项通过（仅现有 cache warning），Python 编译与 `git diff --check` 通过（仅 LF/CRLF 提示）。
