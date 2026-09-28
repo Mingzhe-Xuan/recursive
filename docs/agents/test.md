@@ -363,3 +363,7 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 实际结果：两个 Bash 脚本语法通过；静态检查确认作业请求 `compute`、1 CPU/2 GiB/1 小时，要求显式 wheelhouse，清除大小写代理变量，直连 HEAD 成功后才调用下载器；16 项 pytest 通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并在 node221 运行真实探针/下载。
 
 真实提交结果：服务器已先 pull 到 `f274bb0`，随后以 `--nodelist=node221` 和显式 wheelhouse 提交作业 `499`；提交成功，最终状态与日志待监控。本次进度文档提交前检查目标为 Markdown 路径/job ID 一致和 `git diff --check` 通过。
+
+作业 `499` 实测约 4 分钟时 botocore 残片为 7,118,848 bytes，证明计算节点直连持续写入但吞吐只有几十 KiB/s；1 小时时限不足以完成 736.27 MiB。调整计划：将 sbatch 时限提高到 12 小时，执行 Bash 语法、资源声明和 whitespace 检查，再尝试用 `scontrol update` 原地延长 499，保留已有进度。
+
+调整检查结果：sbatch Bash 语法通过，静态检查精确匹配 `#SBATCH --time=12:00:00`，`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并尝试原地延长。

@@ -38,3 +38,4 @@
 - 2026-09-28：独立 1081 的首轮固定脚本已有效完成多个 wheel，botocore 遇到 SSL EOF 后保留残片；因原 curl 在死连接上重试过久，已主动结束该轮。下一连接仍先 `git pull`，同步低速超时补丁后继续同一 `.partial`，不重新下载已校验 wheel。
 - 2026-09-28：网络重配后，Guqq 登录节点已验证无需代理即可直连 PyPI 文件端点并支持 Range。计划下一次连接先执行 `git pull`，再把固定 wheelhouse 下载 sbatch 提交到持有 `/dev/shm/xmz-recursive` 的 `node221`；作业先验证计算节点直连，成功后续传，SSH 会话退出不影响作业。仅通过 `squeue`/日志监控，不在登录节点运行长下载。
 - 2026-09-28：Slurm 直连下载作业 `499` 已提交到 node221。计划下一次连接先执行 `git pull`，再用普通 `squeue -j 499`、`scontrol show job 499` 和 `slurm-download-mattersim-wheels-499.out` 监控；若成功则校验文件计数/总量并提交离线 setup，若失败则只读日志定位，不在登录节点补跑长下载。
+- 2026-09-28：作业 499 的 botocore 残片持续增长但计算节点直连仅几十 KiB/s，1 小时时限不足。计划下一连接先 `git pull` 同步 12 小时时限，再用 `scontrol update JobId=499 TimeLimit=12:00:00` 原地延长任务并复核；若集群拒绝更新，则让当前作业安全退出后以 12 小时配置续传，不在登录节点下载。

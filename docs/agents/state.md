@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。Slurm 直连下载作业 `499` 已固定提交到持有现有 tmpfs 残片的 `node221`，当前等待计算节点直连探针与续传结果。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。Slurm 直连下载作业 `499` 在 node221 稳定写入但吞吐只有几十 KiB/s，当前把时限从 1 小时调整为 12 小时并保留断点进度。
 
 # 当前计划
 
@@ -37,6 +37,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：固定脚本首轮服务器下载有效，已完成从 aioitertools 到 boto3 等多个 wheel；botocore 中途 SSL EOF 后残片保留。因 curl 在死连接上重试过久，增加低速超时后再续传。
 - 2026-09-28：独立 1081 的后续会话仍被跳板机快速重置，但登录节点无代理 PyPI HEAD 已成功。策略调整为固定 node221 的 Slurm 直连下载作业；下一步本地实现、测试、Git 同步后提交。
 - 2026-09-28：固定 node221 的 Slurm 直连下载作业 `499` 已提交。下一步监控其 HEAD 探针、续传日志和最终 144 项哈希验收。
+- 2026-09-28：作业 499 约 4 分钟时 botocore 残片已达 7,118,848 bytes，直连有效但按总量估算需 7–9 小时；调整 sbatch 时限为 12 小时，下一步尝试原地延长运行中作业。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
