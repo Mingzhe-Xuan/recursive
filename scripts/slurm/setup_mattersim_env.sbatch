@@ -25,9 +25,15 @@ export PIP_DISABLE_PIP_VERSION_CHECK=1
 
 if [[ -n "${WHEELHOUSE}" ]]; then
   test -d "${WHEELHOUSE}"
+  test -f "${WHEELHOUSE}/SHA256SUMS"
+  unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy
   export PIP_NO_INDEX=1
   export PIP_FIND_LINKS="${WHEELHOUSE}"
   PIP_SOURCE=(--no-index --find-links "${WHEELHOUSE}")
+  tr -d '\r' < "${WHEELHOUSE}/SHA256SUMS" | (
+    cd "${WHEELHOUSE}"
+    sha256sum -c -
+  )
 else
   PROXY_PORT="${RECURSIVE_PROXY_PORT:?set RECURSIVE_PROXY_PORT or RECURSIVE_WHEELHOUSE}"
   PROXY_URL="socks5h://127.0.0.1:${PROXY_PORT}"

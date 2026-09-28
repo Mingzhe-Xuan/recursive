@@ -70,3 +70,4 @@
 - 2026-09-28：完成 MACE 独立离线 setup：安装前校验完整 SHA-256，强制 no-index/binary-only，安全重建专用 venv，执行依赖/版本检查并保存 freeze；本地检查全部通过。
 - 2026-09-28：准备 staging MACE 的 48 项 URL、49 项总哈希和 39 KiB 审计 wheel；暂不启动第二个大下载，保持 MatterSim 502 独占公网带宽。
 - 2026-09-28：MACE 的 48 项 URL、49 项总哈希和 39 KiB 审计 wheel 已传到任务 tmpfs；服务器端清单行数与 wheel SHA-256 通过，未启动并发下载。
+- 2026-09-28：MatterSim 离线 setup 增加安装前全清单 SHA-256 校验与继承代理清除，确保任何残片/损坏 wheel 在 venv 重建前失败；本地检查通过。

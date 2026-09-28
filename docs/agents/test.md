@@ -334,6 +334,10 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 
 结论：本地 wheelhouse 和离线 setup 脚本通过提交前检查，可以进入 Git 同步、scp 与 Slurm 实装阶段。
 
+MatterSim setup 完整性门控补充计划：离线分支在任何 venv 改动前要求 `SHA256SUMS` 存在，兼容 CRLF 并执行全清单 `sha256sum -c`；同时清除继承的大小写代理变量，继续强制 no-index/find-links。检查 Bash 语法、校验顺序、离线变量、16 项回归、编译和 whitespace。
+
+实际结果：Bash 语法通过；静态行序确认 SHA 清单要求、代理清除、no-index 设置和 `sha256sum -c` 均位于 `venv --clear` 之前；16 项 pytest、Python 编译和 `git diff --check` 通过（仅现有 cache 与 LF/CRLF warning）。可以提交，待 144/144 下载完成后运行。
+
 服务器传输首次结果：提交 `bf2c517` 已成功 pull，`/dev/shm` 仍约有 126 GiB 可用；整目录 scp 在约两分钟后返回 `Timeout, server ... not responding` 并关闭，只能视为部分传输，尚未执行服务器端完整 SHA-256 验收。下一次按清单核对后改用短连接分块传输，验收标准保持 144/144 不变。
 
 ## 2026-09-28：wheelhouse 断点续传脚本（计划）
