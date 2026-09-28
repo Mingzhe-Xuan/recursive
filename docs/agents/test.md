@@ -361,3 +361,5 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 登录节点无代理 PyPI HEAD 已返回 HTTP/2 200 和 `accept-ranges: bytes`。新增固定 sbatch：要求显式 `RECURSIVE_WHEELHOUSE`，清除所有代理变量，从 `PYPI_URLS` 读取首个 URL 做计算节点直连 HEAD 探针，成功后调用断点续传脚本。检查 sbatch 的 Bash 语法、Slurm 资源、失败前置关系、目标路径参数和完整回归；真实作业固定提交到保存 tmpfs 的 `node221`，直连失败不得改动环境或进入 setup。
 
 实际结果：两个 Bash 脚本语法通过；静态检查确认作业请求 `compute`、1 CPU/2 GiB/1 小时，要求显式 wheelhouse，清除大小写代理变量，直连 HEAD 成功后才调用下载器；16 项 pytest 通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并在 node221 运行真实探针/下载。
+
+真实提交结果：服务器已先 pull 到 `f274bb0`，随后以 `--nodelist=node221` 和显式 wheelhouse 提交作业 `499`；提交成功，最终状态与日志待监控。本次进度文档提交前检查目标为 Markdown 路径/job ID 一致和 `git diff --check` 通过。
