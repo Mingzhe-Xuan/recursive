@@ -369,3 +369,5 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 调整检查结果：sbatch Bash 语法通过，静态检查精确匹配 `#SBATCH --time=12:00:00`，`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并尝试原地延长。
 
 原地延长实际结果：服务器先 pull 到 `c587e5d`，随后 `scontrol update` 返回 `Access/permission denied for job 499`；命令未修改作业。根据已通过的 `.partial` 失败保护/续传测试，下一步取消任务自有的 499 并以 12 小时配置重提；验收新作业必须固定 node221、`TimeLimit=12:00:00` 且复用现有残片。
+
+重提结果：服务器先 pull 到 `0ca4346`，随后成功取消 499 并提交作业 `500`；未删除 wheelhouse 或 `.partial`。新作业的 node、实际时限和续传日志待下一次只读监控核验。
