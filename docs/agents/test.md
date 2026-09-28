@@ -10,6 +10,10 @@
 
 连接 `Guqq` 后第一项远端操作为 `git -C ~/recursive pull`；命令返回 `No such file or directory`，证明服务器尚无该工作树。未在本次连接执行其他命令或任何计算任务。后续按记录先重试 pull，再 clone。
 
+## 2026-09-28：服务器 clone（结果）
+
+再次连接后首先重试 `git pull`，随后从确认的 GitHub remote 成功 clone 到 `/home/xmz/recursive`。未直接编辑服务器受 Git 管理源码，未在登录节点运行计算任务。
+
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
 检查范围：Markdown 标题结构、LaTeX display delimiters、代码围栏、UTF-8 内容和已删除章节关键词。
