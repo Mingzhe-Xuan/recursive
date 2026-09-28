@@ -355,3 +355,9 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 服务器首轮脚本实测已完成多个 wheel，并在 botocore 下载遇到 SSL EOF 后保留 `.partial`；原 curl 重试在失效连接上长时间无进展。调整计划：增加 15 秒连接超时、1 KiB/s 持续 30 秒的低速超时和 1 秒重试间隔；重新执行 Bash 语法、两文件 CRLF 续传/跳过测试和预期失败保护，确保只缩短死连接检测，不改变哈希门控。
 
 调整结果：Bash 语法通过；完整两文件再次 2/2 校验且无下载输出；无效 URL 仍返回 curl 37、保留 `.partial` 且不产生最终 wheel；16 项 pytest 全部通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交低速超时补丁。
+
+## 2026-09-28：Slurm 直连 wheelhouse 下载（计划）
+
+登录节点无代理 PyPI HEAD 已返回 HTTP/2 200 和 `accept-ranges: bytes`。新增固定 sbatch：要求显式 `RECURSIVE_WHEELHOUSE`，清除所有代理变量，从 `PYPI_URLS` 读取首个 URL 做计算节点直连 HEAD 探针，成功后调用断点续传脚本。检查 sbatch 的 Bash 语法、Slurm 资源、失败前置关系、目标路径参数和完整回归；真实作业固定提交到保存 tmpfs 的 `node221`，直连失败不得改动环境或进入 setup。
+
+实际结果：两个 Bash 脚本语法通过；静态检查确认作业请求 `compute`、1 CPU/2 GiB/1 小时，要求显式 wheelhouse，清除大小写代理变量，直连 HEAD 成功后才调用下载器；16 项 pytest 通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并在 node221 运行真实探针/下载。

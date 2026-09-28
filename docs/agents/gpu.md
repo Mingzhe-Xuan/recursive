@@ -36,3 +36,4 @@
 - 2026-09-28：整目录 scp 在约两分钟后被 Vlab 关闭，服务器 tmpfs 只含可覆盖的部分传输。计划下一次连接先执行 `git pull`，再只读核对已完成文件；随后把超过单连接窗口的 wheel 在本地分块、用短 scp 连接传输到任务 staging 目录，并在服务器任务目录重组和校验。仅处理本任务 wheelhouse，不触碰其他数据。
 - 2026-09-28：短 scp 对照虽成功但吞吐仅约 30 KiB/s；内联断点下载循环因 PowerShell 变量展开未执行有效下载。计划下一次连接先执行 `git pull` 同步固定的 `scripts/download_wheelhouse.sh`，再在同一会话用官方 PyPI URL 清单执行 `curl --continue-at -`；连接若被 Vlab 重置，后续连接重复“先 pull、再运行脚本”，直到服务器 SHA-256 144/144 通过。仅写任务 tmpfs 的 wheel 和 `.partial`。
 - 2026-09-28：独立 1081 的首轮固定脚本已有效完成多个 wheel，botocore 遇到 SSL EOF 后保留残片；因原 curl 在死连接上重试过久，已主动结束该轮。下一连接仍先 `git pull`，同步低速超时补丁后继续同一 `.partial`，不重新下载已校验 wheel。
+- 2026-09-28：网络重配后，Guqq 登录节点已验证无需代理即可直连 PyPI 文件端点并支持 Range。计划下一次连接先执行 `git pull`，再把固定 wheelhouse 下载 sbatch 提交到持有 `/dev/shm/xmz-recursive` 的 `node221`；作业先验证计算节点直连，成功后续传，SSH 会话退出不影响作业。仅通过 `squeue`/日志监控，不在登录节点运行长下载。

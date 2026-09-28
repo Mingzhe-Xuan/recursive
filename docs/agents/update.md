@@ -56,3 +56,4 @@
 - 2026-09-28：离线 setup 已以 `bf2c517` 推送并同步到 Guqq；首次 736 MiB 整目录 scp 在约两分钟后被 Vlab 中断。调整为基于 SHA-256 清单的增量短传：大 wheel 本地分块，服务器任务 staging 重组后统一复验。
 - 2026-09-28：短 scp 实测仅约 30 KiB/s，转为 PyPI 官方 URL 的可恢复下载；144 个 URL 与官方 SHA-256 已逐项匹配。新增 `scripts/download_wheelhouse.sh`，通过 CRLF 清单、残片续传、完整跳过和失败保留测试，避免内联 SSH 多层 quoting。
 - 2026-09-28：服务器首轮固定脚本已完成多个 wheel并在 botocore SSL EOF 后保留残片；为 curl 增加 1 KiB/s 持续 30 秒的低速超时和短重试间隔，避免代理失效后的长时间空等。
+- 2026-09-28：确认 Guqq 网络重配后可无代理直连 PyPI 且支持 Range；wheelhouse 下载将转为固定 node221 的 Slurm 作业，先探测计算节点直连，再续传并做 144 项哈希验收。
