@@ -351,3 +351,7 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 提交前补充结果：`python -m pytest -q` 16 项通过，仅有现有 `.pytest_cache` 写权限 warning；脚本 Bash 语法与 `git diff --check` 通过，后者仅提示 Windows LF/CRLF 转换。
 
 结论：断点续传脚本的本地行为和回归检查符合预期，可以提交并同步到服务器。
+
+服务器首轮脚本实测已完成多个 wheel，并在 botocore 下载遇到 SSL EOF 后保留 `.partial`；原 curl 重试在失效连接上长时间无进展。调整计划：增加 15 秒连接超时、1 KiB/s 持续 30 秒的低速超时和 1 秒重试间隔；重新执行 Bash 语法、两文件 CRLF 续传/跳过测试和预期失败保护，确保只缩短死连接检测，不改变哈希门控。
+
+调整结果：Bash 语法通过；完整两文件再次 2/2 校验且无下载输出；无效 URL 仍返回 curl 37、保留 `.partial` 且不产生最终 wheel；16 项 pytest 全部通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交低速超时补丁。

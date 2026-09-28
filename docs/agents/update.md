@@ -55,3 +55,4 @@
 - 2026-09-28：完成 MatterSim 离线安装实现与本地验收：setup 支持强制离线 wheelhouse 和安全重建 venv；Linux x86_64 / CPython 3.10 依赖闭包为 144 个 wheel、736.27 MiB，离线 dry-run 和 SHA-256 144/144 通过；16 项回归、编译、Bash 语法与 whitespace 检查通过。
 - 2026-09-28：离线 setup 已以 `bf2c517` 推送并同步到 Guqq；首次 736 MiB 整目录 scp 在约两分钟后被 Vlab 中断。调整为基于 SHA-256 清单的增量短传：大 wheel 本地分块，服务器任务 staging 重组后统一复验。
 - 2026-09-28：短 scp 实测仅约 30 KiB/s，转为 PyPI 官方 URL 的可恢复下载；144 个 URL 与官方 SHA-256 已逐项匹配。新增 `scripts/download_wheelhouse.sh`，通过 CRLF 清单、残片续传、完整跳过和失败保留测试，避免内联 SSH 多层 quoting。
+- 2026-09-28：服务器首轮固定脚本已完成多个 wheel并在 botocore SSL EOF 后保留残片；为 curl 增加 1 KiB/s 持续 30 秒的低速超时和短重试间隔，避免代理失效后的长时间空等。

@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。scp 吞吐过低，已实现并用 CRLF 伪清单验证基于官方 URL 的 `curl --continue-at -` 断点续传脚本；当前准备通过 Git 同步该脚本，在短 SSH 会话间续传服务器 wheelhouse。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。服务器断点续传已有效完成多个 wheel并保留 botocore 残片；当前为 curl 增加低速超时，避免失效代理上的长时间空等，然后继续短会话续传。
 
 # 当前计划
 
@@ -34,6 +34,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：本地 MatterSim wheelhouse 已完成：144 个 Linux/CPython 3.10 wheel、离线依赖 dry-run 成功、SHA-256 144/144 一致；离线 setup 的语法、16 项回归、编译与 whitespace 检查均通过。下一步提交推送后传输到服务器 tmpfs。
 - 2026-09-28：离线 setup 提交 `bf2c517` 已推送并在服务器成功 pull；整目录 scp 在约两分钟后被 Vlab 关闭。下一步按清单识别缺失/不完整文件，将大 wheel 分块短传、重组后再做完整哈希校验。
 - 2026-09-28：scp 对照吞吐仅约 30 KiB/s，分块 scp 不可行；PyPI URL/官方哈希清单 144/144 生成成功，固定断点续传脚本已通过 CRLF、续传、跳过和失败保护测试。下一步经 Git 同步脚本并重复短会话续传。
+- 2026-09-28：固定脚本首轮服务器下载有效，已完成从 aioitertools 到 boto3 等多个 wheel；botocore 中途 SSL EOF 后残片保留。因 curl 在死连接上重试过久，增加低速超时后再续传。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。

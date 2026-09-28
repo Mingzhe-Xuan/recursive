@@ -35,7 +35,10 @@ while read -r expected_hash filename url; do
     --show-error \
     --retry 3 \
     --retry-all-errors \
+    --retry-delay 1 \
     --connect-timeout 15 \
+    --speed-limit 1024 \
+    --speed-time 30 \
     --continue-at - \
     --output "${partial}" \
     "${url}"
