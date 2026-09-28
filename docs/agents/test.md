@@ -244,3 +244,20 @@
 - `ss` 确认 1080 仍仅监听回环；未终止监听或未知会话；
 - 唯一持久 ext4 根分区剩余约 2.7 GiB，`~/.cache` 占 152 GiB，`~/recursive` 约 808 KiB；未发现 `/data`、`/scratch`、`/public` 或 `/workspace` 可用挂载；
 - 下一步以一次性回环 1081 代理恢复 Git，并通过 Slurm 轻量探针验证 `/dev/shm` 对计算作业的可见性与容量。
+
+## 2026-09-28：Slurm tmpfs 运行时目录接入（计划）
+
+检查范围与预期结果：
+
+- 三个 sbatch 均从 `RECURSIVE_RUNTIME_ROOT` 下的独立环境激活，默认根目录为 `/dev/shm/xmz-recursive`；
+- XDG、PyTorch 和 Hugging Face 缓存均指向任务运行时目录，不写入现有 `~/.cache`；
+- `.gitignore` 忽略本地 `.venv-*`；
+- shell 静态语法、GPU 资源声明、`srun python` 入口、全部 Python 测试和编译检查通过。
+
+## 2026-09-28：Slurm tmpfs 运行时目录接入（结果）
+
+- `python -m pytest -q`：16 项全部通过；pytest 因本地沙箱权限无法写 `.pytest_cache`，只产生 cache warning，不影响测试执行或断言；
+- `python -m compileall -q src tests scripts`：通过；
+- `bash -n` 检查三个 sbatch：通过；
+- 静态检查确认三个作业均请求一张 GPU、使用可配置 runtime root、隔离环境与任务缓存，并通过 `srun python` 启动；
+- `git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 转换提示。检查通过。

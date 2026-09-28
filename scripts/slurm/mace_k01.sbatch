@@ -12,10 +12,15 @@ set -euo pipefail
 
 PROJECT_DIR="${SLURM_SUBMIT_DIR}"
 cd "${PROJECT_DIR}"
-source .venv-mace/bin/activate
+RUNTIME_ROOT="${RECURSIVE_RUNTIME_ROOT:-/dev/shm/xmz-recursive}"
+source "${RUNTIME_ROOT}/envs/mace/bin/activate"
 mkdir -p results/mace
+mkdir -p "${RUNTIME_ROOT}/cache/xdg" "${RUNTIME_ROOT}/cache/torch" "${RUNTIME_ROOT}/cache/huggingface"
 
 export PYTHONPATH="${PROJECT_DIR}/src${PYTHONPATH:+:${PYTHONPATH}}"
+export XDG_CACHE_HOME="${RUNTIME_ROOT}/cache/xdg"
+export TORCH_HOME="${RUNTIME_ROOT}/cache/torch"
+export HF_HOME="${RUNTIME_ROOT}/cache/huggingface"
 srun python scripts/validate_mace_k01.py \
   --device cuda \
   --output "results/mace/k01-${SLURM_JOB_ID}.json"

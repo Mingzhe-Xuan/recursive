@@ -1,11 +1,11 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。Guqq 工作树已恢复；Python 为 3.10.12，GPU 为 RTX 5090，Slurm 分区为 `compute`。现有 1080 监听不可代理，但新版配置允许会话继续；根分区仅余约 2.7 GiB，`~/.cache` 占 152 GiB。下一步使用一次性回环 1081 代理恢复 Git，并在不删除用户缓存的前提下确认 `/dev/shm` 是否可作为 Slurm 任务临时存储。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。Guqq 工作树与一次性 1081 代理均已验证；轻量 Slurm 作业 `489` 确认 `node221` 的 `/dev/shm` 可写且约有 126 GiB。为避免占用仅余约 2.7 GiB 的根分区和既有 152 GiB 用户缓存，三个环境、模型缓存和 checkpoint 将放在 `/dev/shm/xmz-recursive`。当前进入 MatterSim 环境创建和真实 K=0/K=1 验收阶段。
 
 # 当前计划
 
-1. 检查服务器挂载点、用户配额和任务相关缓存占用，选择容量足够且不覆盖既有数据的环境/checkpoint 目录。
-2. 创建并记录任务专用虚拟环境，下载官方 checkpoint，通过 Slurm 依次跑 MatterSim、MACE、DPA-2 的 K=0/K=1。
+1. 将 sbatch 接入可配置 tmpfs 运行时根目录并完成本地测试。
+2. 在 `/dev/shm/xmz-recursive` 创建并记录任务专用虚拟环境，下载官方 checkpoint，通过 Slurm 依次跑 MatterSim、MACE、DPA-2 的 K=0/K=1。
 3. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
 4. 随后下载论文对齐数据集并进入递增 depth scan。
 
@@ -15,6 +15,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：完成 Guqq 多连接共享反向 SOCKS 配置；本地 `ExitOnForwardFailure no` 已生效，固定动态反向转发仍为 Guqq `127.0.0.1:1080`。`AGENTS.md` 已同步记录首连接持有、后续连接复用以及持有者断开后新建连接恢复的行为。
 - 2026-09-28：用户再次确认网络已重新配置并要求继续；已完整重读最新版 `AGENTS.md`。下一步按多连接共享规则继续存储检查，端口占用警告不再等同于登录失败。
 - 2026-09-28：多连接规则验证成功使远端命令继续执行，但现有 1080 监听无法代理；存储检查确认唯一持久 ext4 分区仅余约 2.7 GiB、`~/.cache` 为 152 GiB。下一步不动未知监听或既有缓存，使用一次性回环 1081 代理并通过 Slurm 验证 tmpfs 可见性。
+- 2026-09-28：一次性回环 1081 代理成功恢复 Git 和公网访问；Slurm 探针作业 `489` 在 `node221` 验证 `/dev/shm` 可写且约 126 GiB。确定使用 `/dev/shm/xmz-recursive` 作为可重建运行时根目录，下一步接入 sbatch 并创建 MatterSim 环境。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。

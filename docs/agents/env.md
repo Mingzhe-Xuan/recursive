@@ -39,3 +39,10 @@
 - GPU：NVIDIA GeForce RTX 5090，32607 MiB，驱动 570.211.01；
 - Slurm GPU 分区：`compute`；
 - `/` 当前仅余约 2.6 GiB，因此尚未创建任何虚拟环境。需先找到容量足够的任务存储位置，再追加真实环境路径、安装命令和版本清单。
+
+## Slurm 运行时目录决策（2026-09-28）
+
+- 轻量探针作业 `489` 在 `node221` 验证 `/dev/shm` 可写，容量约 126 GiB；
+- 统一运行时根目录定为 `/dev/shm/xmz-recursive`，环境放在 `envs/{mattersim,mace,dpa2}`，缓存放在 `cache/`，checkpoint 放在 `checkpoints/`；
+- 该目录是节点本地 tmpfs，不视为持久存储。环境和 checkpoint 必须可由文档中的命令重建；小型 JSON/日志结果仍写回项目 `results/` 并由 scp 拉回本地；
+- sbatch 允许通过 `RECURSIVE_RUNTIME_ROOT` 覆盖默认值，但提交前必须验证目标计算节点可见同一路径。
