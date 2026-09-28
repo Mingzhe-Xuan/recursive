@@ -18,5 +18,16 @@ unset ALL_PROXY HTTP_PROXY HTTPS_PROXY all_proxy http_proxy https_proxy
 test -f "${WHEELHOUSE}/PYPI_URLS"
 read -r _ _ probe_url < "${WHEELHOUSE}/PYPI_URLS"
 probe_url="${probe_url%$'\r'}"
-curl --head --fail --silent --show-error --max-time 15 "${probe_url}"
+curl \
+  --head \
+  --fail \
+  --silent \
+  --show-error \
+  --retry 20 \
+  --retry-all-errors \
+  --retry-delay 2 \
+  --retry-max-time 600 \
+  --connect-timeout 15 \
+  --max-time 60 \
+  "${probe_url}"
 bash scripts/download_wheelhouse.sh "${WHEELHOUSE}"
