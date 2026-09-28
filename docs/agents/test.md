@@ -333,3 +333,5 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 - `SHA256SUMS` 含 144 项，逐文件重新计算结果为 144/144 一致。
 
 结论：本地 wheelhouse 和离线 setup 脚本通过提交前检查，可以进入 Git 同步、scp 与 Slurm 实装阶段。
+
+服务器传输首次结果：提交 `bf2c517` 已成功 pull，`/dev/shm` 仍约有 126 GiB 可用；整目录 scp 在约两分钟后返回 `Timeout, server ... not responding` 并关闭，只能视为部分传输，尚未执行服务器端完整 SHA-256 验收。下一次按清单核对后改用短连接分块传输，验收标准保持 144/144 不变。

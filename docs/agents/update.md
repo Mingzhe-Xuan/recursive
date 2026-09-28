@@ -53,3 +53,4 @@
 - 2026-09-28：完成 MACE-MP-0 small L=0 wrapper、fake K=0/K=1 测试、真实 checkpoint 验收脚本与 Slurm 文件。测试总数增至 13，全部通过。
 - 2026-09-28：确认 MatterSim setup `495` 因代理中断导致 torch wheel 哈希不匹配而失败，pip 未安装损坏内容；停止短时 keeper。setup 脚本开始接入完整 wheelhouse、强制离线索引、安全重建 venv 和 freeze 清单，下一步在本地解析 Linux cp310 binary 依赖闭包。
 - 2026-09-28：完成 MatterSim 离线安装实现与本地验收：setup 支持强制离线 wheelhouse 和安全重建 venv；Linux x86_64 / CPython 3.10 依赖闭包为 144 个 wheel、736.27 MiB，离线 dry-run 和 SHA-256 144/144 通过；16 项回归、编译、Bash 语法与 whitespace 检查通过。
+- 2026-09-28：离线 setup 已以 `bf2c517` 推送并同步到 Guqq；首次 736 MiB 整目录 scp 在约两分钟后被 Vlab 中断。调整为基于 SHA-256 清单的增量短传：大 wheel 本地分块，服务器任务 staging 重组后统一复验。
