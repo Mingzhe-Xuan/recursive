@@ -29,6 +29,8 @@
 
 后续存储检查连接在建立反向转发时返回 `remote port forwarding failed for listen port 1080`，远端命令未执行。本地未发现存活 `ssh` 进程；`ssh -G Guqq` 仍确认 `RemoteForward`、`ExitOnForwardFailure yes` 和 keepalive 配置生效。下一步以禁用新增转发的连接只读检查现有监听，不把本次计作存储检查成功。
 
+禁用新增转发后的首次诊断连接仅返回 `Welcome to Vlab`，30 秒内没有 pull 或 `ss` 输出，未满足诊断预期；将其记录为第二次连续失败，下一次缩短 pull 超时以隔离问题。
+
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
 检查范围：Markdown 标题结构、LaTeX display delimiters、代码围栏、UTF-8 内容和已删除章节关键词。
