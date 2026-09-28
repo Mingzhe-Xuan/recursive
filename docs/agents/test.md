@@ -411,3 +411,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 新增通用脚本，以目标 `SHA256SUMS` 为准扫描源 wheelhouse；仅当目标缺失、文件名安全、源文件存在且 SHA-256 精确匹配时创建硬链接。目标已存在且哈希正确时跳过，存在但哈希错误时失败，不覆盖；源/目标跨文件系统导致硬链接失败时也失败，不静默复制。用微型 CRLF 清单测试匹配播种、已存在跳过、非匹配忽略和错误目标保护；再执行 Bash 语法、完整回归和 whitespace 检查。
 
 实际结果：Bash 语法通过；CRLF 微型清单输出 `seeded=1 existing=1`，匹配项完成播种、正确既有项跳过、非匹配项保持缺失；`fsutil hardlink list` 确认源与目标是同一硬链接；预置错误目标时脚本以状态 1 退出且未覆盖文件。提交前将文件名约束收紧为以字母或数字开头、以 `.whl` 结尾的安全字符集，并增加 `..` 路径逃逸清单拒绝测试。完整 `pytest` 为 16 项通过（仅现有 cache warning），Python 编译与 `git diff --check` 通过（仅 LF/CRLF 提示）。
+
+## 2026-09-28：MatterSim checkpoint 任务目录下载（计划）
+
+官方 1.2.3 wheel 审计确认 checkpoint 别名会硬编码写入 `~/.local/mattersim/pretrained_models`，且官方下载函数没有断点续传或原子落盘。新增 node-local Slurm 下载入口，将官方 GitHub raw 资源写入 `${RECURSIVE_RUNTIME_ROOT}/checkpoints/mattersim`：完整文件存在时跳过，下载写入 `.partial`、支持续传，成功后原子改名并输出大小与 SHA-256。K=0/K=1 作业改为要求显式 `MATTERSIM_CHECKPOINT` 或使用该任务目录默认路径，验证脚本收到实际文件路径。检查两个 sbatch 的 Bash 语法、URL/路径/原子语义、README 与环境文档一致性、16 项回归、Python 编译和 whitespace。
+
+实际结果：两个 sbatch 的 Bash 语法通过；静态检查确认官方 URL、任务 checkpoint 目录、`.partial`、`--continue-at -`、成功后 `mv`、大小/SHA-256 输出，以及 K=0/K=1 的显式文件路径均存在。README 和环境文档已改为 node-local 布局，不再指示 `.venv-mattersim` 或 checkpoint 别名。16 项 pytest 通过（仅现有 cache warning），Python 编译与 `git diff --check` 通过（仅 LF/CRLF 提示）。

@@ -5,13 +5,14 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 # 当前计划
 
 1. 提交并同步跨 wheelhouse 哈希播种脚本；继续监控 `node221` 作业 `502`，完成 MatterSim 服务器端 SHA-256 144/144 校验。
-2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再下载官方 checkpoint、运行 MatterSim K=0/K=1。
+2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再用已实现的 node-local 下载作业取得官方 checkpoint、运行 MatterSim K=0/K=1。
 3. MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel 已完成服务器 staging；待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
 4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
 5. 随后下载论文对齐数据集并进入递增 depth scan。
 
 # 变更记录
 
+- 2026-09-28：MatterSim checkpoint 任务目录下载实现完成；node-local Slurm 入口支持 `.partial` 续传、原子落盘和大小/SHA-256 输出，K=0/K=1 只读取显式 tmpfs 文件。下一步随环境安装一起同步并在 node221 真实执行。
 - 2026-09-28：跨 wheelhouse 哈希播种实现完成本地验收；脚本只为目标清单中源文件哈希精确匹配的缺失 wheel 创建硬链接，并拒绝覆盖错误目标。下一步提交推送并继续监控 MatterSim 502，完成后先离线安装 MatterSim，再用该脚本减少 MACE 重复下载。
 
 - 2026-09-28：开始实现 Guqq 多连接共享反向 SOCKS；用户选择由首个成功绑定 1080 的会话提供代理，后续会话在转发绑定失败时仍正常登录并复用已有代理。下一步是修改本地 SSH 配置和 `AGENTS.md`，再执行静态检查。
