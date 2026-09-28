@@ -20,3 +20,5 @@
 - 判断：这是 pip 客户端缺少 SOCKS extra，不是代理本身不可用。可先用支持 SOCKS 的 curl 下载 `PySocks-*-py3-none-any.whl`，再由 pip 从本地文件离线安装。
 - 处理：先引导 PySocks，再直接安装任务依赖；不要把非必要的 pip/setuptools 全量升级放在关键路径前。长下载关闭进度条并设置显式 timeout/retry，完成后以 `pip show` 和实际导入分别验证。
 - 安全约束：登录节点安装依赖时使用 `--only-binary=:all:`；若缺少 wheel，停止并转交 Slurm，不能在登录节点隐式源码编译。
+
+补充：Vlab 会主动关闭纯 `ssh -N` 空闲 keeper，SSH protocol keepalive 不足以保证长下载期间代理存活。需要在远端运行轻量应用层心跳，或改用本地下载后 scp；不能仅凭本地 ssh 进程存在推断代理会持续可用。

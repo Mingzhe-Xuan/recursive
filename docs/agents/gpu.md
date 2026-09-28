@@ -28,3 +28,4 @@
 - 2026-09-28：固定网络探针作业 `490` 已在 node221 通过，MatterSim 环境安装作业 `491` 已提交。计划下一管理连接首先经 1081 代理 pull，随后仅用 `squeue`、`sacct` 和日志查看 491 状态；若成功，再记录环境版本并提交 K=0/K=1 推理作业。keeper PID 28816 当前继续提供代理。
 - 2026-09-28：作业 `491` 因 keeper 退出后下载的 wandb wheel 哈希不匹配而失败，pip 未安装损坏包；旧 keeper PID 28816 已不存在。计划启动由当前工具会话持续持有、可轮询的前台 1081 keeper；另建管理连接时仓库存在，先代理 pull，再只清除任务 tmpfs pip cache 中的 wandb 项并重提 setup。监控改用普通 `squeue -j`、`scontrol` 和日志，不依赖已禁用的 sacct。
 - 2026-09-28：当前工具持有的 keeper 会话 55766 正常；网络复验作业 `492` 通过，setup 重试作业 `493` 已提交。计划下一管理连接首先代理 pull，再用普通 `squeue -j 493`、`scontrol show job 493` 和日志监控；不使用 sacct 或自定义 squeue 格式，不在登录节点运行安装/推理。
+- 2026-09-28：纯 `ssh -N` keeper 会话 55766 已被 Vlab 主动关闭。计划新建带 20 秒远端应用层心跳的 1081 keeper；随后建立管理连接，仓库存在时首先代理 pull，再查看 `493` 的普通 squeue/scontrol/日志。若 493 已失败，则在心跳 keeper 下重提 setup；不在登录节点运行安装或推理。

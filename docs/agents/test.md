@@ -301,3 +301,5 @@ Slurm 实际结果：网络探针作业 `490` 在 `node221` 成功，输出显�
 作业 `491` 结果：失败。日志显示 keeper 退出后 `wandb-0.30.0` wheel 实际 SHA-256 与 PyPI 声明不一致，pip 在安装前拒绝该文件；未把损坏包写入环境。集群 `sacct` storage 未启用，且当前 `squeue` 不接受自定义格式参数；后续使用普通 `squeue -j`、`scontrol show job` 和作业日志验收。
 
 重试准备结果：当前工具持有 keeper 会话 55766；`pip cache remove wandb` 报无匹配项，确认损坏 wheel 未进入 task cache；网络复验作业 `492` 在 node221 再次成功，随后提交 setup 作业 `493`。最终结果待监控。
+
+后续轮询发现 keeper 55766 被 Vlab 主动关闭；因此“纯 `ssh -N` + protocol keepalive”未满足长安装代理持久性要求。下一轮 keeper 增加 20 秒远端应用层心跳，并在启动后立即检查 493。
