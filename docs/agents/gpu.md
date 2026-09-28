@@ -25,3 +25,4 @@
 - 2026-09-28：重建后的 pip 22 与 PySocks 工作正常，但确认 PyPI 不存在 1.2.5；项目已校正并验证为 `mattersim==1.2.3`。计划再次使用独立 1081：首先代理 pull；复用已清理的任务 venv，以 binary-only 安装 1.2.3、安装本项目并用 `pip show` 核对版本。不运行推理或源码编译。
 - 2026-09-28：MatterSim 1.2.3 长安装再次随短 SSH 命令提前结束，尚未完成。计划建立一个本地隐藏 `ssh -N` keeper，仅在 Guqq 回环 1081 提供任务代理；另建管理连接时仓库存在，首先经 1081 `git pull`，随后提交 Slurm 网络探针与 MatterSim setup 作业。所有长安装/潜在编译均由 Slurm 承担，不在登录节点运行。
 - 2026-09-28：隐藏 keeper 已启动（本地 PID 28816），登录节点经 1081 联网成功；首次 inline `sbatch --wrap` 因多层引号被拆分，探针和 setup 均未提交。计划下一管理连接先代理 pull，再提交固定的 `probe_runtime.sbatch` 并读取固定输出；仅在成功后提交 `setup_mattersim_env.sbatch`。不使用 inline wrap 或远端命令替换。
+- 2026-09-28：固定网络探针作业 `490` 已在 node221 通过，MatterSim 环境安装作业 `491` 已提交。计划下一管理连接首先经 1081 代理 pull，随后仅用 `squeue`、`sacct` 和日志查看 491 状态；若成功，再记录环境版本并提交 K=0/K=1 推理作业。keeper PID 28816 当前继续提供代理。
