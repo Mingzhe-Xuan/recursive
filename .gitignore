@@ -1,0 +1,27 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+dist/
+build/
+*.egg-info/
+
+# Generated data and experiment artifacts
+data/**
+!data/manifests/
+!data/manifests/**
+checkpoints/
+models/
+logs/
+results/
+outputs/
+tmp/
+*.pt
+*.pth
+*.ckpt
+*.log
+slurm-*.out
+

@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "recursive-atomistic-backbones"
+version = "0.1.0"
+description = "Frozen atomistic backbone recursion with irrep-level norm alignment"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.1"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.6"]
+mattersim = ["mattersim==1.2.5"]
+mace = ["mace-torch==0.3.16"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
