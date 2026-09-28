@@ -303,3 +303,5 @@ Slurm 实际结果：网络探针作业 `490` 在 `node221` 成功，输出显�
 重试准备结果：当前工具持有 keeper 会话 55766；`pip cache remove wandb` 报无匹配项，确认损坏 wheel 未进入 task cache；网络复验作业 `492` 在 node221 再次成功，随后提交 setup 作业 `493`。最终结果待监控。
 
 后续轮询发现 keeper 55766 被 Vlab 主动关闭；因此“纯 `ssh -N` + protocol keepalive”未满足长安装代理持久性要求。下一轮 keeper 增加 20 秒远端应用层心跳，并在启动后立即检查 493。
+
+作业 `493` 结果：`FAILED (ExitCode=1:0)`，运行 1 分 50 秒；日志中的 atomate2 wheel 哈希不匹配发生在心跳 keeper 72062 启动之前，pip 未安装该损坏文件。72062 已连续输出应用层心跳，下一轮才是新 keeper 方案的有效验证。
