@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。网络复验 `492` 已通过，MatterSim setup `493` 已提交；但纯 `ssh -N` keeper 被 Vlab 主动关闭，长下载期间的代理持久性仍需修复。下一步用远端应用层心跳维持 1081，立即检查 493 并按结果继续。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。应用层心跳 keeper 72062 稳定，网络探针 `494` 已通过；MatterSim setup 作业 `495` 正在由 Slurm 执行。环境和下载均位于任务 tmpfs，不触碰用户缓存。
 
 # 当前计划
 
@@ -28,6 +28,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：前台 keeper 会话 55766 已建立；网络复验 `492` 成功，setup 重试 `493` 已提交。下一步监控 493 并在成功后提交真实 K=0/K=1。
 - 2026-09-28：纯转发 keeper 55766 被 Vlab 主动关闭；按经验调整为带应用层心跳的 keeper，下一步恢复代理并检查 setup 493。
 - 2026-09-28：确认 setup 493 在新 keeper 启动前已因 atomate2 wheel 哈希不符失败；心跳 keeper 72062 当前稳定。下一步在该 keeper 下重新执行网络探针和 setup。
+- 2026-09-28：心跳 keeper 下的网络探针 494 成功，已提交 MatterSim setup 495。下一步保持 keeper 并监控安装结果。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
