@@ -19,6 +19,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：首次 MatterSim 环境创建命令在 shell 解析阶段失败，未执行任何远端子命令、未留下半成品环境。下一步使用无内联 Python 的命令重试，并继续禁止源码编译。
 - 2026-09-28：MatterSim venv 已创建，但其 pip 缺少 SOCKS extra，下载前即停止，尚未安装 MatterSim。下一步用 curl 下载 PySocks wheel并离线引导 pip；若第三次仍失败则按规范补充环境安装经验。
 - 2026-09-28：PySocks 已成功离线引导，但非必要的 pip 升级下载中连接提前结束，MatterSim 尚未安装。连续三次环境建立未完成后已将原因和规避方法写入 `lessons.md`；下一步跳过安装器升级，直接安装 binary-only MatterSim。
+- 2026-09-28：上一轮 pip 升级实际完成到 26.2.1，并在 SOCKS 索引请求中出现内部 urllib3 `PoolKey` 异常。下一步按已记录经验清理并重建仅属于本任务的 tmpfs MatterSim venv，保留 Python 3.10 自带 pip 22 后重试。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。

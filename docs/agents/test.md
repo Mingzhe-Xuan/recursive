@@ -267,3 +267,5 @@ MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near u
 第二次尝试成功执行 Git pull 和创建 venv，但 pip 报 `Missing dependencies for SOCKS support`，在解析/下载 MatterSim 之前停止。MatterSim 仍未安装；下一次先通过 curl 下载并离线安装纯 Python PySocks wheel，再继续验证。
 
 第三次尝试已从官方 PyPI 文件地址下载并成功安装 `PySocks==1.7.1`；随后 SSH 命令在下载非必要的 pip 升级包时提前结束，未开始 MatterSim 安装。该尝试不计作环境成功；经验已记录到 `lessons.md`，下一次跳过安装器升级。
+
+后续核对显示 pip 已升级到 26.2.1；其通过 SOCKS 解析 PyPI 时抛出 `PoolKey.__new__() got an unexpected keyword argument key_proxy_ssl_context`。MatterSim 仍未下载或安装。下一次对任务专用 tmpfs venv 使用 `venv --clear`，恢复 Python 3.10 自带 pip 22 并离线引导 PySocks。

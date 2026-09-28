@@ -21,3 +21,4 @@
 - 2026-09-28：首次 MatterSim 环境命令因末尾内联 Python 的嵌套引号在 shell 解析阶段失败，任何远端子命令均未执行。计划重试独立 1081 连接：首先代理 pull，再创建 venv，并用 `--only-binary=:all:` 安装 MatterSim；去掉内联 Python，改用 `pip show` 检查版本，避免触发源码编译或登录节点推理。
 - 2026-09-28：第二次环境尝试已创建 MatterSim venv，但 venv pip 在联网前因缺少 PySocks 停止，MatterSim 未安装。计划再次使用独立 1081：首先代理 pull，再由支持 SOCKS 的 curl 从 PyPI simple 页面取得纯 Python PySocks wheel，离线装入 venv，随后继续 binary-only MatterSim 安装和 `pip show` 检查；不运行推理或源码编译。
 - 2026-09-28：第三次尝试已成功离线安装 PySocks，但 SSH 命令在升级 pip 的下载阶段提前结束，MatterSim 尚未开始安装。计划再次使用独立 1081：首先代理 pull；只读 `pip show` 核对 venv，跳过安装器升级，直接用现有 pip、关闭进度条并 binary-only 安装 MatterSim，随后安装本项目并记录版本。不运行推理或源码编译。
+- 2026-09-28：核对发现 pip 升级实际已完成至 26.2.1，该版本经 SOCKS 请求索引时触发内部 `PoolKey key_proxy_ssl_context` 异常。计划再次使用独立 1081：首先代理 pull；校验目标严格位于 `/dev/shm/xmz-recursive/envs/mattersim` 后用 `python3 -m venv --clear` 重建专用环境，离线装 PySocks，保留系统 pip 22 并 binary-only 安装 MatterSim。不运行推理或源码编译。
