@@ -335,3 +335,19 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 结论：本地 wheelhouse 和离线 setup 脚本通过提交前检查，可以进入 Git 同步、scp 与 Slurm 实装阶段。
 
 服务器传输首次结果：提交 `bf2c517` 已成功 pull，`/dev/shm` 仍约有 126 GiB 可用；整目录 scp 在约两分钟后返回 `Timeout, server ... not responding` 并关闭，只能视为部分传输，尚未执行服务器端完整 SHA-256 验收。下一次按清单核对后改用短连接分块传输，验收标准保持 144/144 不变。
+
+## 2026-09-28：wheelhouse 断点续传脚本（计划）
+
+检查范围与预期结果：脚本从 `PYPI_URLS` 读取官方 SHA-256、文件名和 URL，兼容 Windows CRLF；已完整 wheel 必须跳过，未完成内容写入 `.partial` 并用 `curl --continue-at -` 续传，仅在单文件哈希通过后原子改名；最终要求条目数为 144 且 `SHA256SUMS` 全部通过。使用本地伪 wheel、CRLF 清单和 `file://` URL 验证首次下载、完整文件跳过、残片续传/失败保护及最终计数，再执行 Bash 语法和 Git whitespace 检查。
+
+实际结果：
+
+- PyPI 官方 JSON 清单生成成功：144/144 文件名唯一匹配，本地 wheel SHA-256 与 PyPI 声明逐项一致；
+- `bash -n scripts/download_wheelhouse.sh`：通过；
+- 两文件 CRLF 伪清单测试：完整 `a.whl` 被跳过，`b.whl.partial` 从 5 bytes 断点续传并在哈希通过后改名，最终 2/2 校验通过；第二次运行没有下载输出，证明完整文件跳过；
+- 无效 `file://` 的预期失败测试返回 curl 37，`.partial` 保留且没有生成最终 wheel，失败保护通过；
+- 首次内联 SSH 循环因本地 PowerShell 提前展开远端变量而未执行有效下载，且 CRLF 使直接 `sha256sum -c` 读到带 `\r` 的文件名；该实现已弃用，固定脚本避免多层 quoting 并显式移除清单 CR。
+
+提交前补充结果：`python -m pytest -q` 16 项通过，仅有现有 `.pytest_cache` 写权限 warning；脚本 Bash 语法与 `git diff --check` 通过，后者仅提示 Windows LF/CRLF 转换。
+
+结论：断点续传脚本的本地行为和回归检查符合预期，可以提交并同步到服务器。

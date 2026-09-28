@@ -34,3 +34,4 @@
 - 2026-09-28：Vlab 再次重置带 20 秒心跳的 keeper 72062，确认反向 SOCKS 不适合长依赖下载。计划启动仅用于短时同步的新 1081 连接：仓库存在，首先代理 pull，再检查 495 状态/日志；随后不再经服务器网络下载依赖，改为本地生成并校验 Linux cp310 binary wheelhouse，经 scp 放入 `/dev/shm/xmz-recursive/wheelhouse`，最终由 Slurm 离线安装。
 - 2026-09-28：已确认 setup `495` 因 torch wheel 哈希不匹配失败，短时 keeper 已停止。下一次服务器连接安排在本地 wheelhouse 构建完成之后：仓库存在，先用短时代理执行 `git pull`，再创建任务 wheelhouse 目录、通过 scp 传输并核验 SHA-256，最后提交完全离线的 setup 作业；不再使用长时代理下载依赖。
 - 2026-09-28：整目录 scp 在约两分钟后被 Vlab 关闭，服务器 tmpfs 只含可覆盖的部分传输。计划下一次连接先执行 `git pull`，再只读核对已完成文件；随后把超过单连接窗口的 wheel 在本地分块、用短 scp 连接传输到任务 staging 目录，并在服务器任务目录重组和校验。仅处理本任务 wheelhouse，不触碰其他数据。
+- 2026-09-28：短 scp 对照虽成功但吞吐仅约 30 KiB/s；内联断点下载循环因 PowerShell 变量展开未执行有效下载。计划下一次连接先执行 `git pull` 同步固定的 `scripts/download_wheelhouse.sh`，再在同一会话用官方 PyPI URL 清单执行 `curl --continue-at -`；连接若被 Vlab 重置，后续连接重复“先 pull、再运行脚本”，直到服务器 SHA-256 144/144 通过。仅写任务 tmpfs 的 wheel 和 `.partial`。

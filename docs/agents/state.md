@@ -1,10 +1,10 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run 与 144/144 SHA-256 复验通过。离线 setup 已推送并同步到服务器；首次整目录 scp 因 Vlab 的约两分钟连接窗口中断，当前改为小文件/分块传输并在任务 tmpfs 重组校验。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。scp 吞吐过低，已实现并用 CRLF 伪清单验证基于官方 URL 的 `curl --continue-at -` 断点续传脚本；当前准备通过 Git 同步该脚本，在短 SSH 会话间续传服务器 wheelhouse。
 
 # 当前计划
 
-1. 核对首次 scp 已完整到达的 wheel，对缺失或不完整的大 wheel 分块传输并重组，完成服务器端 SHA-256 144/144 校验。
+1. 提交并同步断点续传脚本；按官方 URL 清单在短 SSH 会话间续传，完成服务器端 SHA-256 144/144 校验。
 2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再下载官方 checkpoint、运行 MatterSim K=0/K=1。
 3. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
 4. 随后下载论文对齐数据集并进入递增 depth scan。
@@ -33,6 +33,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：确认 setup `495` 在下载 torch 2.14.0 wheel 时因代理中断导致 SHA-256 不匹配而失败，pip 拒绝安装；短时 keeper 已停止。当前进入本地 wheelhouse 实现阶段，setup 将支持 `--no-index --find-links`、安全重建专用 venv 和保存 freeze 清单。
 - 2026-09-28：本地 MatterSim wheelhouse 已完成：144 个 Linux/CPython 3.10 wheel、离线依赖 dry-run 成功、SHA-256 144/144 一致；离线 setup 的语法、16 项回归、编译与 whitespace 检查均通过。下一步提交推送后传输到服务器 tmpfs。
 - 2026-09-28：离线 setup 提交 `bf2c517` 已推送并在服务器成功 pull；整目录 scp 在约两分钟后被 Vlab 关闭。下一步按清单识别缺失/不完整文件，将大 wheel 分块短传、重组后再做完整哈希校验。
+- 2026-09-28：scp 对照吞吐仅约 30 KiB/s，分块 scp 不可行；PyPI URL/官方哈希清单 144/144 生成成功，固定断点续传脚本已通过 CRLF、续传、跳过和失败保护测试。下一步经 Git 同步脚本并重复短会话续传。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
