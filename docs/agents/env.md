@@ -30,4 +30,12 @@
 - checkpoint 为 `OpenLAM_2.1.0_27heads_2024Q1.pt`，验证 head 为 `Domains_SSE-PBE`。
 - 所有真实推理均由 `scripts/slurm/dpa2_k01.sbatch` 提交。
 
-以上三个服务器环境尚未创建。原因是当前本地目录没有 Git 元数据，服务器也没有对应工作树；按照服务器源码只能经 Git 同步的规范，需先取得正确 remote URL。
+以上三个服务器环境尚未创建。Git 同步条件已经满足；当前需先解决服务器根分区剩余空间不足的问题，再选择安全的任务存储路径。
+
+## 服务器基础环境实测（2026-09-28）
+
+- 工作树：`/home/xmz/recursive`，已同步到 `b41299f`；
+- 系统 Python：3.10.12，路径 `/usr/bin/python3`；
+- GPU：NVIDIA GeForce RTX 5090，32607 MiB，驱动 570.211.01；
+- Slurm GPU 分区：`compute`；
+- `/` 当前仅余约 2.6 GiB，因此尚未创建任何虚拟环境。需先找到容量足够的任务存储位置，再追加真实环境路径、安装命令和版本清单。

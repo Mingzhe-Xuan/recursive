@@ -20,6 +20,13 @@
 
 提交前文档检查结果：`git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 提示；`AGENTS.md` 包含 SOCKS URL、三个代理变量、计算节点网络边界和仓库不存在时 clone 的规则；未发现旧的 `sleep 180` 或“等待 3 分钟后再”流程。通过。
 
+## 2026-09-28：更新后服务器同步与资源检查（结果）
+
+- `git pull` 成功快进至 `b41299f63cdf092270dcbdb60ce2503b8523d677`；仓库根目录为 `/home/xmz/recursive`，origin 为确认的 GitHub URL；
+- Python 为 3.10.12，GPU 为 NVIDIA GeForce RTX 5090（32607 MiB，驱动 570.211.01），Slurm 默认分区为 `compute`；
+- home 所在根分区容量 1.8 TiB，但仅余约 2.6 GiB，暂不创建环境或下载 checkpoint；
+- 全程仅执行 Git 同步和轻量只读检查，未在登录节点运行模型推理或编译。
+
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
 检查范围：Markdown 标题结构、LaTeX display delimiters、代码围栏、UTF-8 内容和已删除章节关键词。
