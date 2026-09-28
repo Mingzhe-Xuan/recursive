@@ -380,6 +380,8 @@ MatterSim 作业 500 验收结果：确认 `node221`、`TimeLimit=12:00:00` 且�
 
 重试调整检查结果：两个 Bash 脚本语法通过；完整两文件仍 2/2 校验且无下载；无效 URL 在测试覆盖为 1 次重试时返回 curl 37，保留 `.partial` 且不生成最终 wheel；16 项 pytest 通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并重提 Slurm 下载。
 
+真实重提结果：短时独立 1081 会话先将服务器 pull 到 `58878e8` 并确认队列无重复下载作业；下一会话再次先 pull，随后成功提交 12 小时续传作业 `501` 到 node221。最终状态待监控。
+
 MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel 的 `python-hostlist`。官方 2.3.0 sdist SHA-256 为 `e1a0b18e525a5fca573cb9862799f11b3f2bd3ba7aec70c4ecd8b95341bb71ea`；内容审计仅发现 Python 模块、脚本、测试、manpage 和 setuptools 配置，无本地扩展源码。单独构建的纯 Python wheel 为 `python_hostlist-2.3.0-py3-none-any.whl`，SHA-256 为 `88710a4a83c8ea58a81e5526897b1415427c634c75a6a6253d1e163ec6f4ebb9`。
 
 加入该审计 wheel 后，目标平台解析得到 49 个 wheel、637.90 MiB；离线 `--no-index --only-binary` dry-run 成功。48 个 PyPI wheel 的文件名与官方 SHA-256 逐项匹配，完整 `SHA256SUMS` 49/49 复验通过；自建 wheel后续单独 scp，不伪造 PyPI URL。
