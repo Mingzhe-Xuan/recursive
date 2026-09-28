@@ -367,3 +367,5 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 作业 `499` 实测约 4 分钟时 botocore 残片为 7,118,848 bytes，证明计算节点直连持续写入但吞吐只有几十 KiB/s；1 小时时限不足以完成 736.27 MiB。调整计划：将 sbatch 时限提高到 12 小时，执行 Bash 语法、资源声明和 whitespace 检查，再尝试用 `scontrol update` 原地延长 499，保留已有进度。
 
 调整检查结果：sbatch Bash 语法通过，静态检查精确匹配 `#SBATCH --time=12:00:00`，`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并尝试原地延长。
+
+原地延长实际结果：服务器先 pull 到 `c587e5d`，随后 `scontrol update` 返回 `Access/permission denied for job 499`；命令未修改作业。根据已通过的 `.partial` 失败保护/续传测试，下一步取消任务自有的 499 并以 12 小时配置重提；验收新作业必须固定 node221、`TimeLimit=12:00:00` 且复用现有残片。
