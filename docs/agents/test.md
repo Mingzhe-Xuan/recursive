@@ -212,3 +212,27 @@
 - 用非交互、有限超时的 SSH 连接复现故障，日志能区分跳板机、Guqq 认证、远程命令和反向转发失败；
 - 使用 `ClearAllForwardings=yes` 的对照连接判断是否由新增转发配置导致；
 - 诊断期间不运行计算任务，不执行 `net.sh`。
+
+## 2026-09-28：Guqq SSH 连接故障诊断（结果）
+
+- `ssh -v` 确认 vlab ProxyJump 公钥认证成功，Guqq 的 `id_ed25519_codex` 公钥认证也成功；
+- 连接在请求 `RemoteForward 127.0.0.1:1080` 后返回 `remote port forwarding failed for listen port 1080`，由 `ExitOnForwardFailure yes` 按配置中止；
+- `ClearAllForwardings=yes` 对照连接成功，`ss` 显示 Guqq `127.0.0.1:1080` 已处于 `LISTEN`，证明是端口占用而非 SSH 主连接失败；
+- 通过已占用的 SOCKS 执行 `curl` 在 15 秒后超时，说明该监听已不能正常代理；
+- 本机 `Get-Process -Name ssh` 无输出，本机没有持有该转发的 `ssh.exe`；占用者可能是其他客户端会话或远端残留的 sshd 会话。
+# 2026-09-28：Guqq 多连接共享 SOCKS（计划）
+
+检查范围与预期结果：
+
+- `ssh -G Guqq` 展开后保留 `remoteforward [127.0.0.1]:1080 [socks]:0`，且 `exitonforwardfailure no`；
+- `AGENTS.md` 明确首个成功绑定 1080 的 SSH 会话持有代理，后续会话即使收到端口占用警告也可正常登录并使用已有代理；
+- 文档明确持有代理的会话断开后，已有会话不会自动接管，需新建 `ssh Guqq` 连接恢复代理；
+- 执行 SSH 配置展开、关键文本和 `git diff --check` 检查，不连接服务器。
+
+## 2026-09-28：Guqq 多连接共享 SOCKS（结果）
+
+- `ssh -G Guqq` 展开结果为 `exitonforwardfailure no`、`remoteforward [127.0.0.1]:1080 [socks]:0`，keepalive 仍为 30 秒/3 次；
+- `AGENTS.md` 关键文本检查通过：首连接持有代理、后续连接继续登录并复用、旧会话不自动接管、新建连接恢复代理和 Slurm 计算节点边界均已记录；
+- 本次按计划仅执行本地静态验证，未连接 Guqq。
+- `git diff --check` 通过；仅有 Windows 工作树的 LF/CRLF 转换警告，无空白或补丁格式错误。
+- 本轮重新读取后再次确认 `ssh -G Guqq` 为 `exitonforwardfailure no`、固定动态反向转发和 30 秒/3 次 keepalive；连续诊断失败的端口语义与成功判据已补充到 `docs/agents/lessons.md`。
