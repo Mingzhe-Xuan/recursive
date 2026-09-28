@@ -291,3 +291,7 @@ MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near u
 - Python 编译检查与 setup/inference 两个 sbatch 的 `bash -n`：通过；
 - 静态检查确认 setup 作业要求显式代理端口、先执行计算节点公网探针、只安装 binary wheels，并在结束前执行 `pip check` 和版本导入检查；
 - `git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 提示。可以提交 Slurm 网络探针与环境安装作业。
+
+首次 inline Slurm 网络探针因 `--wrap` 内容跨 Windows/SSH/远端 shell 后被拆分，`sbatch` 报参数缺失；探针和 setup 均未提交。新增 `probe_runtime.sbatch` 后将重新执行 shell 语法与资源检查，并改用固定输出路径验证结果。
+
+固定探针检查结果：16 项单元测试通过（仅 pytest cache warning）；probe/setup 两个 sbatch 的 `bash -n` 通过；探针明确请求一张 GPU、验证 `/dev/shm` 可写、要求显式代理端口并对公网请求设置 15 秒上限；`git diff --check` 通过。可以按文件提交。

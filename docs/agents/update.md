@@ -11,6 +11,7 @@
 - 2026-09-28：确认前一轮 pip 升级已部分完成至 26.2.1，SOCKS 索引访问触发其内部 urllib3 `PoolKey` 异常；将重建任务专用 venv 并保留系统 pip 22。
 - 2026-09-28：重建 venv 后确认 pip 22 + PySocks 正常；发现 PyPI 最高可安装 MatterSim 为 1.2.3，已审计该版本 M3GNet API、修正精确 pin 并通过 16 项测试。
 - 2026-09-28：MatterSim 1.2.3 下载在短 SSH 命令结束时再次中止；调整为持久 SSH keeper + Slurm 网络探针 + Slurm setup 作业，长安装不再直接运行于登录节点。
+- 2026-09-28：隐藏 1081 keeper 已启动并验证登录节点代理；inline `sbatch --wrap` 因多层引号拆分失败，未产生作业。新增固定 runtime probe sbatch，下一次按文件提交。
 - 2026-09-28：开始诊断启用 `RemoteForward 127.0.0.1:1080` 后 `ssh Guqq` 无法连接的问题，优先检查远端端口占用与 `ExitOnForwardFailure yes` 的组合影响。
 - 2026-09-28：定位 Guqq 连接失败为远端 `127.0.0.1:1080` 端口冲突；详细日志显示跳板机和 Guqq 认证成功后才出现 `remote port forwarding failed for listen port 1080`。禁用新转发的对照连接成功，确认问题不在网络、ProxyJump 或密钥。
 - 2026-09-28：开始修改 `AGENTS.md` 中的 Guqq 网络流程，将强制 `bash net.sh` 与 3 分钟等待替换为仅在 SSH 会话期间存活的本地反向 SOCKS 代理。
