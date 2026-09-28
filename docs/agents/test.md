@@ -236,3 +236,11 @@
 - 本次按计划仅执行本地静态验证，未连接 Guqq。
 - `git diff --check` 通过；仅有 Windows 工作树的 LF/CRLF 转换警告，无空白或补丁格式错误。
 - 本轮重新读取后再次确认 `ssh -G Guqq` 为 `exitonforwardfailure no`、固定动态反向转发和 30 秒/3 次 keepalive；连续诊断失败的端口语义与成功判据已补充到 `docs/agents/lessons.md`。
+
+## 2026-09-28：多连接继续执行与存储检查（结果）
+
+- 新会话显示 1080 绑定警告后继续执行远端命令，验证 `ExitOnForwardFailure no` 生效；
+- 代理 `git pull` 和公网 curl 在有限时间内均无结果，现有 1080 监听不可作为可用代理；
+- `ss` 确认 1080 仍仅监听回环；未终止监听或未知会话；
+- 唯一持久 ext4 根分区剩余约 2.7 GiB，`~/.cache` 占 152 GiB，`~/recursive` 约 808 KiB；未发现 `/data`、`/scratch`、`/public` 或 `/workspace` 可用挂载；
+- 下一步以一次性回环 1081 代理恢复 Git，并通过 Slurm 轻量探针验证 `/dev/shm` 对计算作业的可见性与容量。
