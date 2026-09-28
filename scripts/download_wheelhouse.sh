@@ -6,6 +6,10 @@ WHEELHOUSE="${1:?usage: download_wheelhouse.sh WHEELHOUSE_DIR}"
 URL_MANIFEST="${WHEELHOUSE}/PYPI_URLS"
 CHECKSUM_MANIFEST="${WHEELHOUSE}/SHA256SUMS"
 EXPECTED_COUNT="${RECURSIVE_WHEEL_COUNT:-144}"
+CURL_RETRIES="${RECURSIVE_CURL_RETRIES:-100}"
+CURL_RETRY_MAX_TIME="${RECURSIVE_CURL_RETRY_MAX_TIME:-7200}"
+CURL_SPEED_LIMIT="${RECURSIVE_CURL_SPEED_LIMIT:-128}"
+CURL_SPEED_TIME="${RECURSIVE_CURL_SPEED_TIME:-120}"
 
 test -d "${WHEELHOUSE}"
 test -f "${URL_MANIFEST}"
@@ -33,12 +37,13 @@ while read -r expected_hash filename url; do
     --location \
     --silent \
     --show-error \
-    --retry 3 \
+    --retry "${CURL_RETRIES}" \
     --retry-all-errors \
     --retry-delay 1 \
+    --retry-max-time "${CURL_RETRY_MAX_TIME}" \
     --connect-timeout 15 \
-    --speed-limit 1024 \
-    --speed-time 30 \
+    --speed-limit "${CURL_SPEED_LIMIT}" \
+    --speed-time "${CURL_SPEED_TIME}" \
     --continue-at - \
     --output "${partial}" \
     "${url}"

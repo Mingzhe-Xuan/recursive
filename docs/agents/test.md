@@ -371,3 +371,15 @@ keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长�
 原地延长实际结果：服务器先 pull 到 `c587e5d`，随后 `scontrol update` 返回 `Access/permission denied for job 499`；命令未修改作业。根据已通过的 `.partial` 失败保护/续传测试，下一步取消任务自有的 499 并以 12 小时配置重提；验收新作业必须固定 node221、`TimeLimit=12:00:00` 且复用现有残片。
 
 重提结果：服务器先 pull 到 `0ca4346`，随后成功取消 499 并提交作业 `500`；未删除 wheelhouse 或 `.partial`。新作业的 node、实际时限和续传日志待下一次只读监控核验。
+
+## 2026-09-28：MACE 离线 wheelhouse（计划）
+
+在 MatterSim 作业 500 运行期间，本地为 Linux x86_64 / CPython 3.10 解析 `mace-torch==0.3.16` 的独立依赖闭包，额外包含 PySocks、setuptools 和 wheel；要求 `--only-binary=:all:`，不与 MatterSim 环境合并。预期目录只含 wheel，离线 `--no-index` dry-run 成功，并生成/复验逐文件 SHA-256；若依赖只提供 sdist，应明确失败并审计该依赖，而不是放宽为本地源码编译。
+
+MatterSim 作业 500 验收结果：确认 `node221`、`TimeLimit=12:00:00` 且从 botocore 残片继续；随后在 35/144 的 h5py 下载中，连续四次触发原 1 KiB/s、30 秒低速阈值并失败，完整 wheel 与 h5py `.partial` 均保留。调整计划：生产默认改为 100 次重试、2 小时重试总时长、128 B/s 持续 120 秒的低速阈值；本地失败测试用环境变量缩短重试，继续验证最终文件不会提前生成。
+
+重试调整检查结果：两个 Bash 脚本语法通过；完整两文件仍 2/2 校验且无下载；无效 URL 在测试覆盖为 1 次重试时返回 curl 37，保留 `.partial` 且不生成最终 wheel；16 项 pytest 通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交并重提 Slurm 下载。
+
+MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel 的 `python-hostlist`。官方 2.3.0 sdist SHA-256 为 `e1a0b18e525a5fca573cb9862799f11b3f2bd3ba7aec70c4ecd8b95341bb71ea`；内容审计仅发现 Python 模块、脚本、测试、manpage 和 setuptools 配置，无本地扩展源码。单独构建的纯 Python wheel 为 `python_hostlist-2.3.0-py3-none-any.whl`，SHA-256 为 `88710a4a83c8ea58a81e5526897b1415427c634c75a6a6253d1e163ec6f4ebb9`。
+
+加入该审计 wheel 后，目标平台解析得到 49 个 wheel、637.90 MiB；离线 `--no-index --only-binary` dry-run 成功。48 个 PyPI wheel 的文件名与官方 SHA-256 逐项匹配，完整 `SHA256SUMS` 49/49 复验通过；自建 wheel后续单独 scp，不伪造 PyPI URL。

@@ -21,6 +21,8 @@
 - 项目安装：editable install，extra 为 `mace`，锁定 `mace-torch==0.3.16`。
 - 所有真实推理均由 `scripts/slurm/mace_k01.sbatch` 提交。
 
+本地离线解析结果：Linux x86_64 / CPython 3.10 闭包为 49 个 wheel（637.90 MiB），核心版本含 `mace-torch==0.3.16`、`e3nn==0.4.4`、`torch==2.14.0`、`numpy==2.2.6`。`python-hostlist==2.3.0` 在 PyPI 仅有 sdist；审计确认无本地扩展后单独构建 `py3-none-any` wheel，sdist SHA-256 为 `e1a0b18e525a5fca573cb9862799f11b3f2bd3ba7aec70c4ecd8b95341bb71ea`，wheel SHA-256 为 `88710a4a83c8ea58a81e5526897b1415427c634c75a6a6253d1e163ec6f4ebb9`。48 个官方 wheel 与 PyPI 哈希匹配，完整清单 49/49 通过；服务器环境必须完全离线安装该固定闭包。
+
 ## 服务器 DPA-2 / OpenLAM 环境（待创建）
 
 - 路径：项目根目录 `.venv-dpa2`。

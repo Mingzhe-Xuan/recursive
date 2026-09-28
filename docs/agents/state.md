@@ -1,13 +1,14 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 的 Linux x86_64 / CPython 3.10 binary wheelhouse 已在本地完整解析：144 个 wheel、736.27 MiB，离线 dry-run、PyPI 官方哈希匹配与 144/144 本地复验通过。1 小时作业 `499` 已安全取消，12 小时续传作业 `500` 已提交到同一 node221，现有 wheel 与 `.partial` 均保留。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 服务器 wheelhouse 已完成 35/144，作业 500 因过严低速阈值失败且残片保留，当前放宽为慢速直连适用的有限重试后重提。MACE 的独立本地 wheelhouse 也已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；其中 python-hostlist 为审计后单独构建的纯 Python wheel。
 
 # 当前计划
 
-1. 提交并同步 Slurm 直连下载作业；在 `node221` 验证计算节点直连并续传，完成服务器端 SHA-256 144/144 校验。
+1. 提交并同步慢速直连重试调整；在 `node221` 重提并续传 MatterSim，完成服务器端 SHA-256 144/144 校验。
 2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再下载官方 checkpoint、运行 MatterSim K=0/K=1。
-3. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
-4. 随后下载论文对齐数据集并进入递增 depth scan。
+3. 将已验证的 MACE 0.3.16 wheelhouse 按 48 个官方 URL + 1 个小型审计 wheel 同步到服务器，并创建隔离环境。
+4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
+5. 随后下载论文对齐数据集并进入递增 depth scan。
 
 # 变更记录
 
@@ -40,6 +41,8 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：作业 499 约 4 分钟时 botocore 残片已达 7,118,848 bytes，直连有效但按总量估算需 7–9 小时；调整 sbatch 时限为 12 小时，下一步尝试原地延长运行中作业。
 - 2026-09-28：集群拒绝普通用户原地延长 499，作业未改变。下一步利用已验证的断点语义取消 499，并在同一 node221 以 12 小时时限立即重提。
 - 2026-09-28：作业 499 已取消，12 小时续传作业 `500` 已提交到 node221。下一步核对实际时限和断点恢复日志。
+- 2026-09-28：作业 500 已确认 node221、12 小时且从残片续传；等待期间并行进入 MACE 独立 wheelhouse 解析，继续保持 backbone 环境隔离。
+- 2026-09-28：作业 500 在 35/144 的 h5py 因过严低速阈值失败；按 lessons 调整为慢速直连阈值和长有限重试。MACE 本地 wheelhouse 已完成 49 项离线解析/哈希验收，python-hostlist 纯 Python sdist 已单独审计构建。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
