@@ -6,6 +6,7 @@
 - 2026-09-28：多连接会话已能在 1080 冲突后继续；代理 pull/curl 均超时，证明既有监听不可用。只读存储检查显示 `/` 余约 2.7 GiB、`~/.cache` 占 152 GiB、无其他持久挂载；准备以一次性回环 1081 代理恢复联网并验证 Slurm `/dev/shm`。
 - 2026-09-28：一次性回环 1081 代理成功，Guqq 已拉取最新提交；Slurm 探针作业 `489` 在 `node221` 验证 `/dev/shm` 可写且约 126 GiB。决定将可重建环境、缓存与 checkpoint 放入 `/dev/shm/xmz-recursive`，不清理现有用户缓存。
 - 2026-09-28：首次 MatterSim 环境命令因嵌套引号导致远端 shell 解析失败，命令整体未执行；将去掉内联 Python 并以二进制-only 安装和 `pip show` 重试。
+- 2026-09-28：第二次 MatterSim 环境尝试创建了 venv，但 pip 因缺少 SOCKS 支持在下载前停止；下一步使用 curl 下载 PySocks wheel离线引导 venv pip，再继续 binary-only 安装。
 - 2026-09-28：开始诊断启用 `RemoteForward 127.0.0.1:1080` 后 `ssh Guqq` 无法连接的问题，优先检查远端端口占用与 `ExitOnForwardFailure yes` 的组合影响。
 - 2026-09-28：定位 Guqq 连接失败为远端 `127.0.0.1:1080` 端口冲突；详细日志显示跳板机和 Guqq 认证成功后才出现 `remote port forwarding failed for listen port 1080`。禁用新转发的对照连接成功，确认问题不在网络、ProxyJump 或密钥。
 - 2026-09-28：开始修改 `AGENTS.md` 中的 Guqq 网络流程，将强制 `bash net.sh` 与 3 分钟等待替换为仅在 SSH 会话期间存活的本地反向 SOCKS 代理。

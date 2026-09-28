@@ -263,3 +263,5 @@
 - `git diff --check` 无 whitespace 错误，仅有 Windows LF/CRLF 转换提示。检查通过。
 
 MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near unexpected token mattersim.__version__`；由于 shell 在执行前即拒绝整行，没有创建环境或安装包。本次不计作环境成功，下一次以不含内联 Python 的命令重试。
+
+第二次尝试成功执行 Git pull 和创建 venv，但 pip 报 `Missing dependencies for SOCKS support`，在解析/下载 MatterSim 之前停止。MatterSim 仍未安装；下一次先通过 curl 下载并离线安装纯 Python PySocks wheel，再继续验证。
