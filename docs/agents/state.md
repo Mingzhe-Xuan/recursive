@@ -6,7 +6,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 
 1. 提交并同步慢速直连重试调整；在 `node221` 重提并续传 MatterSim，完成服务器端 SHA-256 144/144 校验。
 2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再下载官方 checkpoint、运行 MatterSim K=0/K=1。
-3. 先把 MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel staging 到服务器；待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
+3. MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel 已完成服务器 staging；待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
 4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
 5. 随后下载论文对齐数据集并进入递增 depth scan。
 
@@ -48,6 +48,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：探针重试补丁已同步，MatterSim 下载重提为作业 `502`；下一步确认其通过探针并从 h5py 残片继续。
 - 2026-09-28：MACE 独立离线 setup 已完成并通过 Bash、静态、16 项回归和编译检查；待 wheelhouse 同步后在 Slurm 中做真实安装。
 - 2026-09-28：MatterSim 502 在大 wheel 上慢速运行；等待期间只 staging MACE 两个清单与 39 KiB 审计 wheel，不启动并发大下载。
+- 2026-09-28：MACE 控制文件 staging 已完成，服务器行数 48/49、审计 wheel 哈希通过；MatterSim 502 同期推进到 `m` 段依赖并继续独占公网。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。

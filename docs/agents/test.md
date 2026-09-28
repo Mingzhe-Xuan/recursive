@@ -399,3 +399,5 @@ MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel �
 实际结果：Bash 语法通过；静态检查确认安装前完整 SHA-256 校验、强制 no-index/find-links、binary-only MACE pin、安全 `venv --clear`、`pip check`、版本导入与 `mace-freeze.txt`；16 项 pytest 和 Python 编译通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交，待服务器 wheelhouse 完整后运行。
 
 MACE 控制文件 staging 计划：服务器连接先 pull，再创建任务 tmpfs 目录；只传 48 项官方 URL 清单、49 项总哈希清单和 39 KiB 审计 wheel。传输后核对清单行数和审计 wheel SHA-256；不提交 MACE 下载作业，保持 MatterSim 502 独占计算节点公网。
+
+staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp 成功。服务器端 `wc -l` 为 `PYPI_URLS=48`、`SHA256SUMS=49`，审计 wheel SHA-256 校验 `OK`。未提交 MACE 下载作业；同期 MatterSim 502 仍 RUNNING，已推进到 `m` 开头的依赖。

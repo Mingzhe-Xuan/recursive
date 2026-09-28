@@ -69,3 +69,4 @@
 - 2026-09-28：计算节点探针重试已同步，MatterSim 12 小时续传作业 `502` 已提交到 node221，等待从 35/144 与 h5py 残片继续。
 - 2026-09-28：完成 MACE 独立离线 setup：安装前校验完整 SHA-256，强制 no-index/binary-only，安全重建专用 venv，执行依赖/版本检查并保存 freeze；本地检查全部通过。
 - 2026-09-28：准备 staging MACE 的 48 项 URL、49 项总哈希和 39 KiB 审计 wheel；暂不启动第二个大下载，保持 MatterSim 502 独占公网带宽。
+- 2026-09-28：MACE 的 48 项 URL、49 项总哈希和 39 KiB 审计 wheel 已传到任务 tmpfs；服务器端清单行数与 wheel SHA-256 通过，未启动并发下载。
