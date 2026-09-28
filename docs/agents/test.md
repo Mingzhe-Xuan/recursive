@@ -269,3 +269,14 @@ MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near u
 第三次尝试已从官方 PyPI 文件地址下载并成功安装 `PySocks==1.7.1`；随后 SSH 命令在下载非必要的 pip 升级包时提前结束，未开始 MatterSim 安装。该尝试不计作环境成功；经验已记录到 `lessons.md`，下一次跳过安装器升级。
 
 后续核对显示 pip 已升级到 26.2.1；其通过 SOCKS 解析 PyPI 时抛出 `PoolKey.__new__() got an unexpected keyword argument key_proxy_ssl_context`。MatterSim 仍未下载或安装。下一次对任务专用 tmpfs venv 使用 `venv --clear`，恢复 Python 3.10 自带 pip 22 并离线引导 PySocks。
+
+## 2026-09-28：MatterSim 可安装版本校正（计划）
+
+检查范围：核对官方 GitHub release、PyPI 可用版本和 v1.2.3 对包装器所依赖 M3GNet API；将 optional dependency 从 PyPI 不存在的 1.2.5 校正为 1.2.3；执行全部单元测试、Python 编译和依赖配置静态检查。预期不放宽为无上界版本，保持可复现的精确 pin。
+
+## 2026-09-28：MatterSim 可安装版本校正（结果）
+
+- 官方 v1.2.3 源码仍提供包装器依赖的 `atom_embedding`、`edge_encoder`、`graph_conv`、`final`、`normalizer` 以及相同 MainBlock 调用顺序；
+- `pyproject.toml` 和环境文档均精确锁定 `mattersim==1.2.3`，未残留 1.2.5 安装 pin；
+- `python -m pytest -q`：16 项通过，仅有本地 `.pytest_cache` 写权限 warning；
+- `python -m compileall -q src tests scripts` 和 `git diff --check`：通过。

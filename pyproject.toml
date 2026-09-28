@@ -11,7 +11,7 @@ dependencies = ["torch>=2.1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "ruff>=0.6"]
-mattersim = ["mattersim==1.2.5"]
+mattersim = ["mattersim==1.2.3"]
 mace = ["mace-torch==0.3.16"]
 
 [tool.setuptools.packages.find]

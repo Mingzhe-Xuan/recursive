@@ -11,7 +11,7 @@
 
 - 路径：项目根目录 `.venv-mattersim`。
 - Python：3.10 或 3.11。
-- 项目安装：editable install，extra 为 `mattersim`，锁定 `mattersim==1.2.5`。
+- 项目安装：editable install，extra 为 `mattersim`，锁定 PyPI 可安装版本 `mattersim==1.2.3`。官方 GitHub 虽已有 v1.2.4/v1.2.5 tag，但 PyPI 当前只发布至 1.2.3；v1.2.3 的 M3GNet `atom_embedding`、`edge_encoder`、`graph_conv`、`final` 和 `normalizer` API 已与包装器逐项核对。
 - 所有真实推理均由 `scripts/slurm/mattersim_k01.sbatch` 提交。
 
 ## 服务器 MACE 环境（待创建）
