@@ -391,3 +391,9 @@ MatterSim 作业 500 验收结果：确认 `node221`、`TimeLimit=12:00:00` 且�
 MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel 的 `python-hostlist`。官方 2.3.0 sdist SHA-256 为 `e1a0b18e525a5fca573cb9862799f11b3f2bd3ba7aec70c4ecd8b95341bb71ea`；内容审计仅发现 Python 模块、脚本、测试、manpage 和 setuptools 配置，无本地扩展源码。单独构建的纯 Python wheel 为 `python_hostlist-2.3.0-py3-none-any.whl`，SHA-256 为 `88710a4a83c8ea58a81e5526897b1415427c634c75a6a6253d1e163ec6f4ebb9`。
 
 加入该审计 wheel 后，目标平台解析得到 49 个 wheel、637.90 MiB；离线 `--no-index --only-binary` dry-run 成功。48 个 PyPI wheel 的文件名与官方 SHA-256 逐项匹配，完整 `SHA256SUMS` 49/49 复验通过；自建 wheel后续单独 scp，不伪造 PyPI URL。
+
+## 2026-09-28：MACE 离线环境安装器（计划）
+
+新增独立 `setup_mace_env.sbatch`：只接受显式 wheelhouse，强制 `PIP_NO_INDEX`/`--no-index --find-links` 和 binary-only 安装；可安全 `venv --clear` 重建严格位于任务运行时根的 MACE 环境；安装 `mace-torch==0.3.16` 与本项目后执行 `pip check`、MACE/e3nn/torch 版本导入检查并保存 freeze。预期与 MatterSim 环境完全隔离，缺少审计 wheel或任一依赖时立即失败。检查 Bash 语法、路径安全、无网络索引、版本 pin、完整回归和 whitespace。
+
+实际结果：Bash 语法通过；静态检查确认安装前完整 SHA-256 校验、强制 no-index/find-links、binary-only MACE pin、安全 `venv --clear`、`pip check`、版本导入与 `mace-freeze.txt`；16 项 pytest 和 Python 编译通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交，待服务器 wheelhouse 完整后运行。
