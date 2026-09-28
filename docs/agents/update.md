@@ -18,6 +18,7 @@
 - 2026-09-28：Vlab 主动关闭纯 `ssh -N` keeper 55766；补充经验并改用每 20 秒产生远端心跳的 keeper，随后继续监控 setup 493。
 - 2026-09-28：setup 493 已确认在新 keeper 启动前因 atomate2 wheel 哈希不符失败；带 20 秒心跳的 keeper 72062 正常，准备在其存活期间重新提交。
 - 2026-09-28：心跳 keeper 72062 下的 Slurm 网络探针 `494` 通过；任务 cache 无 atomate2 残留，已提交 MatterSim setup 作业 `495`。
+- 2026-09-28：Vlab 再次重置带应用层心跳的 keeper 72062；停止通过反向 SOCKS 承载长 pip 下载，切换到本地 binary wheelhouse、哈希清单、scp 与 Slurm 离线安装流程。
 - 2026-09-28：开始诊断启用 `RemoteForward 127.0.0.1:1080` 后 `ssh Guqq` 无法连接的问题，优先检查远端端口占用与 `ExitOnForwardFailure yes` 的组合影响。
 - 2026-09-28：定位 Guqq 连接失败为远端 `127.0.0.1:1080` 端口冲突；详细日志显示跳板机和 Guqq 认证成功后才出现 `remote port forwarding failed for listen port 1080`。禁用新转发的对照连接成功，确认问题不在网络、ProxyJump 或密钥。
 - 2026-09-28：开始修改 `AGENTS.md` 中的 Guqq 网络流程，将强制 `bash net.sh` 与 3 分钟等待替换为仅在 SSH 会话期间存活的本地反向 SOCKS 代理。

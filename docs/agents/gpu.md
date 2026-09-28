@@ -31,3 +31,4 @@
 - 2026-09-28：纯 `ssh -N` keeper 会话 55766 已被 Vlab 主动关闭。计划新建带 20 秒远端应用层心跳的 1081 keeper；随后建立管理连接，仓库存在时首先代理 pull，再查看 `493` 的普通 squeue/scontrol/日志。若 493 已失败，则在心跳 keeper 下重提 setup；不在登录节点运行安装或推理。
 - 2026-09-28：心跳 keeper 会话 72062 已稳定输出；确认 `493` 在其启动前已因旧代理断开导致 atomate2 wheel 哈希不匹配而失败。计划下一管理连接首先代理 pull，再复跑固定网络探针并重提 MatterSim setup；全程保持 72062 心跳并继续由 pip 哈希校验保护环境。
 - 2026-09-28：心跳 keeper 72062 下的网络探针 `494` 已通过，MatterSim setup 作业 `495` 已提交。计划下一管理连接首先代理 pull，再用普通 `squeue -j 495`、`scontrol show job 495` 和日志监控；保持心跳 keeper，不在登录节点运行安装或推理。
+- 2026-09-28：Vlab 再次重置带 20 秒心跳的 keeper 72062，确认反向 SOCKS 不适合长依赖下载。计划启动仅用于短时同步的新 1081 连接：仓库存在，首先代理 pull，再检查 495 状态/日志；随后不再经服务器网络下载依赖，改为本地生成并校验 Linux cp310 binary wheelhouse，经 scp 放入 `/dev/shm/xmz-recursive/wheelhouse`，最终由 Slurm 离线安装。

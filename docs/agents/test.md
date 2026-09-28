@@ -307,3 +307,5 @@ Slurm 实际结果：网络探针作业 `490` 在 `node221` 成功，输出显�
 作业 `493` 结果：`FAILED (ExitCode=1:0)`，运行 1 分 50 秒；日志中的 atomate2 wheel 哈希不匹配发生在心跳 keeper 72062 启动之前，pip 未安装该损坏文件。72062 已连续输出应用层心跳，下一轮才是新 keeper 方案的有效验证。
 
 心跳 keeper 实际重试：定向 cache 检查未发现 atomate2 残留；网络探针作业 `494` 在 node221 成功并返回预期公网出口，随后提交 setup 作业 `495`。最终状态待监控。
+
+keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长依赖下载的稳定性要求。按 `lessons.md` 停止代理长下载；下一实现单元验证目标平台 wheelhouse 完整解析、仅含 wheels、哈希清单一致和 Slurm offline install。

@@ -22,3 +22,5 @@
 - 安全约束：登录节点安装依赖时使用 `--only-binary=:all:`；若缺少 wheel，停止并转交 Slurm，不能在登录节点隐式源码编译。
 
 补充：Vlab 会主动关闭纯 `ssh -N` 空闲 keeper，SSH protocol keepalive 不足以保证长下载期间代理存活。需要在远端运行轻量应用层心跳，或改用本地下载后 scp；不能仅凭本地 ssh 进程存在推断代理会持续可用。
+
+再次验证表明，20 秒应用层心跳也不能阻止 Vlab 在数分钟后重置长连接。因此反向 SOCKS 只适合短时 Git/元数据访问，不用于多 GiB 依赖下载。长下载改为本地构建目标平台 binary wheelhouse、生成哈希清单，再通过 scp 传入任务 tmpfs，由 Slurm 离线安装。
