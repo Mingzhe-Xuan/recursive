@@ -6,6 +6,10 @@
 
 实际结果：`origin` 为用户提供的 URL，远端默认分支为 `main`；修改前 `git status -sb` 为 `main...origin/main` 且工作区干净。`git diff --check` 无 whitespace 错误（仅提示 Windows 下未来可能转换 LF/CRLF），四份进度文档未发现 Unicode replacement character。检查通过。
 
+## 2026-09-28：服务器首次同步检查（结果）
+
+连接 `Guqq` 后第一项远端操作为 `git -C ~/recursive pull`；命令返回 `No such file or directory`，证明服务器尚无该工作树。未在本次连接执行其他命令或任何计算任务。后续按记录先重试 pull，再 clone。
+
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
 检查范围：Markdown 标题结构、LaTeX display delimiters、代码围栏、UTF-8 内容和已删除章节关键词。
