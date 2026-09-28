@@ -7,6 +7,7 @@
 - 2026-09-28：完成 `Host Guqq` 反向 SOCKS 配置。`ssh -G Guqq` 确认动态 `RemoteForward` 和会话参数生效；本地与 Guqq 代理出口均为 `3.1.58.103`；会话退出后在禁用新转发的检查连接中确认 `127.0.0.1:1080` 拒绝连接。Guqq 上 `~/recursive` 当前不存在，因此每次连接的首项 `git pull` 已尝试但无法执行。
 - 2026-09-28：用户确认网络已重新配置；重新完整读取更新后的 `AGENTS.md`，停止旧的 `net.sh`/等待流程，准备使用会话级 SOCKS 恢复服务器工作树并继续 Slurm 验收。
 - 2026-09-28：通过会话级 SOCKS 成功将 Guqq `~/recursive` 快进到 `b41299f`，仓库根目录、HEAD 和 remote 均验证通过；确认 Python 3.10.12、RTX 5090 与 `compute` 分区。根分区仅余约 2.6 GiB，环境安装前先检查安全存储位置。
+- 2026-09-28：后续存储检查连接因 Guqq 的 1080 监听冲突在远端命令前终止；本地 `Get-Process ssh` 未发现残留会话，配置仍为动态 `RemoteForward 127.0.0.1:1080` 与 `ExitOnForwardFailure yes`。进入只读端口归属诊断。
 
 - 2026-09-28：按用户要求在当前工作目录初始化 Git 仓库，默认分支为 `main`；尚未执行 add、commit 或配置 remote。真实 Slurm 推理仍需正确的远程仓库地址完成服务器同步。
 - 2026-09-28：用户提供并确认 `https://github.com/Mingzhe-Xuan/recursive.git`；远端 `main` 已存在且包含当前实现，本地分支与其同步。开始服务器环境与三个真实 backbone 的 Slurm K=0/K=1 验收。
