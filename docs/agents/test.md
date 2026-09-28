@@ -265,3 +265,5 @@
 MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near unexpected token mattersim.__version__`；由于 shell 在执行前即拒绝整行，没有创建环境或安装包。本次不计作环境成功，下一次以不含内联 Python 的命令重试。
 
 第二次尝试成功执行 Git pull 和创建 venv，但 pip 报 `Missing dependencies for SOCKS support`，在解析/下载 MatterSim 之前停止。MatterSim 仍未安装；下一次先通过 curl 下载并离线安装纯 Python PySocks wheel，再继续验证。
+
+第三次尝试已从官方 PyPI 文件地址下载并成功安装 `PySocks==1.7.1`；随后 SSH 命令在下载非必要的 pip 升级包时提前结束，未开始 MatterSim 安装。该尝试不计作环境成功；经验已记录到 `lessons.md`，下一次跳过安装器升级。
