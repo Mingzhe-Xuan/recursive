@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 服务器 wheelhouse 已完成 35/144；作业 501 因前置 HEAD 单次连接超时、尚未进入下载循环，当前给探针增加有限重试后重提。MACE 的独立本地 wheelhouse也已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；其中 python-hostlist 为审计后单独构建的纯 Python wheel。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 服务器 wheelhouse 已完成 35/144；带前置探针有限重试和慢速下载重试的 12 小时作业 `502` 已提交到 node221。MACE 的独立本地 wheelhouse也已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；其中 python-hostlist 为审计后单独构建的纯 Python wheel。
 
 # 当前计划
 
@@ -45,6 +45,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：作业 500 在 35/144 的 h5py 因过严低速阈值失败；按 lessons 调整为慢速直连阈值和长有限重试。MACE 本地 wheelhouse 已完成 49 项离线解析/哈希验收，python-hostlist 纯 Python sdist 已单独审计构建。
 - 2026-09-28：下载重试调整已同步，MatterSim 12 小时续传作业 `501` 已提交到 node221；下一步监控 35/144 之后的续传和最终哈希。
 - 2026-09-28：作业 501 在前置 HEAD 的单次 15 秒连接超时处失败，未改变 wheelhouse；下一步为探针增加最多 10 分钟有限重试并重提。
+- 2026-09-28：探针重试补丁已同步，MatterSim 下载重提为作业 `502`；下一步确认其通过探针并从 h5py 残片继续。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
