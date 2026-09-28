@@ -14,6 +14,7 @@
 - 2026-09-28：隐藏 1081 keeper 已启动并验证登录节点代理；inline `sbatch --wrap` 因多层引号拆分失败，未产生作业。新增固定 runtime probe sbatch，下一次按文件提交。
 - 2026-09-28：固定 Slurm 网络探针 `490` 在 node221 通过，公网出口为 `47.130.251.126`，tmpfs 约 126 GiB；随后提交 MatterSim 环境安装作业 `491`。
 - 2026-09-28：MatterSim setup 作业 `491` 失败：keeper 退出后 wandb wheel 下载哈希不符，pip 拒绝安装；旧 keeper 已退出。将用可轮询前台 keeper 和定向 cache 清理重试。
+- 2026-09-28：启动可轮询前台 keeper 会话 55766；网络复验作业 `492` 通过，任务 cache 无 wandb 残留，已提交 MatterSim setup 重试作业 `493`。
 - 2026-09-28：开始诊断启用 `RemoteForward 127.0.0.1:1080` 后 `ssh Guqq` 无法连接的问题，优先检查远端端口占用与 `ExitOnForwardFailure yes` 的组合影响。
 - 2026-09-28：定位 Guqq 连接失败为远端 `127.0.0.1:1080` 端口冲突；详细日志显示跳板机和 Guqq 认证成功后才出现 `remote port forwarding failed for listen port 1080`。禁用新转发的对照连接成功，确认问题不在网络、ProxyJump 或密钥。
 - 2026-09-28：开始修改 `AGENTS.md` 中的 Guqq 网络流程，将强制 `bash net.sh` 与 3 分钟等待替换为仅在 SSH 会话期间存活的本地反向 SOCKS 代理。
