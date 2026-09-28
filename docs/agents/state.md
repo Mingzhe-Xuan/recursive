@@ -1,13 +1,13 @@
 # 当前状态
 
-Goal 1 的通用递归核心、MatterSim M3GNet wrapper 和 MACE-MP-0 small L=0 wrapper 已完成本地实现。norm alignment 已覆盖同一 irrep 类型的多个不连续 packed 段并共享 gamma；当前 13 项测试通过。MatterSim/MACE 的真实 checkpoint 验收脚本和 Slurm 文件已准备。工作区仍不是 Git 仓库；服务器没有对应的 `recursive` 工作树，推测的 `Mingzhe-Xuan/recursive` 远端不存在，因此在取得正确 GitHub remote URL 前无法按规范同步和提交真实推理作业。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现。norm alignment 覆盖同一 irrep 类型的多个不连续 packed 段并共享 gamma；当前 16 项测试通过。工作区已关联 `https://github.com/Mingzhe-Xuan/recursive.git`，本地 `main` 与 `origin/main` 同步且工作区干净。三个真实 checkpoint 的验收脚本和 Slurm 文件均已准备，正在进入服务器同步、隔离环境创建和 K=0/K=1 GPU 验收阶段。
 
 # 当前计划
 
-1. 从用户处取得正确 Git remote URL；初始化/关联本地仓库并推送，服务器 clone 或 `git pull` 后创建可复现虚拟环境，通过 Slurm 跑 MatterSim K=0/K=1。
-2. 下载并记录 Matbench phonons 数据 manifest/checksum，准备 frozen readout pilot。
-3. 审计并实现 DPA-2 wrapper 及对应测试，不以 mock 或前两个模型替代完整目标。
-4. 依次完成论文任务的 depth scan、验证集选择与结果记录。
+1. 在服务器首先执行 `git pull`；若项目工作树尚不存在，则 clone 已确认的 remote。
+2. 创建并记录三个任务专用虚拟环境，下载官方 checkpoint，通过 Slurm 依次跑 MatterSim、MACE、DPA-2 的 K=0/K=1。
+3. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
+4. 随后下载论文对齐数据集并进入递增 depth scan。
 
 # 变更记录
 
@@ -32,3 +32,4 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-09-28：进入 DPA-2 实现单元；已根据 DeePMD-kit `2024Q1` 官方源码确定 Repformer 前处理、层调用和 `_cal_h2g2` 输出路径，先完成本地回归测试，再通过 Git/Slurm 运行真实 checkpoint。
 - 2026-09-28：完成 DPA-2 Repformer 实现、fake K=0/K=1 回归、真实 OpenLAM 验收脚本和 Slurm 入口；全套 16 项测试通过。下一步是在取得正确 Git remote URL 后依次提交 MatterSim、MACE、DPA-2 的真实 GPU 作业。
 - 2026-09-28：按用户要求在工作区执行 `git init -b main`，仓库根目录确认为当前项目目录；未暂存、未提交、未配置 remote。
+- 2026-09-28：用户确认 remote 为 `https://github.com/Mingzhe-Xuan/recursive.git`；已验证远端 `main` 存在、本地分支正在跟踪且工作区干净，进入服务器 Slurm 验收阶段。

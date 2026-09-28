@@ -1,5 +1,11 @@
 # 检查记录
 
+## 2026-09-28：远端关联与服务器连接记录（计划）
+
+检查范围：确认 `origin` URL、远端默认分支、远端历史和本地工作区同步状态；检查本次只修改的进度文档路径、UTF-8 和 Git whitespace。预期结果：本地 `main` 跟踪 `origin/main` 且无实现差异，服务器连接用途在连接前完成记录。
+
+实际结果：`origin` 为用户提供的 URL，远端默认分支为 `main`；修改前 `git status -sb` 为 `main...origin/main` 且工作区干净。`git diff --check` 无 whitespace 错误（仅提示 Windows 下未来可能转换 LF/CRLF），四份进度文档未发现 Unicode replacement character。检查通过。
+
 ## 2026-09-23：`docs/plan/plan_1.md` 数学定义修订
 
 检查范围：Markdown 标题结构、LaTeX display delimiters、代码围栏、UTF-8 内容和已删除章节关键词。

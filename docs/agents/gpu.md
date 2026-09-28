@@ -6,3 +6,4 @@
 - 2026-09-28：网络恢复流程完成后新建轻量检查连接；先在默认目录执行 `git pull`，再只读查找 home 下的 Git 工作树并查看 `sinfo`，以确定代码同步位置和可用 Slurm 分区。
 - 2026-09-28：新建仓库身份核对连接；先执行 `git pull`，再只读查看候选仓库的 remote、分支和顶层文件，确认是否存在与本地 `recursive` 对应的工作树，不作服务器源码修改。
 - 2026-09-28：重试仓库身份核对；上次命令被本地 PowerShell 提前展开远端循环变量，本次改用受保护的远端 shell 字符串。仍先执行 `git pull`，随后只读查询，不修改服务器文件。
+- 2026-09-28：计划连接 `Guqq` 同步已确认的 `https://github.com/Mingzhe-Xuan/recursive.git`。连接后的第一项远端操作为对 `~/recursive` 执行 `git pull`；若工作树尚不存在，则随后 clone。之后仅创建任务专用虚拟环境、下载官方 checkpoint，并通过 Slurm 提交 MatterSim、MACE、DPA-2 的 K=0/K=1 验收，禁止在登录节点运行模型推理。
