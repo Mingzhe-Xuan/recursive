@@ -397,3 +397,5 @@ MACE 实际结果：首次 binary-only 解析严格失败在没有 PyPI wheel �
 新增独立 `setup_mace_env.sbatch`：只接受显式 wheelhouse，强制 `PIP_NO_INDEX`/`--no-index --find-links` 和 binary-only 安装；可安全 `venv --clear` 重建严格位于任务运行时根的 MACE 环境；安装 `mace-torch==0.3.16` 与本项目后执行 `pip check`、MACE/e3nn/torch 版本导入检查并保存 freeze。预期与 MatterSim 环境完全隔离，缺少审计 wheel或任一依赖时立即失败。检查 Bash 语法、路径安全、无网络索引、版本 pin、完整回归和 whitespace。
 
 实际结果：Bash 语法通过；静态检查确认安装前完整 SHA-256 校验、强制 no-index/find-links、binary-only MACE pin、安全 `venv --clear`、`pip check`、版本导入与 `mace-freeze.txt`；16 项 pytest 和 Python 编译通过（仅现有 cache warning）；`git diff --check` 通过（仅 LF/CRLF 提示）。可以提交，待服务器 wheelhouse 完整后运行。
+
+MACE 控制文件 staging 计划：服务器连接先 pull，再创建任务 tmpfs 目录；只传 48 项官方 URL 清单、49 项总哈希清单和 39 KiB 审计 wheel。传输后核对清单行数和审计 wheel SHA-256；不提交 MACE 下载作业，保持 MatterSim 502 独占计算节点公网。
