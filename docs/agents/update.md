@@ -1,5 +1,6 @@
 # 进度更新
 
+- 2026-09-28：按用户要求在当前工作目录初始化 Git 仓库，默认分支为 `main`；尚未执行 add、commit 或配置 remote。真实 Slurm 推理仍需正确的远程仓库地址完成服务器同步。
 - 2026-09-28：完成 DeePMD-kit `2024Q1` DPA-2 Repformer 递归封装、3 项 fake-model 回归测试、OpenLAM `Domains_SSE-PBE` 真实 K=0/K=1 验收脚本、Slurm 提交文件和环境约束记录；测试总数增至 16，全部通过。真实作业继续等待正确 Git remote URL 后同步到服务器。
 
 - 2026-09-23：开始修改 `docs/plan/plan_1.md`，目标是严格定义递归计算过程，并删除原第 10、11 节。
