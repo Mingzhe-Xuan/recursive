@@ -297,3 +297,5 @@ MatterSim 环境首次创建尝试在 shell 解析阶段报 `syntax error near u
 固定探针检查结果：16 项单元测试通过（仅 pytest cache warning）；probe/setup 两个 sbatch 的 `bash -n` 通过；探针明确请求一张 GPU、验证 `/dev/shm` 可写、要求显式代理端口并对公网请求设置 15 秒上限；`git diff --check` 通过。可以按文件提交。
 
 Slurm 实际结果：网络探针作业 `490` 在 `node221` 成功，输出显示 `/dev/shm` 可写、约 126 GiB，并经 1081 返回公网出口 `47.130.251.126`。探针通过后提交环境安装作业 `491`；其最终状态和日志待监控。
+
+作业 `491` 结果：失败。日志显示 keeper 退出后 `wandb-0.30.0` wheel 实际 SHA-256 与 PyPI 声明不一致，pip 在安装前拒绝该文件；未把损坏包写入环境。集群 `sacct` storage 未启用，且当前 `squeue` 不接受自定义格式参数；后续使用普通 `squeue -j`、`scontrol show job` 和作业日志验收。

@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。Slurm 网络探针 `490` 已确认 node221 可通过 keeper 1081 联网，且 `/dev/shm` 可写、约有 126 GiB。MatterSim 环境安装作业 `491` 已提交，正在由 Slurm 执行；环境与缓存均位于 `/dev/shm/xmz-recursive`，未清理或写入现有用户缓存。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。Slurm 网络探针 `490` 已通过。MatterSim setup 作业 `491` 因本地 keeper 中途退出导致 wandb wheel 哈希不匹配而失败；pip 正确拒绝安装损坏包。下一步改用当前工具会话持续持有的前台 1081 keeper，清除任务 tmpfs 中仅 wandb 的损坏缓存后重提 setup。
 
 # 当前计划
 
@@ -24,6 +24,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-28：短 SSH 会话中的长 pip 安装再次提前结束，MatterSim 仍未完成安装。策略调整为本地隐藏 SSH keeper 持续提供回环 1081，并先由 Slurm 网络探针验证路径，再通过专用 setup 作业安装环境；避免登录节点长任务和会话生命周期耦合。
 - 2026-09-28：隐藏 1081 keeper 已运行且登录节点代理正常；inline Slurm 探针因跨 shell 引号拆分未提交，setup 也未提交。下一步改用仓库内固定 probe sbatch 文件，消除命令行 quoting 风险。
 - 2026-09-28：固定 Slurm 网络探针 `490` 成功，确认计算作业的 1081 网络路径；已提交 MatterSim 环境安装作业 `491`。下一步监控该作业并在成功后提交真实推理。
+- 2026-09-28：MatterSim setup `491` 因 keeper 退出导致 wandb wheel 哈希校验失败；未安装损坏内容。下一步由可轮询前台 keeper 保持代理，定向清除任务 cache 的 wandb 条目后重试。
 - 2026-09-28：进入 Guqq SSH 连接故障诊断阶段；用户报告配置反向 SOCKS 后无法连接。下一步是复现连接并根据详细 SSH 日志定位失败阶段。
 - 2026-09-28：完成 Guqq SSH 连接故障诊断；ProxyJump 和两层公钥认证均成功，失败原因是 Guqq `127.0.0.1:1080` 已被其他会话占用，且 `ExitOnForwardFailure yes` 导致新 SSH 整体退出。对照连接确认该监听已失去代理能力，本机无残留 `ssh.exe` 进程；未终止任何可能属于用户的远端会话。
 - 2026-09-28：进入 SSH 会话级反向 SOCKS 转发配置阶段；用户要求每次 `ssh Guqq` 自动转发、断开后自动停止，并明确跳过 `net.sh` 和 180 秒等待。下一步是备份并最小化修改本地 SSH 配置，然后执行连接生命周期测试。
