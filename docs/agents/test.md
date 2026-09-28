@@ -309,3 +309,27 @@ Slurm 实际结果：网络探针作业 `490` 在 `node221` 成功，输出显�
 心跳 keeper 实际重试：定向 cache 检查未发现 atomate2 残留；网络探针作业 `494` 在 node221 成功并返回预期公网出口，随后提交 setup 作业 `495`。最终状态待监控。
 
 keeper 72062 后续仍被 Vlab `Connection reset`，应用层心跳未满足长依赖下载的稳定性要求。按 `lessons.md` 停止代理长下载；下一实现单元验证目标平台 wheelhouse 完整解析、仅含 wheels、哈希清单一致和 Slurm offline install。
+
+作业 `495` 最终结果：`FAILED (ExitCode=1:0)`。代理 keeper 中断后，pip 下载的 torch 2.14.0（约 554.6 MiB）wheel 实际 SHA-256 与索引声明不一致，pip 在安装前拒绝该文件；未把损坏内容安装到环境。短时 keeper 已停止。
+
+## 2026-09-28：MatterSim 离线 wheelhouse（计划）
+
+检查范围与预期结果：
+
+- setup sbatch 支持 `RECURSIVE_WHEELHOUSE`，离线分支强制 `--no-index --find-links`，不执行公网探针；
+- 本地为 Linux x86_64 / CPython 3.10 解析 `mattersim==1.2.3` 的完整 binary-only 依赖闭包，并额外包含 PySocks、setuptools 和 wheel；
+- wheelhouse 只包含 wheel 与 SHA-256 清单，清单在 scp 前后校验一致；
+- Slurm 通过 `venv --clear` 重建任务专用环境，离线安装失败时立即退出，成功时执行 `pip check`、导入版本检查并保存 `pip freeze`；
+- 任一 wheel 缺失、哈希不符或依赖不完整都必须使流程失败，不允许回退到源码构建或网络索引。
+
+实际结果：
+
+- `bash -n scripts/slurm/setup_mattersim_env.sbatch`：通过；
+- `python -m pytest -q`：16 项通过，仅有现有 `.pytest_cache` 写权限 warning；
+- `python -m compileall -q src tests scripts` 与 `git diff --check`：通过，后者仅提示 Windows LF/CRLF 转换；
+- `uv run pytest -q` 在同步阶段按预期拒绝把三个隔离 extra 合并到同一环境：MatterSim 要求 `e3nn>=0.5.0`，固定的 MACE 0.3.16 要求 `e3nn==0.4.4`；因此正式验收继续使用三个隔离 venv，本地回归使用现有测试环境；
+- `pip download` 为 Linux x86_64 / CPython 3.10 解析得到 144 个 wheel，共 772,031,965 bytes（736.27 MiB），目录中不存在 sdist；
+- 使用相同目标平台参数执行 `pip install --dry-run --ignore-installed --no-index --find-links ... --only-binary=:all:` 成功，证明离线依赖闭包完整；
+- `SHA256SUMS` 含 144 项，逐文件重新计算结果为 144/144 一致。
+
+结论：本地 wheelhouse 和离线 setup 脚本通过提交前检查，可以进入 Git 同步、scp 与 Slurm 实装阶段。

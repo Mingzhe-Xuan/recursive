@@ -47,4 +47,6 @@
 - 该目录是节点本地 tmpfs，不视为持久存储。环境和 checkpoint 必须可由文档中的命令重建；小型 JSON/日志结果仍写回项目 `results/` 并由 scp 拉回本地；
 - sbatch 允许通过 `RECURSIVE_RUNTIME_ROOT` 覆盖默认值，但提交前必须验证目标计算节点可见同一路径。
 
-MatterSim 环境由 `scripts/slurm/setup_mattersim_env.sbatch` 创建。提交时显式设置 `RECURSIVE_PROXY_PORT`；作业先通过 SOCKS curl 验证计算节点网络路径，再安装依赖。若网络探针失败，作业必须在改动环境前退出。
+MatterSim 环境由 `scripts/slurm/setup_mattersim_env.sbatch` 创建。在线模式显式设置 `RECURSIVE_PROXY_PORT`，先通过 SOCKS curl 验证计算节点网络路径；离线模式显式设置 `RECURSIVE_WHEELHOUSE=/dev/shm/xmz-recursive/wheelhouse/mattersim`，并通过 `PIP_NO_INDEX=1`、`--no-index --find-links` 禁止访问索引。正式安装使用离线模式和 `RECURSIVE_RECREATE_ENV=1`，以 `venv --clear` 重建任务专用环境；wheelhouse 必须包含 MatterSim 依赖闭包、`PySocks==1.7.1`、`setuptools>=69` 和 `wheel`。安装成功后将完整 `pip freeze` 写入 `/dev/shm/xmz-recursive/manifests/mattersim-freeze.txt`。
+
+本地解析结果：以 Linux x86_64、CPython 3.10、ABI `cp310` 和 binary-only 约束解析出 144 个 wheel（772,031,965 bytes）。核心选择包括 `mattersim==1.2.3`、`torch==2.14.0`、`e3nn==0.6.0`、`numpy==2.2.6`、`setuptools==84.0.0`、`wheel==0.48.0` 和 `PySocks==1.7.1`；完整版本以后续服务器生成的 `mattersim-freeze.txt` 为准。本地 `--no-index` dry-run 与 `SHA256SUMS` 144/144 校验均通过。

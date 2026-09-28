@@ -51,3 +51,5 @@
 - 2026-09-28：按网络故障流程在 Guqq 运行 `net.sh` 并等待 3 分钟；确认 Slurm `compute` 分区可用。服务器没有 `recursive` 工作树，本地没有 Git 元数据，且 `Mingzhe-Xuan/recursive` 不存在；真实推理因缺少正确 Git remote URL 暂不能合规同步。
 - 2026-09-28：修正 norm alignment：同一状态内所有相同 `(ell, parity)` packed 段现在联合计算 RMS 并严格共享 gamma；新增回归测试。
 - 2026-09-28：完成 MACE-MP-0 small L=0 wrapper、fake K=0/K=1 测试、真实 checkpoint 验收脚本与 Slurm 文件。测试总数增至 13，全部通过。
+- 2026-09-28：确认 MatterSim setup `495` 因代理中断导致 torch wheel 哈希不匹配而失败，pip 未安装损坏内容；停止短时 keeper。setup 脚本开始接入完整 wheelhouse、强制离线索引、安全重建 venv 和 freeze 清单，下一步在本地解析 Linux cp310 binary 依赖闭包。
+- 2026-09-28：完成 MatterSim 离线安装实现与本地验收：setup 支持强制离线 wheelhouse 和安全重建 venv；Linux x86_64 / CPython 3.10 依赖闭包为 144 个 wheel、736.27 MiB，离线 dry-run 和 SHA-256 144/144 通过；16 项回归、编译、Bash 语法与 whitespace 检查通过。
