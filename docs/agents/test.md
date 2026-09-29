@@ -421,3 +421,5 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 ## 2026-09-29：作业 507 续监控连接记录（实际）
 
 仅修改服务器连接用途文档。`git diff --check -- docs/agents/gpu.md` 通过（仅现有 LF/CRLF 转换提示）；记录明确要求登录后先执行显式 1080 代理的 `git pull`，随后只读监控 507，不并发启动 MACE 下载或登录节点计算。
+
+作业实测记录检查：`squeue` 与 `scontrol` 一致显示 507 在 node221 为 RUNNING、`TimeLimit=12:00:00`；文件检查显示 125 个完整 wheel 和 343,851,008-byte 的 `torch-2.14.0` 残片。更新 `gpu.md`、`state.md`、`update.md` 后，定向 `git diff --check` 通过（仅现有 LF/CRLF 转换提示）。

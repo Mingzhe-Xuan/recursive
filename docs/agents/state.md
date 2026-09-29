@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 服务器 wheelhouse 已完成 125/144；断点作业 `507` 已确认在 node221 以 12 小时时限运行，前置探针通过，torch 残片从 0 增长到 13,242,368 bytes。MACE 的独立本地 wheelhouse 已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；服务器已 staging 清单与审计 wheel。跨 wheelhouse 哈希播种脚本已完成本地验收。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，16 项测试通过。MatterSim 服务器 wheelhouse 已完成 125/144；断点作业 `507` 已确认在 node221 以 12 小时时限运行，前置探针通过，`torch-2.14.0` 残片已增长到 343,851,008 bytes。MACE 的独立本地 wheelhouse 已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；服务器已 staging 清单与审计 wheel。跨 wheelhouse 哈希播种脚本已完成本地验收。
 
 # 当前计划
 
@@ -15,6 +15,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 - 2026-09-29：MatterSim 下载作业 502 已退出队列，wheelhouse 停在 125/144；torch 的 0 字节 `.partial` 与连续连接超时表明计算节点公网中断，已完成 wheel 未受影响。下一步核对最终状态并在无重复作业时原地断点重提，不删除任何已有文件。
 - 2026-09-29：确认队列无重复下载作业后，MatterSim wheelhouse 已在 node221 断点重提为作业 507；集群禁用 Slurm accounting，因此以普通队列、固定日志和文件校验验收。下一步核对 507 实际时限与续传位置。
 - 2026-09-29：作业 507 已确认 node221、12 小时时限，PyPI 探针通过，torch 残片由 0 增长至 13,242,368 bytes；断点续传正常。下一步继续只读监控直至 144/144，不并发 MACE 下载。
+- 2026-09-29：作业 507 运行 1 小时 31 分时仍为 RUNNING，完整 wheel 保持 125/144；清单中的 `torch-2.14.0-cp310-cp310-manylinux_2_28_x86_64.whl.partial` 已增长至 343,851,008 bytes，续传持续推进。下一步等待该作业完成后执行完整 SHA-256 校验；仍不并发启动 MACE 下载。
 - 2026-09-28：MatterSim checkpoint 任务目录下载实现完成；node-local Slurm 入口支持 `.partial` 续传、原子落盘和大小/SHA-256 输出，K=0/K=1 只读取显式 tmpfs 文件。下一步随环境安装一起同步并在 node221 真实执行。
 - 2026-09-28：跨 wheelhouse 哈希播种实现完成本地验收；脚本只为目标清单中源文件哈希精确匹配的缺失 wheel 创建硬链接，并拒绝覆盖错误目标。下一步提交推送并继续监控 MatterSim 502，完成后先离线安装 MatterSim，再用该脚本减少 MACE 重复下载。
 
