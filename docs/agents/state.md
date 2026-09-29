@@ -12,6 +12,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 
 # 变更记录
 
+- 2026-09-29：错误作业 510 已在未运行时取消并退出队列；1080 pull 再次因本机直连 GitHub 路径失败。下一步以 Guqq 回环 1082 临时映射本机已验证的 7897 HTTP 代理恢复 pull，静态转发随单次 SSH 会话回收。
 - 2026-09-29：服务器首次同步 162 项清单时代理 pull 失败，且命令条件边界错误导致提交了使用旧 144 项清单的作业 510；发现时作业仍为 PENDING。下一步先登记并连接取消 510，确认无错误下载作业后再恢复 Git 同步，保留全部既有 wheel。
 - 2026-09-29：完成 MatterSim PyTorch 2.8.0/CUDA 12.8 闭包修复；setup 显式固定四项顶层版本并在安装后精确断言，本地 162/162 wheel 哈希、Linux/CPython 3.10 binary-only 离线解析、22 项回归、Python 编译与 Bash/whitespace 检查通过。下一步提交推送，再由服务器 pull 并通过 Slurm 增量下载新增 18 项 wheel。
 - 2026-09-29：将 MatterSim 162 项 wheel URL/SHA-256 清单纳入 `data/manifests` 版本管理；二进制 wheel 仍保持忽略。清单计数、唯一性、安全路径、官方 PyPI 域、集合一致性和 162 项本地哈希均通过，服务器现在可在 pull 后直接 staging 到任务 tmpfs。
