@@ -1,5 +1,12 @@
 # 经验教训
 
+## 2026-09-29：Windows Git 应复用已启用的回环代理
+
+- 现象：浏览器网络已恢复，但 Git/curl 直连 `github.com:443` 仍连续出现连接重置、空响应和连接超时；Windows Internet Settings 实际启用了 `127.0.0.1:7897`，WinHTTP 与进程环境变量则仍显示直连。
+- 判断：系统浏览器代理、WinHTTP 和命令行环境是三套独立配置，不能从浏览器可联网推断 Git 直连可用。SSH 备用路径也必须先核对官方主机指纹；本次端口 22 返回的 ED25519 指纹不匹配，因此不得接受或写入 `known_hosts`。
+- 处理：先只读检查 Internet Settings，再对单次 Git 命令显式设置 `http.proxy`/`https.proxy` 为已启用的回环代理；HTTPS 证书验证保持开启。推送成功后不修改仓库 remote 或全局 Git 配置。
+- 安全约束：代理只使用本机回环地址；未知或不匹配的 SSH 主机密钥一律拒绝，不能为绕过网络故障使用 `StrictHostKeyChecking=no` 或关闭 TLS 校验。
+
 ## 2026-09-28：Windows 环境直连 arXiv PDF 不稳定
 
 - 现象：`Invoke-WebRequest` 可能长时间占用目标文件却留下 0 字节文件；切换到 `export.arxiv.org` 后仍可能发生文件锁；`curl.exe` 可能因 Schannel TLS 握手失败或极低速传输而中断。
