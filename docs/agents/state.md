@@ -13,6 +13,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 # 变更记录
 
 - 2026-09-29：完成 MatterSim PyTorch 2.8.0/CUDA 12.8 闭包修复；setup 显式固定四项顶层版本并在安装后精确断言，本地 162/162 wheel 哈希、Linux/CPython 3.10 binary-only 离线解析、22 项回归、Python 编译与 Bash/whitespace 检查通过。下一步提交推送，再由服务器 pull 并通过 Slurm 增量下载新增 18 项 wheel。
+- 2026-09-29：将 MatterSim 162 项 wheel URL/SHA-256 清单纳入 `data/manifests` 版本管理；二进制 wheel 仍保持忽略。清单计数、唯一性、安全路径、官方 PyPI 域、集合一致性和 162 项本地哈希均通过，服务器现在可在 pull 后直接 staging 到任务 tmpfs。
 - 2026-09-29：进入论文数据 manifest 与下载器实现单元；先落地 MatterSim 的官方 `matbench_phonons` 来源和哈希，再以本地 HTTP 测试验证断点续传、原子落盘和错误保护。下一步完成实现与测试后提交，实际数据待 MatterSim wheel 作业释放网络后下载到任务数据目录。
 - 2026-09-29：完成 `matbench_phonons` 官方 manifest 与通用标准库下载器；支持断点续传、Range 忽略时安全重启、SHA-256 门控和原子落盘，21 项测试及编译/格式/元数据检查通过。下一步提交推送；实际数据下载仍等待作业 507 释放 node221 网络，避免竞争。
 - 2026-09-29：进入 MACE PhononDB 97 材料 manifest 单元；作者仓库提交 `480bc92d…` 的论文图目录已确认恰含 97 个唯一 MP ID，PBE 摘要对 97 项全覆盖且超胞信息完整。下一步固化 MP↔Togo 映射、来源 artifact 哈希和官方 ZIP URL 模板，并执行一致性检查。

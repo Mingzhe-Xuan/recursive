@@ -1,6 +1,7 @@
 # 进度更新
 
 - 2026-09-29：提交 `7fd2670` 在 GitHub HTTPS 直连连续失败三次后，经 Windows 已启用的回环代理成功推送；拒绝了与 GitHub 官方值不匹配的 SSH 主机指纹，并将命令行代理与主机密钥安全经验写入 `lessons.md`。
+- 2026-09-29：补齐 MatterSim wheelhouse 的版本化交付：162 项官方 URL/SHA-256 清单和模块 README 已加入 `data/manifests`，完整一致性/哈希检查与 22 项回归通过；服务器可经 Git 同步清单，无需单独 scp。
 - 2026-09-29：完成 MatterSim Linux CUDA 闭包修复：显式固定 PyTorch 2.8.0 三件套与 CUDA 12.8，wheelhouse 扩展为 162 项；完整哈希、Linux/CPython 3.10 离线解析、22 项回归、编译与脚本静态检查通过。下一步推送后在 node221 增量下载新增 18 项并重跑离线 setup。
 - 2026-09-28：开始将 Guqq 反向 SOCKS 调整为多连接共享模式：保留固定 `127.0.0.1:1080`，关闭“转发失败即终止登录”，并同步更新操作规范。
 - 2026-09-28：完成 Guqq 多连接共享 SOCKS 调整：本地 SSH 配置现为 `ExitOnForwardFailure no`，后续连接遇到 1080 占用时仍可登录；`AGENTS.md` 已说明代理持有、复用与断开后重建流程。

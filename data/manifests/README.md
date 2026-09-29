@@ -19,3 +19,7 @@ Materials Project IDs represented in its MACE-MP0 PhononDB figure directory. It 
 verified summary/mapping artifacts and the official NIMS PhononDB download template. The 97 ZIP
 files have no published checksums; record their local SHA-256 values after the first server
 download rather than inventing pre-download hashes.
+
+`mattersim_wheelhouse_cp310_linux/` versions the 162-entry, binary-only Linux/CPython 3.10
+MatterSim dependency closure. It stores only official PyPI URLs and SHA-256 metadata; the wheel
+files remain ignored and live in the task runtime directory.
