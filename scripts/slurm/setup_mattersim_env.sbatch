@@ -72,10 +72,24 @@ fi
   "${PIP_SOURCE[@]}" "setuptools>=69" wheel
 "${ENV_DIR}/bin/python" -m pip install \
   "${PIP_SOURCE[@]}" \
-  --progress-bar off --timeout 120 --retries 5 --only-binary=:all: mattersim==1.2.3
+  --progress-bar off --timeout 120 --retries 5 --only-binary=:all: \
+  mattersim==1.2.3 torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0
 "${ENV_DIR}/bin/python" -m pip install \
   "${PIP_SOURCE[@]}" \
   --progress-bar off --no-build-isolation --no-deps -e "${PROJECT_DIR}"
 "${ENV_DIR}/bin/python" -m pip check
-"${ENV_DIR}/bin/python" -c "from importlib.metadata import version; import torch; print(version('mattersim')); print(torch.__version__)"
+"${ENV_DIR}/bin/python" - <<'PY'
+from importlib.metadata import version
+
+expected = {
+    "mattersim": "1.2.3",
+    "torch": "2.8.0",
+    "torchvision": "0.23.0",
+    "torchaudio": "2.8.0",
+}
+actual = {package: version(package) for package in expected}
+if actual != expected:
+    raise SystemExit(f"version mismatch: expected={expected}, actual={actual}")
+print(actual)
+PY
 "${ENV_DIR}/bin/python" -m pip freeze > "${RUNTIME_ROOT}/manifests/mattersim-freeze.txt"

@@ -435,3 +435,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 以 MACE-MP 论文关联的 `janosh/ffonons` 为一手实现来源，固定提交 `480bc92d6719962b584c98e8bce4ffa1c2d74031`。manifest 记录该提交中的摘要与 MP↔Togo 映射原始文件、精确 SHA-256、97 个论文图对应的唯一 MP ID→Togo ID 映射、PhononDB 官方下载 URL 模板、0.01 THz 虚频容差和评测字段。检查要求：映射恰为 97 且键值唯一；所有 97 项同时存在于 PBE 摘要且 supercell 非空；97 个 URL 均可由模板确定；两项 ffonons artifact 可被通用下载器解析；来源文件哈希、JSON 格式和 whitespace 通过。数据 ZIP 后续在服务器下载后补充逐文件本地 SHA-256，不在首次下载前虚构官方 checksum。
 
 实际结果：稀疏克隆的 ffonons 提交为 `480bc92d6719962b584c98e8bce4ffa1c2d74031`；论文图目录恰有 97 个唯一 MP ID，manifest 的 97 个键和 97 个唯一 Togo ID 与其完全一致。压缩摘要对 97 项均有 PBE 行且 supercell 全部非空；摘要和映射文件的实际 SHA-256 与 manifest 两项 artifact 完全一致。通用 loader 接受该 manifest，完整测试为 22 项通过（仅旧 `.pytest_cache` 不可写警告），Python 编译、100 字符行宽与 `git diff --check` 通过。
+
+## 2026-09-29：MatterSim Linux CUDA 闭包修复（计划）
+
+真实离线 setup 509 暴露本地 Windows 跨平台解析遗漏 Linux 条件依赖，并且自动选择的 torch 2.14.0 精确要求尚未在 PyPI 发布的 `nvidia-nccl-cu13==2.30.7`。改为显式固定已完成 PyPI dry-run 的稳定组合：torch 2.8.0、torchvision 0.23.0、torchaudio 2.8.0、CUDA 12.8 的 14 个 NVIDIA wheel和 triton 3.4.0；该版本线支持 RTX 5090/Blackwell。补齐 18 个新 wheel 的官方 URL/SHA-256，保留已验证的通用依赖但 setup 必须显式安装三项 torch pin，避免 resolver 回选 2.14。验收包括：完整 Linux/CPython 3.10 离线 dry-run；所有 URL 与 PyPI 官方 SHA-256 对应；全清单逐项哈希；setup Bash/静态 pin/无索引检查；22 项 pytest、Python 编译和 whitespace。失败的 509 不因修复而删除日志或降低离线要求。
+
+实际结果：从 PyPI PEP 658 元数据固定 18 个新增 wheel 的官方 URL 与 SHA-256，本地清单现为 162 项、文件名无重复，逐文件重新计算 SHA-256 为 162/162 一致。显式加入 torch 2.8.0 所有 14 个 CUDA 12.8 条件依赖与 triton 3.4.0 后，Linux x86_64 / CPython 3.10 的 `--no-index --only-binary` dry-run 成功；首次检查遗漏 `manylinux_2_27` 平台标签而按预期拒绝 cuDNN，补齐与实际 wheel 一致的 2.28/2.27/2014/2.17/2010/2.12 标签后完整闭包通过。setup 已显式固定 MatterSim 与三项 torch 版本，并在 `pip check` 后精确断言安装版本。22 项 pytest 全部通过（仅旧 `.pytest_cache` 不可写警告），Python 编译、Bash 语法和 `git diff --check` 通过（后者仅 LF/CRLF 提示）。可以提交并在服务器通过 Slurm 增量获取新增 18 项后进行真实离线安装。
