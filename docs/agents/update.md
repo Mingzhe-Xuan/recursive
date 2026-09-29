@@ -1,5 +1,6 @@
 # 进度更新
 
+- 2026-09-29：服务器代理 pull TLS 中断，仍停在 `f31e4c4`；误提交的旧清单下载作业 510 发现时尚为 PENDING。已登记纠正操作，下一连接先重试 pull，随后取消 510 并核对队列，不让错误计数作业运行。
 - 2026-09-29：提交 `7fd2670` 在 GitHub HTTPS 直连连续失败三次后，经 Windows 已启用的回环代理成功推送；拒绝了与 GitHub 官方值不匹配的 SSH 主机指纹，并将命令行代理与主机密钥安全经验写入 `lessons.md`。
 - 2026-09-29：补齐 MatterSim wheelhouse 的版本化交付：162 项官方 URL/SHA-256 清单和模块 README 已加入 `data/manifests`，完整一致性/哈希检查与 22 项回归通过；服务器可经 Git 同步清单，无需单独 scp。
 - 2026-09-29：完成 MatterSim Linux CUDA 闭包修复：显式固定 PyTorch 2.8.0 三件套与 CUDA 12.8，wheelhouse 扩展为 162 项；完整哈希、Linux/CPython 3.10 离线解析、22 项回归、编译与脚本静态检查通过。下一步推送后在 node221 增量下载新增 18 项并重跑离线 setup。
