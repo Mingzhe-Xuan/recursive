@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "dataset_id": "matbench_phonons",
+  "task": "regression",
+  "input": "periodic crystal structure",
+  "target": "last phdos peak",
+  "unit": "cm^-1",
+  "sample_count": 1265,
+  "source": {
+    "provider": "Materials Project / matminer",
+    "metadata_url": "https://github.com/hackingmaterials/matminer/blob/main/src/matminer/datasets/dataset_metadata.json",
+    "reference": "Petretto et al., Scientific Data 5, 180065 (2018)"
+  },
+  "artifacts": [
+    {
+      "filename": "matbench_phonons.json.gz",
+      "url": "https://ml.materialsproject.org/projects/matbench_phonons.json.gz",
+      "sha256": "4db551f21ec5f577e6202725f10e34dfc509aa7df3a6bdaac497da7f6dbbb9b3"
+    }
+  ]
+}

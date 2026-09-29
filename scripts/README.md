@@ -1,5 +1,9 @@
 # Experiment scripts
 
+`download_dataset.py` reads a versioned JSON manifest, resumes an HTTP download into `.partial`,
+verifies SHA-256, and atomically publishes the final artifact. If a server ignores Range, it safely
+restarts that artifact instead of appending duplicate bytes. Dataset payloads remain outside Git.
+
 `validate_mattersim_k01.py` is the first real-checkpoint acceptance test. It loads the official 1M
 checkpoint from an explicit task-local path, constructs one periodic silicon graph with the official
 dataloader, and verifies:

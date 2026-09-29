@@ -8,10 +8,12 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 2. 由 Slurm 重建任务专用虚拟环境并完全离线安装，再用已实现的 node-local 下载作业取得官方 checkpoint、运行 MatterSim K=0/K=1。
 3. MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel 已完成服务器 staging；待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
 4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
-5. 随后下载论文对齐数据集并进入递增 depth scan。
+5. `matbench_phonons` 官方 manifest 与通用校验下载器已完成；待 wheel 作业释放网络后在服务器任务数据目录执行下载，再进入递增 depth scan。
 
 # 变更记录
 
+- 2026-09-29：进入论文数据 manifest 与下载器实现单元；先落地 MatterSim 的官方 `matbench_phonons` 来源和哈希，再以本地 HTTP 测试验证断点续传、原子落盘和错误保护。下一步完成实现与测试后提交，实际数据待 MatterSim wheel 作业释放网络后下载到任务数据目录。
+- 2026-09-29：完成 `matbench_phonons` 官方 manifest 与通用标准库下载器；支持断点续传、Range 忽略时安全重启、SHA-256 门控和原子落盘，21 项测试及编译/格式/元数据检查通过。下一步提交推送；实际数据下载仍等待作业 507 释放 node221 网络，避免竞争。
 - 2026-09-29：MatterSim 下载作业 502 已退出队列，wheelhouse 停在 125/144；torch 的 0 字节 `.partial` 与连续连接超时表明计算节点公网中断，已完成 wheel 未受影响。下一步核对最终状态并在无重复作业时原地断点重提，不删除任何已有文件。
 - 2026-09-29：确认队列无重复下载作业后，MatterSim wheelhouse 已在 node221 断点重提为作业 507；集群禁用 Slurm accounting，因此以普通队列、固定日志和文件校验验收。下一步核对 507 实际时限与续传位置。
 - 2026-09-29：作业 507 已确认 node221、12 小时时限，PyPI 探针通过，torch 残片由 0 增长至 13,242,368 bytes；断点续传正常。下一步继续只读监控直至 144/144，不并发 MACE 下载。

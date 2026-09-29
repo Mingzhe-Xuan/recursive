@@ -423,3 +423,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 仅修改服务器连接用途文档。`git diff --check -- docs/agents/gpu.md` 通过（仅现有 LF/CRLF 转换提示）；记录明确要求登录后先执行显式 1080 代理的 `git pull`，随后只读监控 507，不并发启动 MACE 下载或登录节点计算。
 
 作业实测记录检查：`squeue` 与 `scontrol` 一致显示 507 在 node221 为 RUNNING、`TimeLimit=12:00:00`；文件检查显示 125 个完整 wheel 和 343,851,008-byte 的 `torch-2.14.0` 残片。更新 `gpu.md`、`state.md`、`update.md` 后，定向 `git diff --check` 通过（仅现有 LF/CRLF 转换提示）。
+
+## 2026-09-29：论文数据 manifest 与校验下载器（计划）
+
+先为 MatterSim 主任务建立 `matbench_phonons` 的版本化 JSON manifest，记录官方直链、文件名、1265 条样本、目标名/单位和 matminer 官方 SHA-256；数据文件本身继续由 `.gitignore` 排除。新增仅依赖 Python 标准库的通用 manifest 下载器，要求：拒绝不安全文件名和未知/缺失字段；正确文件跳过；下载写入 `.partial`；HTTP Range 受支持时续传、不支持时安全覆盖；SHA-256 通过后原子改名；错误哈希不得生成最终文件。测试覆盖本地 HTTP 服务器下的全新下载、正确既有文件、断点续传、忽略 Range 的覆盖路径、错误哈希和路径逃逸；再执行全套 pytest、Python 编译、manifest 内容断言与 whitespace 检查。
+
+实际结果：`uv run pytest` 在执行前正确发现 MatterSim 与 MACE extras 的 e3nn 约束互斥，因此未用混合环境；仓库 `.venv` 没有 pytest，改用已有 pytest/torch 的系统 Python，并把 `--basetemp` 限定到工作区 `tmp`，避免系统临时目录权限问题。最终 21 项测试全部通过（16 项原有 + 5 项下载器；仅旧 `.pytest_cache` 不可写警告）。Python 编译、100 字符行宽检查、manifest 的样本数/目标/单位/SHA-256 断言和 `git diff --check` 均通过。系统环境没有 ruff，因此没有把不可用 lint 伪记为成功；计划内验收项均已完成。
