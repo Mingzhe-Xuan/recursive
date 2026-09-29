@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "dataset_id": "dpa2_sse_pbe_d",
+  "task": "energy and force prediction",
+  "format": "DeePMD",
+  "selection": {
+    "dataset": "SSE-PBE-D",
+    "usage": "DPA-2 downstream fine-tuning and evaluation",
+    "required_split_metadata": [
+      "downstream/train.json",
+      "downstream/test.json"
+    ]
+  },
+  "source": {
+    "provider": "Zenodo",
+    "record_id": 10461723,
+    "concept_record_id": 10428496,
+    "doi": "10.5281/zenodo.10461723",
+    "publication_date": "2024-01-06",
+    "metadata_url": "https://zenodo.org/api/records/10461723",
+    "license": "CC-BY-4.0"
+  },
+  "artifacts": [
+    {
+      "filename": "data-v1.3.tgz",
+      "url": "https://zenodo.org/api/records/10461723/files/data-v1.3.tgz/content",
+      "size_bytes": 17073396886,
+      "md5": "789bedf203d673bdc95a09b582d83823"
+    }
+  ],
+  "post_download": {
+    "extract_on_server_only": true,
+    "record_local_sha256_after_download": true,
+    "retain_only_task_owned_files": true
+  }
+}

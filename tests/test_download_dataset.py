@@ -103,6 +103,33 @@ def test_bad_hash_keeps_partial_and_never_publishes_final(tmp_path: Path) -> Non
     assert not (tmp_path / "payload.bin").exists()
 
 
+def test_md5_download_is_gated_and_existing_file_is_skipped(tmp_path: Path) -> None:
+    payload = b"zenodo-official-md5" * 100
+    with _server(payload) as (url, seen_ranges):
+        artifact = {
+            "filename": "data.tgz",
+            "url": url,
+            "md5": hashlib.md5(payload).hexdigest(),  # noqa: S324 - published integrity hash
+        }
+        assert downloader.download_artifact(artifact, tmp_path, 2) == "downloaded"
+        assert downloader.download_artifact(artifact, tmp_path, 2) == "existing"
+    assert seen_ranges == [None]
+
+
+def test_md5_mismatch_keeps_partial_and_never_publishes_final(tmp_path: Path) -> None:
+    payload = b"actual"
+    with _server(payload) as (url, _):
+        artifact = {
+            "filename": "data.tgz",
+            "url": url,
+            "md5": hashlib.md5(b"expected").hexdigest(),  # noqa: S324 - integrity fixture
+        }
+        with pytest.raises(RuntimeError, match="MD5 mismatch"):
+            downloader.download_artifact(artifact, tmp_path, 2)
+    assert (tmp_path / "data.tgz.partial").read_bytes() == payload
+    assert not (tmp_path / "data.tgz").exists()
+
+
 def test_manifest_rejects_path_escape_and_invalid_schema(tmp_path: Path) -> None:
     manifest = {
         "schema_version": 1,
@@ -118,6 +145,46 @@ def test_manifest_rejects_path_escape_and_invalid_schema(tmp_path: Path) -> None
     path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ValueError, match="schema_version"):
         downloader.load_manifest(path)
+
+
+@pytest.mark.parametrize(
+    "checksums",
+    [
+        {},
+        {"sha256": "0" * 64, "md5": "0" * 32},
+    ],
+)
+def test_manifest_requires_exactly_one_supported_checksum(
+    tmp_path: Path, checksums: dict[str, str]
+) -> None:
+    artifact = {
+        "filename": "payload.bin",
+        "url": "https://example.invalid/payload.bin",
+        **checksums,
+    }
+    manifest = {"schema_version": 1, "dataset_id": "checksums", "artifacts": [artifact]}
+    path = tmp_path / "manifest.json"
+    path.write_text(json.dumps(manifest), encoding="utf-8")
+    with pytest.raises(ValueError, match="exactly one checksum"):
+        downloader.load_manifest(path)
+
+
+def test_dpa2_zenodo_manifest_pins_official_archive() -> None:
+    path = Path(__file__).parents[1] / "data" / "manifests" / "dpa2_sse_pbe_d.json"
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    dataset_id, artifacts = downloader.load_manifest(path)
+
+    assert dataset_id == "dpa2_sse_pbe_d"
+    assert manifest["source"]["record_id"] == 10461723
+    assert manifest["source"]["doi"] == "10.5281/zenodo.10461723"
+    assert manifest["selection"]["dataset"] == "SSE-PBE-D"
+    assert artifacts == [
+        {
+            "filename": "data-v1.3.tgz",
+            "url": "https://zenodo.org/api/records/10461723/files/data-v1.3.tgz/content",
+            "md5": "789bedf203d673bdc95a09b582d83823",
+        }
+    ]
 
 
 def test_mace_phonondb_manifest_pins_exactly_97_unique_materials() -> None:

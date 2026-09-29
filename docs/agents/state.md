@@ -1,6 +1,6 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，当前全套 22 项测试通过。MatterSim 已改用可安装的 PyTorch 2.8.0/CUDA 12.8 闭包；本地 wheelhouse 共 162 项，Linux/CPython 3.10 离线解析与 162/162 SHA-256 复验通过。服务器仍保留旧闭包的 144 项 wheel，待增量下载 18 项新 wheel 后重新执行 Slurm 离线 setup。MACE 的独立本地 wheelhouse 已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；服务器已 staging 清单与审计 wheel。
+Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，当前全套 27 项测试通过。MatterSim 已改用可安装的 PyTorch 2.8.0/CUDA 12.8 闭包；本地 wheelhouse 共 162 项，Linux/CPython 3.10 离线解析与 162/162 SHA-256 复验通过，服务器增量下载作业 511 正在运行。MACE 的独立本地 wheelhouse 已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；服务器已 staging 清单与审计 wheel。DPA-2 的 Zenodo 10461723 数据归档 manifest 与官方 MD5 支持已完成。
 
 # 当前计划
 
@@ -12,6 +12,8 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 
 # 变更记录
 
+- 2026-09-29：完成 DPA-2 SSE-PBE-D 数据 manifest 与通用 MD5 校验支持；固定 Zenodo 10461723 的 17,073,396,886-byte 数据归档及官方 MD5，27 项回归、编译、元数据和格式检查通过。下一步提交推送；17 GB 归档后续仅在服务器任务目录由 Slurm 下载。
+- 2026-09-29：作业 511 启动并进入首个新增 CUDA wheel 下载；等待期间开始 DPA-2 Zenodo 10461723 manifest 单元。下一步扩展下载器支持官方 MD5、补充测试与固定 17 GB 数据归档元数据，不在本地下载大文件。
 - 2026-09-29：正确的 MatterSim 162 项增量下载已提交为 Slurm 作业 511；提交时同一账号作业 508 占用 node221，因此 511 为 PENDING。未干预 508，下一步只读监控 511 启动与下载日志。
 - 2026-09-29：临时回环 1082 代理恢复服务器 Git，同步到 `3b27f13` 并成功 staging 162 项清单；查重命令在远端 shell 解析失败，未提交作业。下一步用简化队列门控重连提交正确的增量下载作业。
 - 2026-09-29：错误作业 510 已在未运行时取消并退出队列；1080 pull 再次因本机直连 GitHub 路径失败。下一步以 Guqq 回环 1082 临时映射本机已验证的 7897 HTTP 代理恢复 pull，静态转发随单次 SSH 会话回收。

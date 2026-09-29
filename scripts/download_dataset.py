@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Download dataset artifacts from a versioned manifest with SHA-256 gating."""
+"""Download dataset artifacts from a versioned manifest with checksum gating."""
 
 from __future__ import annotations
 
@@ -14,15 +14,36 @@ import urllib.request
 from pathlib import Path
 from typing import Any
 
-_SHA256_RE = re.compile(r"[0-9a-f]{64}")
+_CHECKSUM_PATTERNS = {
+    "sha256": re.compile(r"[0-9a-f]{64}"),
+    "md5": re.compile(r"[0-9a-f]{32}"),
+}
 
 
-def sha256_file(path: Path) -> str:
-    digest = hashlib.sha256()
+def hash_file(path: Path, algorithm: str) -> str:
+    if algorithm not in _CHECKSUM_PATTERNS:
+        raise ValueError(f"unsupported checksum algorithm: {algorithm}")
+    digest = hashlib.new(algorithm)
     with path.open("rb") as handle:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    return hash_file(path, "sha256")
+
+
+def _checksum_spec(artifact: dict[str, Any], filename: str) -> tuple[str, str]:
+    present = [name for name in _CHECKSUM_PATTERNS if name in artifact]
+    if len(present) != 1:
+        supported = ", ".join(_CHECKSUM_PATTERNS)
+        raise ValueError(f"{filename} must define exactly one checksum ({supported})")
+    algorithm = present[0]
+    expected = artifact[algorithm]
+    if not isinstance(expected, str) or _CHECKSUM_PATTERNS[algorithm].fullmatch(expected) is None:
+        raise ValueError(f"invalid {algorithm.upper()} for {filename}")
+    return algorithm, expected
 
 
 def _validated_artifacts(manifest: dict[str, Any]) -> list[dict[str, str]]:
@@ -41,7 +62,6 @@ def _validated_artifacts(manifest: dict[str, Any]) -> list[dict[str, str]]:
             raise ValueError("each artifact must be an object")
         filename = artifact.get("filename")
         url = artifact.get("url")
-        expected = artifact.get("sha256")
         if (
             not isinstance(filename, str)
             or not filename
@@ -53,10 +73,9 @@ def _validated_artifacts(manifest: dict[str, Any]) -> list[dict[str, str]]:
             raise ValueError(f"duplicate artifact filename: {filename}")
         if not isinstance(url, str) or not url.startswith(("https://", "http://")):
             raise ValueError(f"artifact URL must use HTTP(S): {url!r}")
-        if not isinstance(expected, str) or _SHA256_RE.fullmatch(expected) is None:
-            raise ValueError(f"invalid SHA-256 for {filename}")
+        algorithm, expected = _checksum_spec(artifact, filename)
         seen.add(filename)
-        validated.append({"filename": filename, "url": url, "sha256": expected})
+        validated.append({"filename": filename, "url": url, algorithm: expected})
     return validated
 
 
@@ -98,18 +117,20 @@ def download_artifact(artifact: dict[str, str], output_dir: Path, timeout: float
     output_dir.mkdir(parents=True, exist_ok=True)
     final = output_dir / artifact["filename"]
     partial = output_dir / f"{artifact['filename']}.partial"
-    expected = artifact["sha256"]
+    algorithm, expected = _checksum_spec(artifact, artifact["filename"])
+    checksum_label = "SHA-256" if algorithm == "sha256" else "MD5"
 
     if final.exists():
-        if not final.is_file() or sha256_file(final) != expected:
-            raise RuntimeError(f"existing artifact has wrong SHA-256: {final}")
+        if not final.is_file() or hash_file(final, algorithm) != expected:
+            raise RuntimeError(f"existing artifact has wrong {checksum_label}: {final}")
         return "existing"
 
     _transfer(artifact["url"], partial, timeout)
-    actual = sha256_file(partial)
+    actual = hash_file(partial, algorithm)
     if actual != expected:
         raise RuntimeError(
-            f"SHA-256 mismatch for {artifact['filename']}: expected {expected}, got {actual}"
+            f"{checksum_label} mismatch for {artifact['filename']}: "
+            f"expected {expected}, got {actual}"
         )
     os.replace(partial, final)
     return "downloaded"

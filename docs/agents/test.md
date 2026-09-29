@@ -445,3 +445,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 版本化清单补充计划：将 162 项 `PYPI_URLS` 与 `SHA256SUMS` 作为小型文本元数据放入 `data/manifests/mattersim_wheelhouse_cp310_linux/`，wheel 二进制本身继续忽略。要求目录 README 明确目标平台、顶层 pin、格式和更新流程；两个清单均为 162 个唯一安全文件名、文件名集合及哈希逐项一致，URL 仅使用 HTTPS PyPI 文件域；再执行完整本地 wheel 哈希复验、22 项回归、Python 编译与 whitespace 检查。
 
 版本化清单实际结果：`PYPI_URLS` 与 `SHA256SUMS` 均为 162 行，文件名各自唯一且集合/逐项哈希完全一致；文件名安全规则和 `https://files.pythonhosted.org/` 域名检查通过，162 个本地 wheel 的实际 SHA-256 全部匹配。模块 README 已记录目标平台、四项顶层 pin、双清单格式、Slurm staging/下载命令和更新约束。22 项 pytest、Python 编译、README 100 字符行宽与 `git diff --check` 通过（仅旧 cache 与 LF/CRLF 提示）。
+
+## 2026-09-29：DPA-2 Zenodo 数据 manifest（计划）
+
+以 Zenodo 官方 API 的固定记录 `10461723` 为准，为 `data-v1.3.tgz` 建立版本化 manifest，记录 DOI、发布日期、精确字节数 `17073396886`、官方 MD5 `789bedf203d673bdc95a09b582d83823`、DeePMD 数据格式、SSE-PBE-D 选择目标和归档内 train/test split 责任。由于 Zenodo 只发布 MD5，扩展通用原子下载器以安全支持 manifest 中恰好一个 `sha256` 或 `md5`，不伪造 SHA-256；最终下载后可另记本地 SHA-256。测试覆盖 MD5 下载/既有文件、错误 MD5 不发布、同时或完全不提供受支持 checksum 时拒绝；保留全部 SHA-256 回归，再执行完整 pytest、编译、JSON/元数据、行宽和 whitespace 检查。17 GB 归档仅在服务器任务数据目录由 Slurm 下载，本地不取大文件。
+
+实际结果：Zenodo 官方 API 返回记录 10461723、发布日期 2024-01-06、`data-v1.3.tgz` 大小 17,073,396,886 bytes 和 MD5 `789bedf203d673bdc95a09b582d83823`，均已逐项固定到 manifest；只选择包含上游/下游数据与 split 的数据归档，不把非必需的 267 MB code/model archive 加入自动下载。下载器保持 schema 1 兼容，要求每个 artifact 恰有一个受支持 checksum，并按所选算法验证既有文件、partial 和原子发布。首次回归仅因 SHA-256 错误消息少了连字符而失败，恢复既有 `SHA-256` 文案后 27 项测试全部通过；Python 编译、官方元数据断言、JSON、100 字符行宽与 `git diff --check` 通过（仅旧 cache 与 LF/CRLF 提示）。
