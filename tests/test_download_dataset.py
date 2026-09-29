@@ -118,3 +118,18 @@ def test_manifest_rejects_path_escape_and_invalid_schema(tmp_path: Path) -> None
     path.write_text(json.dumps(manifest), encoding="utf-8")
     with pytest.raises(ValueError, match="schema_version"):
         downloader.load_manifest(path)
+
+
+def test_mace_phonondb_manifest_pins_exactly_97_unique_materials() -> None:
+    path = Path(__file__).parents[1] / "data" / "manifests" / "mace_phonondb_97.json"
+    manifest = json.loads(path.read_text(encoding="utf-8"))
+    dataset_id, artifacts = downloader.load_manifest(path)
+
+    assert dataset_id == "mace_phonondb_97"
+    assert manifest["sample_count"] == 97
+    assert manifest["imaginary_frequency_tolerance_thz"] == 0.01
+    assert len(manifest["phonondb_ids"]) == 97
+    assert len(set(manifest["phonondb_ids"].values())) == 97
+    assert manifest["source"]["commit"] == "480bc92d6719962b584c98e8bce4ffa1c2d74031"
+    assert "{togo_id}" in manifest["source"]["phonondb_download_url_template"]
+    assert len(artifacts) == 2

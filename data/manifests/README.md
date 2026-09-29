@@ -13,3 +13,9 @@ python scripts/download_dataset.py data/manifests/matbench_phonons.json /path/to
 
 `matbench_phonons.json` follows the official matminer metadata: 1265 structures, target
 `last phdos peak` in cm^-1, and the checksum published for the Materials Project JSON gzip.
+
+`mace_phonondb_97.json` pins the MACE-MP paper's linked ffonons repository and the exact 97
+Materials Project IDs represented in its MACE-MP0 PhononDB figure directory. It includes the
+verified summary/mapping artifacts and the official NIMS PhononDB download template. The 97 ZIP
+files have no published checksums; record their local SHA-256 values after the first server
+download rather than inventing pre-download hashes.
