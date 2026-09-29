@@ -4,7 +4,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 
 # 当前计划
 
-1. 提交并同步显式固定 torch 2.8.0/torchvision 0.23.0/torchaudio 2.8.0 的 setup；在 node221 用既有断点下载作业把服务器 MatterSim wheelhouse 从 144 项增量补齐到 162 项。
+1. node221 增量下载作业 511 已使用 162 项版本化清单提交；等待账号下现有作业 508 释放节点后启动，并监控到 162/162 哈希通过。
 2. 更新后的完整 wheelhouse 通过服务器 162/162 哈希后，由 Slurm 重建任务专用虚拟环境并完全离线安装；随后下载官方 checkpoint、运行 MatterSim K=0/K=1。
 3. MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel 已完成服务器 staging；97 材料 PhononDB manifest 也已固定作者提交、MP↔Togo 映射和来源哈希。待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
 4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
@@ -12,6 +12,7 @@ Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已�
 
 # 变更记录
 
+- 2026-09-29：正确的 MatterSim 162 项增量下载已提交为 Slurm 作业 511；提交时同一账号作业 508 占用 node221，因此 511 为 PENDING。未干预 508，下一步只读监控 511 启动与下载日志。
 - 2026-09-29：临时回环 1082 代理恢复服务器 Git，同步到 `3b27f13` 并成功 staging 162 项清单；查重命令在远端 shell 解析失败，未提交作业。下一步用简化队列门控重连提交正确的增量下载作业。
 - 2026-09-29：错误作业 510 已在未运行时取消并退出队列；1080 pull 再次因本机直连 GitHub 路径失败。下一步以 Guqq 回环 1082 临时映射本机已验证的 7897 HTTP 代理恢复 pull，静态转发随单次 SSH 会话回收。
 - 2026-09-29：服务器首次同步 162 项清单时代理 pull 失败，且命令条件边界错误导致提交了使用旧 144 项清单的作业 510；发现时作业仍为 PENDING。下一步先登记并连接取消 510，确认无错误下载作业后再恢复 Git 同步，保留全部既有 wheel。
