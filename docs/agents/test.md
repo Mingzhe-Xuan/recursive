@@ -417,3 +417,7 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 官方 1.2.3 wheel 审计确认 checkpoint 别名会硬编码写入 `~/.local/mattersim/pretrained_models`，且官方下载函数没有断点续传或原子落盘。新增 node-local Slurm 下载入口，将官方 GitHub raw 资源写入 `${RECURSIVE_RUNTIME_ROOT}/checkpoints/mattersim`：完整文件存在时跳过，下载写入 `.partial`、支持续传，成功后原子改名并输出大小与 SHA-256。K=0/K=1 作业改为要求显式 `MATTERSIM_CHECKPOINT` 或使用该任务目录默认路径，验证脚本收到实际文件路径。检查两个 sbatch 的 Bash 语法、URL/路径/原子语义、README 与环境文档一致性、16 项回归、Python 编译和 whitespace。
 
 实际结果：两个 sbatch 的 Bash 语法通过；静态检查确认官方 URL、任务 checkpoint 目录、`.partial`、`--continue-at -`、成功后 `mv`、大小/SHA-256 输出，以及 K=0/K=1 的显式文件路径均存在。README 和环境文档已改为 node-local 布局，不再指示 `.venv-mattersim` 或 checkpoint 别名。16 项 pytest 通过（仅现有 cache warning），Python 编译与 `git diff --check` 通过（仅 LF/CRLF 提示）。
+
+## 2026-09-29：作业 507 续监控连接记录（实际）
+
+仅修改服务器连接用途文档。`git diff --check -- docs/agents/gpu.md` 通过（仅现有 LF/CRLF 转换提示）；记录明确要求登录后先执行显式 1080 代理的 `git pull`，随后只读监控 507，不并发启动 MACE 下载或登录节点计算。
