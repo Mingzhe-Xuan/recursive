@@ -58,3 +58,6 @@ r1按patience结束于164epoch/114308步，训练/验证5231.45秒，best验证M
 
 
 实际启用记录（2026-11-02T06:17:54+08:00）：本地49项、Slurm898的22项CPU检查通过，入口aae5124已同步。运行时`<work>/run/pool/task_schedule.json` SHA `8c3cf7f017ccf2794584db01c8dc55dcd8c5d54c86a3904736cbb5f2048ebfcb`，发布前后全部既有ledger检查通过（仅wave000）；排队895_1–7继续原数组，不重启895_0，893仍依赖整个数组完成。第1待启动组为kpoint_length_unit、encut、magmom_oszicar、epsx；原始任务命名空间/种子不变。
+
+
+并发复核（2026-11-02T06:41:36+08:00记录）：首组4任务运行时，在当前Slurm897 allocation中以短时srun查询nvidia-smi元数据，GPU utilization单点为90%，NVML memory.used/total为4423/32607MiB；scontrol节点CPUAlloc16/48、CPULoad5.65。NVML总显存口径与PyTorch可用设备内存口径不同，此值不替换既有资源门控。单点利用率既不是SM占用率，也不足以估计8并发吞吐，因此保留已验收4并发，没有进一步更改资源申请/波次/任务成员。

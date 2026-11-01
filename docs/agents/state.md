@@ -15,7 +15,7 @@ CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETE
 
 待启动组均衡已通过Slurm898的22项CPU集成并发布：runtime分组SHA 8c3cf7f…绑定config/源数据/图/审计，保护全部既有wave000成员。当前第0组保持原进程；后续895波启动自动读取，不重新提交。
 
-1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话8154每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T06:32:10.491264+08:00，4任务均实际训练、无failure、0/29 report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
+1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话8154每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T06:41:20.594669+08:00，4任务均实际训练、无failure、0/29 report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
 2. 继续895全部8波、29任务、seed123、r0–5及原始输入/累计步数对照；formation energy复用已完成两阶段及缓存，不能重复训练或缩减目标。
 3. 观察并发运行的实际吞吐/内存与失败；如worker失败，用源日志/Slurm终态定位并恢复，观察超时或本地monitor退出不代表计算失败。不得只凭计划文件宣称进度。
 4. 893在895全部波结束后汇总MAE曲线/验证选轮/预算/覆盖；完成全部模型、控制、缓存/补充manifest、图表和失败审计后才可标记goal complete。不得以两轮pilot完成替代完整矩阵完成。
@@ -173,3 +173,6 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 
 
 - 2026-11-02T06:32:17+08:00：上一goal turn为verified wait；本轮继续通过原工具会话8154连续12次有界轮询（约9分钟），实际squeue/history确认895_0/job897持续RUNNING。最新2026-11-02T06:32:10.491264+08:00：formation_energy_peratom epoch139、optb88vdw_bandgap epoch142、optb88vdw_total_energy epoch136、ehull epoch139；无failure，0/29完整报告。单次无输出后续查同一handle得到新进展，未重启/重提/改配置。当前阶段未转换，继续等待既有训练并核验完成后的缓存/对照；完整目标仍active。
+
+
+- 2026-11-02T06:41:36+08:00：上一轮为verified wait，本轮续查原observer8154并核对真实资源；Slurm897仍RUNNING，最新2026-11-02T06:41:20.594669+08:00为formation_energy_peratom epoch157、optb88vdw_bandgap epoch161、optb88vdw_total_energy epoch154、ehull epoch157，无failure、0/29报告。短时Slurm srun元数据查询实测GPU利用率90%、NVML显存4423/32607MiB，节点CPUAlloc16/48、CPULoad5.65；单点利用率不能证明更高并发收益，因此保持已验证4并发、8波和已发布不可变分组，不改预算或重提作业。下一步等待阶段完成和缓存/对照转换，完整目标仍active。
