@@ -84,3 +84,19 @@ Shared training wall seconds include contention and are not isolated GPU busy ti
 contexts and observed wave wall seconds are included in summary.json. Failed task reports are
 preserved under the wave directory, and prior attempt ledgers remain available on resume.
 `pool_check.sbatch` runs CPU integration/orchestration checks under Slurm before enabling this path.
+
+`cache_provenance.py` publishes the delivery manifest without changing immutable cache identities.
+Each `round_NNN/cache_provenance.json` contains the complete configuration, source/geometry and
+atom-order binding, checkpoint/parent/core identities, all successful IDs, failed IDs, and each
+shard's verified SHA256, byte count and structure/atom counts. It references `cache/manifest.json`
+by SHA256, and `chain_manifest.json` references each supplement by SHA256. The original manifest,
+checkpoint and feature tensors remain unchanged. All stages are checked before supplements are
+published, and rerunning the audit produces identical metadata. Task locks protect publication.
+
+The `run` and pilot-acceptance entry points publish these manifests; `evaluate` first checks the
+complete predeclared chain and every raw/cumulative control before any test evaluation. A missing
+control, mismatched task/protocol or corrupt checkpoint/shard stops evaluation. Standalone full-cache
+audits require Slurm. Audit IO is included in pool wave wall time, outside the original per-stage
+cache-generation timer. Each CUDA `run`/`evaluate` also rechecks exact environment versions through
+`inspect_environment.py` and records an action/PID-specific environment JSON, including late-starting
+workers within an existing allocation.

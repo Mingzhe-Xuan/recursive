@@ -6,6 +6,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import traceback
 
@@ -75,6 +76,27 @@ def main():
         parser.error("--task/--task-index and --prepared required")
     failure = args.output / "cgcnn" / args.task / f"seed_{config['seed']}" / "failure.json"
     try:
+        if args.device.split(":")[0] == "cuda":
+            environment = (
+                args.output
+                / "environments"
+                / (
+                    f"{args.task}-{args.action}-{os.environ.get('SLURM_JOB_ID', 'local')}-{os.getpid()}.json"
+                )
+            )
+            subprocess.run(
+                [
+                    sys.executable,
+                    str(Path(__file__).with_name("inspect_environment.py")),
+                    "--gpu",
+                    "--output",
+                    str(environment),
+                ],
+                check=True,
+            )
+        from cache_provenance import audit_task
+
+        root = failure.parent
         if args.action == "run":
             from self_evolution.pipeline.chain import run_task
 
@@ -87,9 +109,11 @@ def main():
                 args.stop_round,
                 not args.no_controls,
             )
+            audit_task(root, args.prepared, config)
         else:
             from self_evolution.evaluation.report import evaluate_task
 
+            audit_task(root, args.prepared, config, require_complete=True)
             evaluate_task(args.prepared, args.output, args.task, config, args.device)
         if failure.exists():
             failure.unlink()

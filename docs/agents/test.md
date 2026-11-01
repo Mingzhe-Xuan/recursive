@@ -541,3 +541,13 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-02T03:51:16+08:00：真实Slurm894 CPU检查通过：scontrol为COMPLETED、ExitCode0:0、runtime8秒；固定log显示18 passed in 6.89s。覆盖当前Linux真实flock/子进程调度、原生/缓存/三阶段CPU集成；未称为GPU资源测量。source HEAD13f4fde，核心src/config diff为空。下一步可迁移pending队列，实际并发由afterok891+运行时真实资源报告门控。
 
 - 2026-11-02T04:05:23+08:00（阶段完成证据）：SFTP回读r0 training确认222epoch/154734步、stop_reason=validation_patience、best验证MAE0.04822800、ckpt8bb926e4…；链manifest target仍5且status partial，仅r0完成。远端缓存元数据/stat确认55712结构/562055原子/64维float32/218片/147579938字节，cache_timing=12.91283808秒。16结构链检查depth0、最大节点差6.1988831e-06，与同一checkpoint SHA对应；当前r1已实际开始。pool迁移ledger phase complete、895 afterok891和893 afterany895_*经scontrol核对。小型证据Git忽略、文档路径/链接/格式及git diff --check检查通过；无新代码改动，不重复跑测试。
+
+## 2026-11-02T04:12:44+08:00：缓存交付元数据补全（实现计划）
+
+审计发现基础cache/manifest.json已有配置hash/分片SHA，但未内联完整配置及分片字节数。为满足plan_2第5节且保留运行中缓存身份，在scripts增加cache_provenance.py：锁住任务，对已完成连续阶段全分片重算SHA/字节数与覆盖/原子计数，输出每阶段cache_provenance.json补充manifest，包含完整配置、数据/图/原子顺序来源、checkpoint/前驱/代码身份及成功/失败ID；根chain_manifest以SHA引用补充manifest。不得修改原cache/manifest、checkpoint、分片或训练配置。run/evaluate和pilot验收入口调用，计算仅Slurm。扩展三阶段CPU集成：标签文件缺席仍生成元数据，配置/逐片字节/数据来源/全覆盖字段正确，重复审计幂等，原数据SHA不变，错配置及分片损坏拒绝且旧审计/链不被部分改写，补充字段与核心评测兼容。ruff/编译、对应及完整测试、真实Slurm CPU复核后同步；真实全库审计在891/正式任务中执行。
+
+- 2026-11-02T04:14:50+08:00（同单元验收范围补充）：公开CLI evaluate在任何测试评估前，使用审计入口require_complete检查预设全链及全部original/cumulative对照的完成文件、协议、checkpoint SHA和累计步数；缺任一对照立即拒绝，不能等主链测试评估后才发现缺失。测试临时移走一个对照training.json，确认审计失败且链/已有审计未改，再恢复后正常运行。只增加scripts门控，核心训练源码不变。
+
+- 2026-11-02T04:28:18+08:00（入口兼容检查）：pool一份Slurm allocation可能持续数日、先后启动多个任务，原每job环境检查不足以覆盖晚启动子进程。公开CUDA run/evaluate每次复用已有inspect_environment复核精确版本/GPU并记录action/PID环境JSON；增加负向入口测试，模拟检查进程失败，证明run_task未调用且failure.json记录错误。CPU路径跳过GPU检查，服务器CPU测试不实际访问GPU。该检查不改变训练参数或核心身份。
+
+实际结果（2026-11-02T04:31:51+08:00）：全部46项pytest通过（原45+1个CLI环境门控测试），ruff/format/py_compile及git diff --check通过。扩展三阶段集成在标签文件缺席时发布完整配置/来源/字节数/逐片SHA/成功失败ID补充manifest，重复发布SHA一致；checkpoint、基础manifest和全部3阶段分片SHA保持不变。缺对照、跨任务control、错来源/配置及分片损坏会拒绝且旧链/审计不部分改写，核心评测兼容新增链字段。期间一个测试临时变量定义顺序错误导致NameError，已修正后完整重跑通过，未删改断言。负向环境检查模拟失败证明训练未调用并记录failure。真实Slurm CPU复核及真实两轮GPU验收仍待，不提前记通过。

@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 import torch
 
 from pilot_resources import audit_pilot
+from cache_provenance import audit_task
 
 from self_evolution.data.graphs import GraphStore, collate_graphs
 from self_evolution.io import atomic_write, code_revision, file_hash, read_json
@@ -75,6 +76,7 @@ def main():
     resource_path = args.output / "pilot_resources.json"
     audit_pilot(root, args.prepared / "graphs", config, "cuda", resource_path)
     result["resource_report_sha256"] = file_hash(resource_path)
+    result["cache_provenance"] = audit_task(root, args.prepared, config)
     atomic_write(args.output / "real_acceptance.json", result)
     print(result)
 

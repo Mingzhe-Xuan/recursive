@@ -82,3 +82,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-02T03:46:18+08:00：共享GPU的独立训练可保留单任务RNG/配置/顺序，但训练墙钟含资源争用；全部训练子进程必须退出后再逐个运行部署基准。资源门控应绑定真实验收、config/core/graphs和报告SHA，并测最大原子数批次而不只测随机批次；峰值余量仍不是绝对保证。21天单波时限用于容纳退回1进程的最多4任务，不增加每任务优化预算。MemAvailable而非MemFree用于Linux可用内存规划；本节点前者约228.5GiB、后者约2.8GiB。重跑前先保存旧报告/执行账本，防止硬中断时把旧结果当作新完成结果。
 
 - 2026-11-02T04:05:23+08:00：生成嵌套Python/SSH管理脚本时，内层r"..."无法阻止外层普通字符串把\b变成退格。管理脚本执行前需检查不可打印控制字符，并用ast及regex样例检查日志/依赖门控；本轮错误在任何hold/提交/取消之前被日志门控拦截。pending迁移按hold旧数组→提交带验收依赖的新数组→重接并核验汇总afterany→取消旧pending的顺序执行，durable ledger保留阶段和ID。依据[Slurm scontrol](https://slurm.schedmd.com/scontrol.html)和[数组依赖说明](https://slurm.schedmd.com/job_array.html)，数组ID的afterany覆盖所有元素，避免取消旧数组后汇总提前运行。
+
+- 2026-11-02T04:31:51+08:00：已经被下游checkpoint绑定的基础cache manifest不可为补字段而就地改写；用补充manifest引用其SHA、再由根链引用补充SHA，既保留训练输入身份又提供完整交付字段。发布前应验证所有阶段、在任务锁内原子发布且避免时间戳破坏幂等。评测不能等遍历主链测试后才发现缺对照，应在公开入口预先检查所有对照。多任务长Slurm allocation需要每个晚启动CUDA子进程复核环境，单次job启动检查不足；错误检查必须在训练前停止并留下failure。

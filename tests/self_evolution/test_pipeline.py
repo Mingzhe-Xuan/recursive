@@ -1,4 +1,5 @@
 import copy
+from dataclasses import asdict
 import importlib.util
 from pathlib import Path
 
@@ -36,13 +37,18 @@ def synthetic_prepared(root):
             "group": graph["group"],
         }
         labels[jid], groups[jid] = i / 12, graph["group"]
+    atomic_write(root / "source.json", {"purpose": "synthetic snapshot metadata"})
     atomic_write(
         graphs / "manifest.json",
         {
             "status": "complete",
             "failures": {},
             "entries": entries,
-            "identity": {"dataset_sha256": "synthetic-test-snapshot"},
+            "identity": {
+                "dataset_sha256": "synthetic-test-snapshot",
+                "graph_config": asdict(GraphConfig()),
+                "source_sha256": file_hash(root / "source.json"),
+            },
         },
     )
     task = {
@@ -90,7 +96,7 @@ def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):
     resource_spec.loader.exec_module(resource_module)
     hashes = {
         p: file_hash(p)
-        for r in range(2)
+        for r in range(3)
         for p in [
             root / f"round_{r:03d}/best.pt",
             root / f"round_{r:03d}/cache/manifest.json",
@@ -102,6 +108,65 @@ def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):
     task_path.rename(unavailable)
     try:
         resources = resource_module.audit_pilot(root, prepared / "graphs", config, "cpu")
+        provenance_spec = importlib.util.spec_from_file_location(
+            "cache_provenance", Path("scripts/self_evolution/cache_provenance.py")
+        )
+        provenance = importlib.util.module_from_spec(provenance_spec)
+        provenance_spec.loader.exec_module(provenance)
+        audit = provenance.audit_task(
+            root, prepared, config, prepared / "source.json", require_complete=True
+        )
+        assert len(audit["stages"]) == 3
+        audit_hashes = {}
+        for entry in audit["stages"]:
+            path = root / entry["file"]
+            audit_hashes[path] = file_hash(path)
+            assert audit_hashes[path] == entry["sha256"]
+            doc = read_json(path)
+            assert doc["configuration"] == config and doc["labels_read"] is False
+            assert doc["source_metadata"] == {"purpose": "synthetic snapshot metadata"}
+            assert doc["dataset_sha256"] == "synthetic-test-snapshot"
+            assert len(doc["successful_ids"]) == 12 and doc["failed_ids"] == []
+            assert doc["structures"] == 12 and doc["atoms"] == 24
+            for shard in doc["shards"]:
+                data_path = path.parent / shard["file"]
+                assert shard["bytes"] == data_path.stat().st_size
+                assert shard["sha256"] == file_hash(data_path)
+        chain_hash = file_hash(root / "chain_manifest.json")
+        assert (
+            provenance.audit_task(
+                root, prepared, config, prepared / "source.json", require_complete=True
+            )
+            == audit
+        )
+        assert file_hash(root / "chain_manifest.json") == chain_hash
+        wrong_source = prepared / "wrong_source.json"
+        atomic_write(wrong_source, {"purpose": "different source"})
+        with pytest.raises(ValueError, match="source/geometry metadata"):
+            provenance.audit_task(root, prepared, config, wrong_source)
+        missing_control = root / "controls/original/round_002/training.json"
+        control_metrics = read_json(missing_control)
+        wrong_control = copy.deepcopy(control_metrics)
+        wrong_control["identity"]["task_hash"] = "other-task"
+        atomic_write(missing_control, wrong_control)
+        try:
+            with pytest.raises(ValueError, match="does not match this task"):
+                provenance.audit_task(
+                    root, prepared, config, prepared / "source.json", require_complete=True
+                )
+        finally:
+            atomic_write(missing_control, control_metrics)
+        assert all(file_hash(path) == sha for path, sha in audit_hashes.items())
+        backup = missing_control.with_name("training_unavailable.json")
+        missing_control.rename(backup)
+        try:
+            with pytest.raises(ValueError, match="required training is incomplete"):
+                provenance.audit_task(
+                    root, prepared, config, prepared / "source.json", require_complete=True
+                )
+        finally:
+            backup.rename(missing_control)
+        assert file_hash(root / "chain_manifest.json") == chain_hash
     finally:
         unavailable.rename(task_path)
     assert resources["status"] == "measured" and resources["labels_read"] is False
@@ -143,3 +208,11 @@ def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):
     altered["model"]["hidden"] = 16
     with pytest.raises(ValueError, match="immutable protocol"):
         run_task(prepared, run, task["task"], altered, "cpu")
+    with pytest.raises(ValueError, match="audit protocol"):
+        provenance.audit_task(root, prepared, altered, prepared / "source.json")
+    corrupt = next((root / "round_001/cache").glob("nodes_*.pt"))
+    corrupt.write_bytes(corrupt.read_bytes() + b"corrupt")
+    with pytest.raises(ValueError, match="cache shard checksum"):
+        provenance.audit_task(root, prepared, config, prepared / "source.json")
+    assert file_hash(root / "chain_manifest.json") == chain_hash
+    assert all(file_hash(path) == sha for path, sha in audit_hashes.items())
