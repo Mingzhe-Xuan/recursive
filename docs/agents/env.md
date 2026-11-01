@@ -62,3 +62,5 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 仅在 venv 内安装覆盖：numpy==1.26.4、pymatgen==2024.5.1、matplotlib==3.9.4、pytest==8.3.5。若缺少 PySocks，先通过 curl 获取官方 1.7.1 wheel，SHA-256 2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5，离线引导。
 - scripts/slurm/self_evolution/setup.sbatch 在 Slurm 中创建环境、安装、记录有效 sys.path/用户包继承状态、完整 pip freeze、CUDA 短检查及测试。正式计算只使用该 venv；pip 配置要求处于 venv，源码 editable install 使用 --no-deps，避免改动共享 torch。
 - 工作目录 outputs/self_evolution/jarvis2021-seed123，完整模型链与缓存存于持久根盘，不只保存在 /dev/shm。实际安装与网络结果在后续记录，不把计划记作成功。
+
+- 2026-11-02T01:19+08:00：setup 878 的在线网络探针失败，未产生 SETUP_COMPLETE。新增 CGCNN_WHEELHOUSE 完全离线安装分支，传输目录为任务 runtime/cgcnn-bootstrap，10 项 wheel 包括原固定 NumPy/pymatgen/matplotlib 及 pytest 的 Python3.10 补充依赖；不替换已共享 torch，不降低固定版本或验收要求。

@@ -465,3 +465,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 实际结果（2026-11-02T01:09+08:00，本地实现）：完整 pytest 为 35 项通过（旧 27 + 新 8），其中独立固定官方 CIFData 构图与原生 forward 对照、缓存损坏/中断恢复、三阶段真实优化、历史缓存链一致、累计优化步数匹配及延后评测/图表生成均通过。新增代码 ruff 检查通过，官方第三方源码保持原样并校验 SHA-256；4 个 Slurm 文件 Bash 语法、Python compileall 与 git diff --check 通过。10 项未使用导入已清理并格式化；最终格式化后再次运行新增回归。以上为小图 CPU 验证，尚不代表真实 JARVIS/GPU 或全任务结果。
 
 提交前复验：格式化后新增 8 项再次通过；ruff、4 份 Bash 语法与 compileall 通过。暂存完整新增文件后发现 upstream 自有 __init__.py/source.json 的 CRLF 被视为行尾空白，已转为 LF（官方源码字节未改），git diff --cached --check 复验通过。全部新增模块 README、相对链接、UTF-8 和单文件小于 10 MiB 检查通过。
+
+## 2026-11-02T01:17+08:00：离线环境引导与官方数据路由修复（计划）
+
+setup 878 已由 scontrol 确认为 FAILED/35，日志为空且发生在 curl 探针，未安装项目包。增加显式离线 wheelhouse 分支，安装前逐项 SHA-256，保留原已锁定 numpy/pymatgen/matplotlib 版本，不降低 GPU/单元测试门槛。固定数据下载 URL 切换到 Figshare 官方 API /v2/file/download/29204826，仍验证原 MD5/大小。检查 Bash 语法、源 manifest、离线文件哈希与大小、README 命令一致；随后真实 Slurm setup 验收。
+
+实际结果（2026-11-02T01:19+08:00）：离线 wheelhouse 共 10 个 wheel、31,866,325 bytes，逐项 SHA-256 清单已生成；固定 JARVIS ZIP 为 31,911,815 bytes，官方 MD5 通过，本地 SHA-256 03e5af365067117d97c73b83fc74b86f79cdba4cc592b346f5aa2209a24c3925。通用 manifest loader 接受 API 路由与原 MD5；setup/prepare Bash 语法和 git diff --check 通过。此修复不改变模型/训练协议，仅切换网络路径；真实离线安装待服务器 Slurm 验收。

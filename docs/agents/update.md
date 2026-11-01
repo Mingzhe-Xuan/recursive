@@ -95,3 +95,5 @@
 - 2026-11-02 00:41 +08:00：新增 docs/plan/plan_2.md，工作名称 Sequential Self-Evolution（亦可称 Sequential Test-Time Scaling）。覆盖 CGCNN、Matformer、iComFormer、完整 JARVIS 回归任务清单、pooling 前原子特征全库缓存、额外线性层、逐阶段随机初始化及历史冻结、默认第 0–5 轮/三个 seeds、必要对照、MAE/累计计算曲线、模块接口、测试与 Slurm 阶段。更新当前状态并保留旧 Goal 1 历史；本轮只改文档。
 
 - 2026-11-02T01:09+08:00：完成 CGCNN seed123 本地流程实现：固定 MIT 官方源码/描述符和 JARVIS 2021 元数据、29 任务、周期构图/分组划分、线性投影、完整训练/缓存链、断点与哈希保护、原始输入和累计步数对照、延后测试评测及 MAE/时间曲线；新增独立模块 README、配置与 Slurm 入口。35 项测试和静态检查通过，当前准备提交同步并开展真实服务器验收。
+
+- 2026-11-02T01:19+08:00：setup 878 在 SOCKS→PyPI TLS 阶段以 35 失败，未进入安装。增加校验后的离线 wheelhouse 安装路径，保持原锁定依赖；查明 Figshare API 下载固定文件成功，31 MB ZIP 的官方 MD5/字节数通过。下一步提交该修复，scp 两组约 32 MB 资源后用 Slurm 重试环境和数据准备。

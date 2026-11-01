@@ -10,7 +10,7 @@
   "artifacts": [
     {
       "filename": "jdft_3d-8-18-2021.json.zip",
-      "url": "https://ndownloader.figshare.com/files/29204826",
+      "url": "https://api.figshare.com/v2/file/download/29204826",
       "size_bytes": 31911815,
       "md5": "8f619035a2cd8030de1ce38ce8b561b2"
     }

@@ -52,3 +52,7 @@
 - 固定第三方源码及原子描述符的字节哈希，并用 .gitattributes 禁止 EOL 转换，否则 Windows checkout 会破坏相同代码的 SHA-256 验收。
 - 恢复身份使用实际计算代码/资源的内容 hash；Git commit 单独记录为来源。仅更新开发文档不能导致已完成训练因 HEAD 改变而失去恢复能力。
 - Windows 原生 SSH 会丢失部分嵌套参数引号，PowerShell 文本管道还可能额外发送 CRLF；远程管理改用 Python subprocess 的 bytes stdin，保留固定 bash 脚本原始字节，不把源码在服务器上直接改写。
+
+## 2026-11-02T01:17+08:00：Figshare 的空响应不是成功下载
+
+三次相关网络故障后复查既有网络经验：反向 SOCKS 的 TLS 错误与 Figshare 主域 202/0-byte 响应均不能视为资源可用。已查明同一固定文件的官方 API /v2/file/download/29204826 返回真实 application/zip、31,911,815 bytes，并重定向到官方 S3；后续仅在官方 MD5 和字节数通过后发布。不要因 requests.raise_for_status 未报错就接受 202 或零字节文件。环境依赖改为本地下载缺失 wheel 后 scp，服务器 Slurm 离线安装。

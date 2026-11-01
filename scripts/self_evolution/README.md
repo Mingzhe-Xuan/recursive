@@ -14,7 +14,12 @@ sbatch --dependency=afterok:PREPARE_JOB \
 ```
 
 Replace SETUP_JOB/PREPARE_JOB with returned Slurm job IDs. Keep the proxy-owning SSH connection
-live during setup/download; each network job verifies SOCKS access independently.
+live during online setup/download; each network job verifies SOCKS access independently.
+Offline setup can instead set `CGCNN_WHEELHOUSE` to a task directory containing Linux cp310 wheels
+and `SHA256SUMS`; all files are checked before pip uses `--no-index --find-links`.
+Pinned NumPy/pymatgen/matplotlib versions stay unchanged. A verified source ZIP transferred by scp
+to the configured downloads directory also avoids a compute-node download; preparation still checks
+official MD5 and size before reading records.
 The runtime uses a dedicated `--system-site-packages` venv to read the already installed
 torch 2.8.0+cu128, installs pinned task overrides only inside the venv, and records the full freeze
 and effective paths. Never modify the inherited user packages. If PySocks is absent, bootstrap

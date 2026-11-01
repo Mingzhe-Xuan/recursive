@@ -20,7 +20,7 @@ archive="$work/downloads/jdft_3d-8-18-2021.json.zip"
 if [[ ! -f "$archive" ]]; then
     curl --proxy "$ALL_PROXY" --connect-timeout 15 --max-time 900 --retry 3 \
         --retry-delay 2 --fail --location --continue-at - \
-        --output "$archive.partial" https://ndownloader.figshare.com/files/29204826
+        --output "$archive.partial" https://api.figshare.com/v2/file/download/29204826
     "$python_bin" -c 'import hashlib,sys; p=sys.argv[1]; b=open(p,"rb").read(); assert len(b)==31911815 and hashlib.md5(b).hexdigest()=="8f619035a2cd8030de1ce38ce8b561b2"' "$archive.partial"
     mv "$archive.partial" "$archive"
 fi
