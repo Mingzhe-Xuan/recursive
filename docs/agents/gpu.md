@@ -91,3 +91,9 @@
 - 2026-11-02T01:25+08:00：计划连接先 pull 到 8e32185 并建立独立小包目录，再以 scp 仅传 466 KB/6 项 pytest 相关 wheel 及清单；完成后下一管理连接仍先 pull，再提交带 CGCNN_WHEELHOUSE 的完全离线 setup，随后通过作业验证的 1080 代理尝试 Figshare 官方 API 下载和构图。MPLCONFIGDIR/XDG_CACHE_HOME 显式限制在任务 runtime，所有计算均由 Slurm 承担。
 
 - 2026-11-02T01:28+08:00：离线 setup879 的精确材料库断言、RTX5090/CUDA12.8 及8项集成测试均通过，管理脚本随后提交 prepare880；跳板在首轮队列输出后断开，不能推断880终止。计划新连接先pull，仅读取879/880权威状态、880日志和下载大小及环境JSON。另日志发现venv旧setuptools使editable元数据为UNKNOWN，将本地修复后提交，不在服务器直接改源码。
+
+- 2026-11-02T01:35+08:00：2f09247已推送，计划先SSH代理pull，再以SFTP reput对任务runtime中的8个bootstrap wheel及清单做可恢复短连接传输，提交修正metadata的Slurm setup；随后对任务downloads中的固定ZIP.scp.partial续传，最多60次短SFTP连接，每次仅访问本任务资源，保留断点。所有SSH管理会话首先pull，传输不改服务器源码；完整ZIP由Slurm MD5/大小验证后才发布并构图。源数据本地官方MD5/大小已通过。
+
+- 2026-11-02T01:37+08:00：上传助手因已完成小文件的reput返回1而重复中止，已核对并结束本任务进程树；未提交新setup或prepare。计划重新建立已登记的SFTP传输批次，先管理SSH pull，再跳过同大小文件错误并逐项核对大小，最终由Slurm校验；不重新下载或覆盖已完整的资源。
+
+- 2026-11-02T01:39+08:00：上次SFTP未创建缺失wheel，尚未提交metadata setup/新prepare；已停止任务自有助手。下一传输批次的管理SSH仍先pull，仅为任务目录内缺失资源建立空占位，再SFTP续传固定wheel/ZIP、完整替换小型清单，验收仍由Slurm执行。

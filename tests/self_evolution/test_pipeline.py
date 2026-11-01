@@ -36,17 +36,33 @@ def synthetic_prepared(root):
         }
         labels[jid], groups[jid] = i / 12, graph["group"]
     atomic_write(
-        graphs / "manifest.json", {"status": "complete", "failures": {}, "entries": entries}
+        graphs / "manifest.json",
+        {
+            "status": "complete",
+            "failures": {},
+            "entries": entries,
+            "identity": {"dataset_sha256": "synthetic-test-snapshot"},
+        },
     )
     task = {
         "task": "formation_energy_peratom",
         "unit": "eV/atom",
         "status": "ready",
         "labels": labels,
+        "dataset_sha256": "synthetic-test-snapshot",
         "split": grouped_split(labels, groups),
     }
     atomic_write(root / "tasks/formation_energy_peratom.json", task)
     return task
+
+
+def test_mixed_dataset_snapshot_is_rejected(tmp_path):
+    task = synthetic_prepared(tmp_path / "prepared")
+    task["dataset_sha256"] = "different-snapshot"
+    atomic_write(tmp_path / "prepared/tasks/formation_energy_peratom.json", task)
+    config = read_json(Path("configs/self_evolution/cgcnn_seed123.json"))
+    with pytest.raises(ValueError, match="task snapshot does not match graph snapshot"):
+        run_task(tmp_path / "prepared", tmp_path / "run", task["task"], config, "cpu")
 
 
 def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):

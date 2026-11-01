@@ -247,6 +247,10 @@ def run_task(
         raise ValueError(f"task not ready: {task_name}")
     root = run / "cgcnn" / task_name / f"seed_{config['seed']}"
     graphs = GraphStore(prepared / "graphs")
+    if not task.get("dataset_sha256") or task["dataset_sha256"] != graphs.manifest.get(
+        "identity", {}
+    ).get("dataset_sha256"):
+        raise ValueError("task snapshot does not match graph snapshot")
     max_round = config["max_round"] if stop_round is None else stop_round
     if not 0 <= max_round <= config["max_round"]:
         raise ValueError("invalid stop_round")

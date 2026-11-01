@@ -483,3 +483,9 @@ SCP 32 MB 环境包被跳板重置，未达到离线验收。实测服务器现�
 真实setup879已通过GPU和8项测试，但venv旧构建工具产生UNKNOWN元数据；固定setuptools70.2.0/wheel0.45.1，并要求实际项目metadata版本0.1.0。prepare880经官方API已下载约1.9MiB后因SSH代理断开以56失败，保留残片，未构图。新增仅在官方MD5/大小通过后接受SFTP staging文件的路径，传输用SFTP reput续传，不反复覆盖已传字节。检查离线8项清单、Bash语法、项目metadata及compileall，重跑同一Slurm测试门槛。
 
 实际结果（2026-11-02T01:33+08:00）：本地纯 Python wheel 构建成功，METADATA 名称 recursive-atomistic-backbones、版本0.1.0及CGCNN描述符资源正确。更新的8项离线清单全部通过SHA-256；ruff、setup/prepare/task Bash语法、compileall及git diff --check通过。879已权威确认为COMPLETED/0、GPU与8项测试通过；880确认为FAILED/56，保留1.9MiB残片。安装元数据修复及staging门控需由下一轮真实作业验证。
+
+## 2026-11-02T01:41+08:00：真实预处理前的快照绑定（计划）
+
+审计发现prepared任务与graph快照之间缺少显式匹配门控，且构图恢复未绑定描述符/库版本。新增任务dataset SHA与graph dataset SHA一致性拒绝测试；图缓存身份绑定构图代码、描述符及NumPy/pymatgen版本，恢复不复用其他builder。保持原生几何与模型行为不变，运行完整36项测试、静态检查后提交，再用于尚未开始的真实构图。
+
+实际结果（2026-11-02T01:44+08:00）：全部36项pytest通过（旧27 + 新9），新增任务/图快照混用被拒绝；ruff和格式化通过。图builder身份纳入代码/描述符/NumPy/pymatgen版本，恢复不再仅看文件存在或维度。此前传输助手已提交旧代码882，因此正式预处理改用独立 prepared 根路径并先检查/停止任务自有旧预处理，不覆盖其产物。

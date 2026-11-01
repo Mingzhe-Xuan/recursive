@@ -12,7 +12,7 @@ import zipfile
 
 from self_evolution.io import atomic_write, digest, file_hash, load_tensor, read_json
 
-from .graphs import GraphConfig, make_graph
+from .graphs import GraphConfig, builder_identity, make_graph
 from .tasks import TASKS, grouped_split, select_labels
 
 
@@ -47,6 +47,7 @@ def _prepare_graph(args):
                 graph["jid"] != jid
                 or graph["structure_hash"] != digest(row["atoms"])
                 or graph["config"] != asdict(config)
+                or graph.get("builder_id") != builder_identity()
             ):
                 raise ValueError("existing graph has incompatible structure/config")
         else:
@@ -88,6 +89,7 @@ def prepare_dataset(
         "dataset_sha256": dataset_hash,
         "graph_config": asdict(config),
         "source_sha256": file_hash(source_path),
+        "builder_id": builder_identity(),
     }
     prior = root / "manifest.json"
     if prior.exists():

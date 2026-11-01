@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import importlib.metadata
 from dataclasses import asdict, dataclass
 from functools import lru_cache
 from pathlib import Path
@@ -57,6 +59,20 @@ def atom_embeddings() -> dict:
     return json.loads(path.read_text())
 
 
+@lru_cache(maxsize=1)
+def builder_identity() -> str:
+    descriptor = Path(__file__).parents[1] / "backbones/cgcnn/upstream/atom_init.json"
+    code = Path(__file__).read_bytes().replace(b"\r\n", b"\n")
+    return digest(
+        {
+            "code_sha256": hashlib.sha256(code).hexdigest(),
+            "descriptors_sha256": file_hash(descriptor),
+            "numpy": importlib.metadata.version("numpy"),
+            "pymatgen": importlib.metadata.version("pymatgen"),
+        }
+    )
+
+
 def make_graph(record: dict, config: GraphConfig) -> dict:
     crystal = structure_from_record(record["atoms"])
     if not len(crystal) or not crystal.is_ordered:
@@ -80,6 +96,7 @@ def make_graph(record: dict, config: GraphConfig) -> dict:
         raise ValueError("non-finite graph features")
     return {
         "jid": record["jid"],
+        "builder_id": builder_identity(),
         "atom_features": atom,
         "neighbor_features": torch.tensor(features, dtype=torch.float32),
         "neighbor_indices": torch.tensor(indices, dtype=torch.long),
