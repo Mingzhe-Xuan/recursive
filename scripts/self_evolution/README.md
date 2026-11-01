@@ -52,6 +52,10 @@ pass that absolute path through `CGCNN_WORK_ROOT` on every submission that conti
 Calling the CLI directly is intended for small tests or inside Slurm, not login-node training.
 `accept_real.py` checks actual CUDA native/wrapper parity, batching and the two-stage cache chain
 without reading labels. The full task array must depend on this gate as well as successful pilot.
+It also runs `pilot_resources.py` on two independent model copies, recording full-library cache
+bytes, first verified batch reads and fixed-batch surrogate forward/backward/Adam timings and
+PyTorch peak allocation. These are not full-epoch peaks or raw disk bandwidth; no labels are read
+and no authoritative checkpoint is updated. CUDA resource diagnostics require a Slurm allocation.
 `inspect_environment.py` is metadata-only unless `--gpu` is supplied (GPU mode runs in Slurm).
 Reports are under `<work>/run/reports`, including summary.json and the full task coverage table.
 

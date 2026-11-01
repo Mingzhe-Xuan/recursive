@@ -1,4 +1,5 @@
 import copy
+import importlib.util
 from pathlib import Path
 
 import pytest
@@ -82,6 +83,42 @@ def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):
     assert len(chain) == 3
     assert file_hash(root / "round_000/best.pt") == prior_hash
     assert read_json(root / "chain_verification.json")["depth"] == 2
+    resource_spec = importlib.util.spec_from_file_location(
+        "pilot_resources", Path("scripts/self_evolution/pilot_resources.py")
+    )
+    resource_module = importlib.util.module_from_spec(resource_spec)
+    resource_spec.loader.exec_module(resource_module)
+    hashes = {
+        p: file_hash(p)
+        for r in range(2)
+        for p in [
+            root / f"round_{r:03d}/best.pt",
+            root / f"round_{r:03d}/cache/manifest.json",
+            *(root / f"round_{r:03d}/cache").glob("nodes_*.pt"),
+        ]
+    }
+    task_path = prepared / "tasks/formation_energy_peratom.json"
+    unavailable = prepared / "unavailable_task.json"
+    task_path.rename(unavailable)
+    try:
+        resources = resource_module.audit_pilot(root, prepared / "graphs", config, "cpu")
+    finally:
+        unavailable.rename(task_path)
+    assert resources["status"] == "measured" and resources["labels_read"] is False
+    assert resources["authoritative_training_outputs_modified"] is False
+    assert [r["round"] for r in resources["stages"]] == [0, 1]
+    for stage in resources["stages"]:
+        assert stage["cache_structures"] == 12 and stage["cache_atoms"] == 24
+        assert stage["cache_stored_bytes"] >= stage["cache_payload_bytes"] > 0
+        assert stage["cache_stored_bytes"] >= stage["cache_shard_file_bytes"]
+        assert stage["peak_torch_allocated_bytes"] is None
+        assert stage["peak_torch_reserved_bytes"] is None
+        assert stage["surrogate_step_seconds"] > 0
+    assert all(file_hash(p) == before for p, before in hashes.items())
+    different_protocol = copy.deepcopy(config)
+    different_protocol["training"]["learning_rate"] = 0.02
+    with pytest.raises(ValueError, match="completed protocol"):
+        resource_module.audit_pilot(root, prepared / "graphs", different_protocol, "cpu")
     for r in range(1, 3):
         control = read_json(root / f"controls/cumulative/round_{r:03d}/training.json")
         assert control["optimizer_steps"] == chain[r]["cumulative_steps"]

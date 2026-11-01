@@ -24,4 +24,4 @@ RTX 5090、固定 batch 64 的 formation energy 第 0 轮，已拉回的 62 个�
 
 ## 待 pilot 完成后补齐
 
-第 0/1 轮训练完成后，结合 `training.json`、`cache_timing.json`、缓存 manifest 和 `chain_verification.json` 核对实际训练步数、缓存耗时与字节数。现有文件不记录训练峰值显存或独立 IO 分项，仍需在受控 Slurm 诊断中补齐，不能从墙钟或短批次计时反推。完整链部署计时在正式链完成后生成。当前尚无真实跨轮 MAE 曲线，不用验证集训练轨迹代替最终测试结果。
+第 0/1 轮训练完成后，结合 `training.json`、`cache_timing.json`、缓存 manifest 和 `chain_verification.json` 核对实际训练步数、缓存耗时与字节数。已有验收入口将调用 [pilot_resources.py](../../scripts/self_evolution/pilot_resources.py)，在 Slurm 中对两个独立模型副本测量固定批次代理训练步骤、PyTorch allocator 峰值、首次校验图/缓存读取及设备传输，写出 `pilot_resources.json`；真实 GPU 结果仍待 pilot 完成。该脚本不读取标签，lr=0，仅更新副本的优化器状态和 BN buffer；峰值限于诊断批次，读取耗时包含校验/反序列化/拼接，OS 页缓存状态未知，不能冒充整轮训练峰值或裸盘带宽。完整链部署计时在正式链完成后生成。当前尚无真实跨轮 MAE 曲线，不用验证集训练轨迹代替最终测试结果。

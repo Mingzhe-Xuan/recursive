@@ -10,6 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
 import torch
 
+from pilot_resources import audit_pilot
+
 from self_evolution.data.graphs import GraphStore, collate_graphs
 from self_evolution.io import atomic_write, code_revision, file_hash, read_json
 from self_evolution.pipeline.chain import verify_chain
@@ -69,6 +71,10 @@ def main():
         "chain": chain_result,
         "labels_read": False,
     }
+    del model, saved, batch, official, wrapped, single
+    resource_path = args.output / "pilot_resources.json"
+    audit_pilot(root, args.prepared / "graphs", config, "cuda", resource_path)
+    result["resource_report_sha256"] = file_hash(resource_path)
     atomic_write(args.output / "real_acceptance.json", result)
     print(result)
 
