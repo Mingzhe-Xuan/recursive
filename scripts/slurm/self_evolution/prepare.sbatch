@@ -17,6 +17,10 @@ export ALL_PROXY="${CGCNN_PROXY:-socks5h://127.0.0.1:1080}"
 export HTTP_PROXY="$ALL_PROXY" HTTPS_PROXY="$ALL_PROXY"
 # urllib does not implement SOCKS. curl downloads the fixed artifact; Python verifies its MD5/size.
 archive="$work/downloads/jdft_3d-8-18-2021.json.zip"
+if [[ ! -f "$archive" && -f "$archive.scp.partial" ]]; then
+    "$python_bin" -c 'import hashlib,sys; b=open(sys.argv[1],"rb").read(); assert len(b)==31911815 and hashlib.md5(b).hexdigest()=="8f619035a2cd8030de1ce38ce8b561b2"' "$archive.scp.partial"
+    mv "$archive.scp.partial" "$archive"
+fi
 if [[ ! -f "$archive" ]]; then
     curl --proxy "$ALL_PROXY" --connect-timeout 15 --max-time 900 --retry 3 \
         --retry-delay 2 --fail --location --continue-at - \

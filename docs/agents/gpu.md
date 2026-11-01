@@ -87,3 +87,7 @@
 - 2026-11-02T01:13+08:00：服务器已 pull 到 59cce5f 并提交环境 setup 作业 878；管理会话在首轮队列输出后退出，尚未确认作业结果，未提交 prepare。计划下一连接先 pull，仅读取 878 的 squeue/scontrol 与固定日志及完成标记，再按证据决定后续动作，不因监控结束直接重提。
 
 - 2026-11-02T01:20+08:00：离线修复已提交 66a7cae。计划先 SSH 代理 pull 并核对 HEAD、创建任务专用下载目录，再以两条 scp 连接传输已校验的 10 项 wheel/SHA256SUMS 和 JARVIS ZIP（均约32 MB）。scp 仅写任务 outputs 资源目录，不传输或改写源码；后续所有实际哈希/安装/构图由 Slurm 验收。
+
+- 2026-11-02T01:25+08:00：计划连接先 pull 到 8e32185 并建立独立小包目录，再以 scp 仅传 466 KB/6 项 pytest 相关 wheel 及清单；完成后下一管理连接仍先 pull，再提交带 CGCNN_WHEELHOUSE 的完全离线 setup，随后通过作业验证的 1080 代理尝试 Figshare 官方 API 下载和构图。MPLCONFIGDIR/XDG_CACHE_HOME 显式限制在任务 runtime，所有计算均由 Slurm 承担。
+
+- 2026-11-02T01:28+08:00：离线 setup879 的精确材料库断言、RTX5090/CUDA12.8 及8项集成测试均通过，管理脚本随后提交 prepare880；跳板在首轮队列输出后断开，不能推断880终止。计划新连接先pull，仅读取879/880权威状态、880日志和下载大小及环境JSON。另日志发现venv旧setuptools使editable元数据为UNKNOWN，将本地修复后提交，不在服务器直接改源码。

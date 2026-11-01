@@ -21,6 +21,10 @@ Production pins the existing NumPy 2.2.6/pymatgen 2025.10.7/matplotlib 3.10.3 co
 only the small missing pytest dependencies need transfer. A verified source ZIP transferred by scp
 to the configured downloads directory also avoids a compute-node download; preparation still checks
 official MD5 and size before reading records.
+The build backend is explicitly pinned to setuptools 70.2.0 and wheel 0.45.1; setup checks the
+installed project name/version, not only whether editable installation exits successfully.
+For interrupted large-file transport, SFTP `reput` can resume to
+`downloads/jdft_3d-8-18-2021.json.zip.scp.partial`; preparation verifies MD5/size before publishing it.
 The runtime uses a dedicated `--system-site-packages` venv to read the already installed
 torch 2.8.0+cu128, installs pinned task overrides only inside the venv, and records the full freeze
 and effective paths. Never modify the inherited user packages. If PySocks is absent, bootstrap

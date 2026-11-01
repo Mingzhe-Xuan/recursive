@@ -477,3 +477,9 @@ setup 878 已由 scontrol 确认为 FAILED/35，日志为空且发生在 curl �
 SCP 32 MB 环境包被跳板重置，未达到离线验收。实测服务器现有 numpy 2.2.6/pymatgen 2025.10.7/matplotlib 3.10.3 是已安装的兼容组合，CGCNN 纯 PyTorch 本身不要求旧版本，故在任何真实训练前改为精确锁定这些继承版本；仅传 7 个纯 Python 测试依赖共约0.5 MB。模型/数据/训练配置、原生差分与缓存链验收标准全部保持。检查精确 pin、离线清单和 Bash 语法；必须通过同一真实 Slurm GPU 和 8 项集成测试才完成环境验收。
 
 实际结果（2026-11-02T01:24+08:00）：精简环境包为 6 个 Linux 所需纯 Python wheel、466,401 bytes（Windows colorama 不需要），逐项 SHA-256 复验通过；ruff、setup Bash、compileall 通过，CGCNN 8 项本地验收再次通过。生产精确版本断言已加入 GPU 检查脚本，真实环境仍待 Slurm 验收。
+
+## 2026-11-02T01:30+08:00：实际安装元数据与断线数据传输修复（计划）
+
+真实setup879已通过GPU和8项测试，但venv旧构建工具产生UNKNOWN元数据；固定setuptools70.2.0/wheel0.45.1，并要求实际项目metadata版本0.1.0。prepare880经官方API已下载约1.9MiB后因SSH代理断开以56失败，保留残片，未构图。新增仅在官方MD5/大小通过后接受SFTP staging文件的路径，传输用SFTP reput续传，不反复覆盖已传字节。检查离线8项清单、Bash语法、项目metadata及compileall，重跑同一Slurm测试门槛。
+
+实际结果（2026-11-02T01:33+08:00）：本地纯 Python wheel 构建成功，METADATA 名称 recursive-atomistic-backbones、版本0.1.0及CGCNN描述符资源正确。更新的8项离线清单全部通过SHA-256；ruff、setup/prepare/task Bash语法、compileall及git diff --check通过。879已权威确认为COMPLETED/0、GPU与8项测试通过；880确认为FAILED/56，保留1.9MiB残片。安装元数据修复及staging门控需由下一轮真实作业验证。

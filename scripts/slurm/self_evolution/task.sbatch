@@ -14,6 +14,7 @@ python_bin="$runtime/venv/bin/python"
 test -f "$runtime/manifests/SETUP_COMPLETE"
 export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=4
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
+export MPLCONFIGDIR="$runtime/matplotlib" XDG_CACHE_HOME="$runtime/cache"
 arguments=(--prepared "$work/prepared" --output "$work/run" --device cuda)
 if [[ -n "${CGCNN_TASK:-}" ]]; then
     arguments+=(--task "$CGCNN_TASK")

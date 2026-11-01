@@ -12,7 +12,19 @@ parser = argparse.ArgumentParser(__doc__)
 parser.add_argument("--output", type=Path)
 parser.add_argument("--gpu", action="store_true")
 args = parser.parse_args()
-names = ["torch", "numpy", "pymatgen", "matplotlib", "pytest", "scipy", "pandas", "PySocks"]
+names = [
+    "torch",
+    "numpy",
+    "pymatgen",
+    "matplotlib",
+    "pytest",
+    "scipy",
+    "pandas",
+    "PySocks",
+    "setuptools",
+    "wheel",
+    "recursive-atomistic-backbones",
+]
 versions = {}
 for name in names:
     try:
@@ -35,6 +47,9 @@ if args.gpu:
         "pymatgen": "2025.10.7",
         "matplotlib": "3.10.3",
         "pytest": "8.3.5",
+        "setuptools": "70.2.0",
+        "wheel": "0.45.1",
+        "recursive-atomistic-backbones": "0.1.0",
     }.items():
         assert versions[name] == expected, f"unexpected {name}: {versions[name]}"
     import torch

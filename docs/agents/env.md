@@ -66,3 +66,5 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 2026-11-02T01:19+08:00：setup 878 的在线网络探针失败，未产生 SETUP_COMPLETE。新增 CGCNN_WHEELHOUSE 完全离线安装分支，传输目录为任务 runtime/cgcnn-bootstrap，10 项 wheel 包括原固定 NumPy/pymatgen/matplotlib 及 pytest 的 Python3.10 补充依赖；不替换已共享 torch，不降低固定版本或验收要求。
 
 - 2026-11-02T01:24+08:00：正式训练前修订最终环境协议，使用服务器已安装的 numpy==2.2.6、pymatgen==2025.10.7、matplotlib==3.10.3，torch==2.8.0+cu128 仍只读继承；专用 venv 仅补 pytest==8.3.5 及必要纯 Python依赖。原因是 32 MB SCP 也被跳板中断，而上述材料库组合本已存在，CGCNN 无旧版本硬约束。新版环境必须通过相同 GPU、原生数值和缓存链测试，不能以继承成功替代验收。精简离线目录改为 runtime/cgcnn-inherited-bootstrap（6 wheel/466,401 bytes），旧部分传输目录保留未使用。
+
+- 2026-11-02T01:33+08:00：Slurm879环境GPU与8项集成测试通过；实际材料库精确版本已核实。发现venv默认旧setuptools将editable元数据记为UNKNOWN，新增任务venv内setuptools==70.2.0/wheel==0.45.1覆盖，并新增项目metadata 0.1.0断言。离线bootstrap现8个wheel；此修复不更改模型、数据或训练预算。
