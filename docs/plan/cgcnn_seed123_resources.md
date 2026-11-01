@@ -33,3 +33,11 @@ RTX 5090、固定 batch 64 的 formation energy 第 0 轮，已拉回的 62 个�
 资源验收会额外探测全库中原子数最大的一个完整批次，测量第 0/1 轮副本的 reserved 峰值。调度入口在启动时校验真实验收、资源 SHA、配置、核心代码和图身份；以每进程 `2 × peak_reserved + 1 GiB`、总量不超过 75% GPU 内存、CPU/主机内存规划选择 1–4 并发。最大批次 OOM 会明确记录并退回单进程；该保守余量不是任意后续批次的绝对内存保证。
 
 每组全部训练退出后才串行评测/部署计时，保留独占 GPU 计时口径；共享训练墙钟须带执行条件解读，不能当作孤立模型的 GPU 忙碌时间。每组申请 16 CPU、64 GiB、1 GPU，时限 21 天，以容纳退回单进程时的一组任务。计划中的训练预算并未增加；并行速度必须据实测报告，不能将 47.5 天直接除以并发数作为承诺。旧 task array 与 pool 只启用一种，替换时保留作业 ledger 和汇总依赖。
+
+## 第 0 轮完成后的实测记录（2026-11-02T04:02:53+08:00）
+
+formation energy 第 0 轮按 validation patience 停在 **222 epoch / 154734 步**，最优验证 MAE **0.04822800 eV/atom**，训练/验证累计 **6698.23 秒（1.86 小时）**。这些是验证指标，测试评估仍延后到完整预设链与对照完成。
+
+全库缓存已完成：**55712 结构、562055 原子、64 维 float32、218 分片**；远端完整缓存目录轻量统计为 **147579938 字节（140.74 MiB）**，包含分片及元数据，生成/校验累计 **12.91 秒**。缓存生成路径逐片校验完成后已进入第 1 轮。缓存/直接链在 16 个固定结构的数值检查通过（atol=2e-5、rtol=1e-4），节点最大绝对误差 **6.1988831e-06**；该一致性探针的覆盖范围是 16 个结构。
+
+小型证据已拉回 `outputs/self_evolution/cgcnn-seed123-evidence/`，包括 `round0_training.json`、`round0_cache_timing.json`、`chain_manifest_round0.json`、`chain_verification_round0.json`、`pool_migration.json` 和 `pool_check_894.out`，均保持 Git 忽略。正式队列现为 **890 → afterok 891 → afterok 895（8 波）→ afterany 893**，旧 pending 892 已取消；Slurm894以 ExitCode0:0 完成18项CPU集成检查。真实GPU资源报告仍待第1轮完成后的891，不能提前声称已测。
