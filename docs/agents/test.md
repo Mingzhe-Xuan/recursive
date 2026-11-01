@@ -517,3 +517,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 实际结果（2026-11-02T02:35:29+08:00）：真实Slurm步骤890.0成功保存diagnostic.json（CUDA、64结构/699原子、shared_gpu=true）。native及segment候选前向与全部参数梯度均通过固定atol2e-5/rtol1e-4，候选预测最大差2.38418579e-7；固定批次单步19.316ms/10.133ms。原权重/标签不变，独立副本训练，非生产替换或全任务验收。SFTP回读JSON确认上述字段；history已完成62epoch，best验证MAE0.05821373。文档路径、依赖ID和git diff --check检查通过；生成证据确认Git忽略。
 
 - 2026-11-02T02:37:09+08:00（仅文档检查）：squeue/固定日志/history.json交叉确认890为RUNNING、epoch66、46002步、best验证MAE0.05821373；后续891/892/893为依赖等待。核对作业ID、正式work_root和本地证据快照时效，git diff --check通过；无代码或配置修改，不重复运行训练测试。
+
+- 2026-11-02T02:42:59+08:00（监控/文档）：管理辅助脚本py_compile通过；二进制stdin的真实连接先成功pull再查询，连续观测r0epoch76→78，890 RUNNING、无failure，891–893为Dependency。Windows text stdin造成CRLF失败后仅终止明确匹配的本地observer树，未把观测错误解释成训练失败。核查状态文档handle/路径和git diff --check通过。
