@@ -507,3 +507,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 ## 2026-11-02T02:21+08:00：实际运行证据与提交前文档检查
 
 本轮仅记录进度。小型JSON回读显示55712结构、29任务ready、项目metadata0.1.0、原始55723行；训练history有32个完成epoch，best验证MAE0.07208431。scontrol分别确认891 afterok890、892 afterok891（0–28%1）、893 afterany892_*，890为RUNNING。git check-ignore确认本地审计/训练生成物被忽略；实际路径、作业ID和Markdown格式检查通过。提交前git diff --check通过，未重复声称最终实验或真实pilot验收已完成。
+
+## 2026-11-02T02:27+08:00：训练执行开销诊断（计划）
+
+890实测每epoch约30秒，全矩阵含累计步数对照成本较大。只增加scripts诊断，不改src/config或已有权重：复制真实原子图与checkpoint到独立结果目录，在任务890自有Slurm allocation内通过srun --jobid/--overlap做短诊断；对比原生逐图mean pooling与数学等价segment mean的前向/梯度（原定atol2e-5/rtol1e-4）及原路径开销，记录共享GPU条件。不得读取标签、写回checkpoint、改变训练预算或据此跳过必需验收。先ruff/compileall/Bash检查，诊断失败仅记录候选不可用，不影响原训练或将其记为通过。
+
+实际结果（2026-11-02T02:32:08+08:00）：profile_execution.py 的ruff检查、py_compile和git diff --check通过；诊断仅操作checkpoint副本与64个无标签图，候选前向/逐参数梯度沿用固定容差，失败明确标记rejected。实际性能/数值结果待Slurm短步骤，不将静态检查称为GPU验收。

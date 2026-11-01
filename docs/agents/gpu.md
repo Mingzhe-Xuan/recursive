@@ -119,3 +119,5 @@
 - 2026-11-02T02:16+08:00：计划连接先pull da702f6，只读确认当前890和无重复accept/report；在持久ledger不存在时依次排队afterok:890的CUDA真实验收、afterok验收的0–28%1全任务数组（显式清空pilot-only变量，运行r0–5及必要对照）、afterany数组的汇总。各sbatch返回ID立即追加任务ledger以便断线恢复，不重复提交；核心src和训练配置未改变，890可继续，模型/缓存不会因文档或入口更新失效。
 
 - 2026-11-02T02:18+08:00：已核实890 RUNNING至epoch27、best验证MAE0.07208431；891真实CUDA验收、892全29任务数组、893汇总已按afterok/afterany排队，ledger位于final/extension-da702f6.tsv。计划下一连接先pull，再只读核查依赖条件；随后SFTP拉回小型环境/原始审计/清理后审计/ledger/训练history到本地outputs证据目录，数据生成物不进入Git。
+
+- 2026-11-02T02:25+08:00：继续active目标，上一目标轮为实现/真实数据/训练启动的progress。本连接先pull，再只读核实890/891/892/893与两阶段history/失败文件/验收状态；另读取srun帮助以判断是否能在任务自有分配内做短诊断，不实际启动额外计算，不修改/重启已运行作业。

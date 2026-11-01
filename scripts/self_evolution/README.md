@@ -54,3 +54,10 @@ Calling the CLI directly is intended for small tests or inside Slurm, not login-
 without reading labels. The full task array must depend on this gate as well as successful pilot.
 `inspect_environment.py` is metadata-only unless `--gpu` is supplied (GPU mode runs in Slurm).
 Reports are under `<work>/run/reports`, including summary.json and the full task coverage table.
+
+`profile_execution.py` is an optional isolated diagnostic. It snapshots a round-zero checkpoint,
+does not read labels or alter authoritative weights, and checks a segment-mean pooling candidate
+against the original forward and gradients using the already fixed numerical tolerances.
+Rejected candidates remain rejected in diagnostic.json; the production model is unchanged.
+When sharing an existing task-owned Slurm allocation through `srun --jobid=... --overlap`, record
+that condition with `--shared-gpu`; these timings are exploratory, not exclusive-device benchmarks.
