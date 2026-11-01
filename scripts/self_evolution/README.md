@@ -13,7 +13,8 @@ sbatch --dependency=afterok:PREPARE_JOB \
   scripts/slurm/self_evolution/task.sbatch
 ```
 
-Replace SETUP_JOB/PREPARE_JOB with returned Slurm job IDs. Keep the proxy-owning SSH connection
+Replace SETUP_JOB/PREPARE_JOB with returned Slurm job IDs; PILOT_JOB, ACCEPT_JOB and ARRAY_JOB
+below likewise denote actual returned IDs. Keep the proxy-owning SSH connection
 live during online setup/download; each network job verifies SOCKS access independently.
 Offline setup can instead set `CGCNN_WHEELHOUSE` to a task directory containing Linux cp310 wheels
 and `SHA256SUMS`; all files are checked before pip uses `--no-index --find-links`.
@@ -33,7 +34,10 @@ its wheel into the venv before proxy-based pip; do not fall back to an unverifie
 After real pilot acceptance, run all tasks (one array element at a time on the single GPU):
 
 ```bash
-sbatch --array=0-28%1 scripts/slurm/self_evolution/task.sbatch
+sbatch --dependency=afterok:PILOT_JOB scripts/slurm/self_evolution/accept.sbatch
+sbatch --dependency=afterok:ACCEPT_JOB --array=0-28%1 \
+  --export=ALL,CGCNN_TASK=,CGCNN_STOP_ROUND=,CGCNN_NO_CONTROLS=0 \
+  scripts/slurm/self_evolution/task.sbatch
 sbatch --dependency=afterany:ARRAY_JOB scripts/slurm/self_evolution/summarize.sbatch
 ```
 
@@ -41,8 +45,12 @@ The same output root resumes the pilot without retraining verified stages. Produ
 rounds 0..5, required controls and deferred test evaluation. Do not set pilot-only environment
 variables on production submissions. `CGCNN_RUNTIME_ROOT` and `CGCNN_WORK_ROOT` override absolute
 runtime/work roots, provided both are visible to the selected compute node and persistent.
+The current audited run uses `outputs/self_evolution/jarvis2021-seed123-final` as its work root;
+pass that absolute path through `CGCNN_WORK_ROOT` on every submission that continues this run.
 
 `run.py tasks` prints stable task-index mapping. `run.py --help` lists individual CLI actions.
 Calling the CLI directly is intended for small tests or inside Slurm, not login-node training.
+`accept_real.py` checks actual CUDA native/wrapper parity, batching and the two-stage cache chain
+without reading labels. The full task array must depend on this gate as well as successful pilot.
 `inspect_environment.py` is metadata-only unless `--gpu` is supplied (GPU mode runs in Slurm).
 Reports are under `<work>/run/reports`, including summary.json and the full task coverage table.

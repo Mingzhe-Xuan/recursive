@@ -68,3 +68,5 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 2026-11-02T01:24+08:00：正式训练前修订最终环境协议，使用服务器已安装的 numpy==2.2.6、pymatgen==2025.10.7、matplotlib==3.10.3，torch==2.8.0+cu128 仍只读继承；专用 venv 仅补 pytest==8.3.5 及必要纯 Python依赖。原因是 32 MB SCP 也被跳板中断，而上述材料库组合本已存在，CGCNN 无旧版本硬约束。新版环境必须通过相同 GPU、原生数值和缓存链测试，不能以继承成功替代验收。精简离线目录改为 runtime/cgcnn-inherited-bootstrap（6 wheel/466,401 bytes），旧部分传输目录保留未使用。
 
 - 2026-11-02T01:33+08:00：Slurm879环境GPU与8项集成测试通过；实际材料库精确版本已核实。发现venv默认旧setuptools将editable元数据记为UNKNOWN，新增任务venv内setuptools==70.2.0/wheel==0.45.1覆盖，并新增项目metadata 0.1.0断言。离线bootstrap现8个wheel；此修复不更改模型、数据或训练预算。
+
+- 2026-11-02T02:12+08:00：888最终环境真实验收成功：Python3.10.12、torch2.8.0+cu128、CUDA12.8/RTX5090、numpy2.2.6、pymatgen2025.10.7、matplotlib3.10.3、pytest8.3.5、setuptools70.2.0、wheel0.45.1，项目metadata recursive-atomistic-backbones0.1.0，12项测试通过。正式work_root=/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final；完整图数据hash85da743bbe3ef70e6c429af2b7d026b20a375dac665a8d0485a4725e282ec376，891之前的实际pilot为890。
