@@ -531,3 +531,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 实际结果（2026-11-02T03:18:02+08:00）：全部39项pytest通过（扩展已有三阶段测试，数量未增加），覆盖真实文件标签缺席、两阶段完整缓存元数据、所有checkpoint/manifest/分片SHA不变、异协议拒绝及CPU显存字段为空；ruff/格式/py_compile/accept.sbatch Bash语法/git diff --check通过。首次pytest因默认Temp和.pytest_cache ACL在setup阶段失败，改用任务专用workspace --basetemp及cache_dir后通过，未降低断言。真实GPU峰值/IO结果仍须891在pilot结束后执行。核心src和训练配置未改。
 
 - 2026-11-02T03:21:00+08:00：远端同步后轻量验收通过：HEAD ee775bc，accept_real.py引用audit_pilot，新增脚本存在；git diff 4379c88 HEAD -- src/self_evolution configs/self_evolution为空；squeue890 RUNNING、891 afterok890等待。未在登录节点执行资源/训练脚本或编译。文档链接和git diff --check通过；GPU资源测量仍未执行。
+
+## 2026-11-02T03:29:04+08:00：独立任务共享GPU调度（实现计划）
+
+保持src/config/seed/原生算子和训练预算不变，仅scripts/slurm新增按4任务一组的pool入口；同组独立任务并行训练，全部训练子进程退出后再逐任务独占GPU执行evaluate/部署计时。启动前验证真实验收与资源报告SHA/配置，依代表批次和最大原子数批次的GPU reserved峰值、CPU配置及可用内存保守选择1–4并发；最大批次OOM只记录诊断不可用并退回1，不把OOM记通过。测试范围：29任务分组全覆盖无重复；资源缺失/错hash拒绝、内存小则降低并发；真实CPU子进程验证并发上限、失败任务隔离、其他任务继续、全部run结束前不evaluate、evaluate串行、恢复日志与共享条件元数据完整。扩展已有pipeline测试覆盖代表/最大批次报告及checkpoint/缓存不变。ruff/py_compile/Bash语法及完整pytest通过后提交；正式队列只在真实pilot资源已测且新版入口同步后替换，不能仅凭静态估算启用并行。
+
+实际结果（2026-11-02T03:46:18+08:00）：全部45项本地pytest通过（原39+6项pool），最终账本/报告保留/预算元数据修改后6项pool再次通过。真实短子进程证明并发2上限及重叠、run全部终止后才evaluate、evaluate串行、一任务失败不取消其他任务、旧报告和多次尝试账本保留；资源错配置/core/graph/SHA可拒绝，内存不足/OOM标记回单进程。代表/最大批次CPU集成通过、所有checkpoint/cache分片hash不变。ruff/格式/py_compile、pool及pool_check Bash语法、文档相对链接和git diff --check通过。Slurm Linux检查和真实GPU测量仍待执行，未将它们记通过。

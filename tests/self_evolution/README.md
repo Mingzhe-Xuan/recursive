@@ -9,3 +9,7 @@ Synthetic graphs/metrics validate behavior; they do not replace full JARVIS or C
 The pipeline integration also removes the task-label file while measuring two copied stages,
 checks resource metadata and protocol rejection, and verifies checkpoint/manifest/shard hashes
 remain unchanged. CPU runs leave GPU peak fields null; real GPU measurements run in Slurm.
+
+Pool tests run real short-lived Python subprocesses to check bounded overlap, failure isolation,
+the barrier between training and evaluation, serial evaluation, retained reports, full 29-task
+coverage and source-bound resource gates. They do not replace real CUDA resource measurements.

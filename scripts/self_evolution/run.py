@@ -62,9 +62,10 @@ def main():
     if args.output is None:
         parser.error("--output required")
     if args.action == "summarize":
+        from execution_pool import enrich_summary
         from self_evolution.evaluation.report import summarize
 
-        print(json.dumps(summarize(args.output, config)))
+        print(json.dumps(enrich_summary(args.output, summarize(args.output, config))))
         return
     if args.task_index is not None:
         if not 0 <= args.task_index < len(TASKS):

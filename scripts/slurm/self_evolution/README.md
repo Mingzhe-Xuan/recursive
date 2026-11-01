@@ -8,3 +8,9 @@ fixed source and constructs geometry/splits. `task.sbatch` runs one task's stage
 Each job runs from SLURM_SUBMIT_DIR. Setup/prepare verify their own proxy/network path.
 Default persistent outputs are repository outputs/self_evolution; no unique result is kept only
 in /dev/shm. See [submission instructions](../../self_evolution/README.md) for resume conventions.
+
+`pool.sbatch` is an alternative to the 29-element task array: submit an eight-element array
+`0-7%1` after real acceptance. Each allocation runs up to four independent training processes,
+then serial evaluation. Real largest-batch memory measurements choose concurrency at runtime.
+It requests 16 CPUs, 64 GiB and one GPU for up to 21 days per wave; training protocols stay fixed.
+`pool_check.sbatch` requests two CPUs and no GPU for the Linux integration/orchestration checks.

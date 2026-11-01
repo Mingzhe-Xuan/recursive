@@ -107,6 +107,10 @@ def test_three_stage_pipeline_controls_and_deferred_test(tmp_path):
     assert resources["status"] == "measured" and resources["labels_read"] is False
     assert resources["authoritative_training_outputs_modified"] is False
     assert [r["round"] for r in resources["stages"]] == [0, 1]
+    assert resources["largest_batch_status"] == "measured"
+    assert len(resources["largest_batch_ids"]) == config["training"]["batch_size"]
+    assert [r["round"] for r in resources["largest_batch_stages"]] == [0, 1]
+    assert resources["device_memory_bytes"] is None
     for stage in resources["stages"]:
         assert stage["cache_structures"] == 12 and stage["cache_atoms"] == 24
         assert stage["cache_stored_bytes"] >= stage["cache_payload_bytes"] > 0

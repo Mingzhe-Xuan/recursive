@@ -65,3 +65,22 @@ against the original forward and gradients using the already fixed numerical tol
 Rejected candidates remain rejected in diagnostic.json; the production model is unchanged.
 When sharing an existing task-owned Slurm allocation through `srun --jobid=... --overlap`, record
 that condition with `--shared-gpu`; these timings are exploratory, not exclusive-device benchmarks.
+
+`execution_pool.py` is an optional full-matrix scheduler: eight waves (`--array=0-7%1`),
+each covering up to four tasks in stable task-index order. It requires the real CUDA acceptance
+and matching resource/config/core/geometry hashes. `pilot_resources.py` also probes the 64 structures
+with the largest atom counts (or the configured smaller batch); an OOM is recorded explicitly and
+forces the scheduler to one worker. Otherwise it caps workers using measured reserved memory,
+CPU threads and host memory headroom. The GPU rule budgets twice the measured peak plus 1 GiB
+per worker within 75% of device memory; host planning allows 8 GiB per worker. These margins do
+not guarantee that every later allocation fits, so normal checkpoint/failure handling still applies.
+
+Use `scripts/slurm/self_evolution/pool.sbatch` with the same `afterok` acceptance dependency as
+the task array; select one full-matrix scheduler for a run. It reserves one GPU, 16 CPUs and 64 GiB,
+with a 21-day limit to accommodate several complete tasks even if it falls back to one worker.
+Per-task model/training budgets are unchanged. Each task keeps its own process/RNG/output namespace.
+All training processes in a wave exit before serial evaluation and deployment timing begins.
+Shared training wall seconds include contention and are not isolated GPU busy time; execution
+contexts and observed wave wall seconds are included in summary.json. Failed task reports are
+preserved under the wave directory, and prior attempt ledgers remain available on resume.
+`pool_check.sbatch` runs CPU integration/orchestration checks under Slurm before enabling this path.

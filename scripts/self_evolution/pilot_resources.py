@@ -18,6 +18,7 @@ from self_evolution.data.graphs import GraphStore, collate_graphs
 from self_evolution.io import (
     atomic_write,
     checked_path,
+    code_identity,
     code_revision,
     digest,
     file_hash,
@@ -154,9 +155,11 @@ def audit_pilot(root: Path, graph_root: Path, config: dict, device="cuda", outpu
     for r in range(2):
         if not (root / f"round_{r:03d}/training.json").is_file():
             raise ValueError("resource probe requires two completed pilot stages")
+    largest_ids = sorted(graphs.ids, key=lambda jid: (-graphs.entries[jid]["atoms"], jid))[:count]
     result = {
+        "schema": 1,
         "status": "measured",
-        "scope": "two independent fixed-batch model copies; not full-epoch peak or throughput",
+        "scope": "representative and largest atom-count batches on independent two-stage copies",
         "loss": "mean squared output (zero surrogate targets); no labels",
         "learning_rate": 0.0,
         "warmup_steps": 2,
@@ -169,10 +172,27 @@ def audit_pilot(root: Path, graph_root: Path, config: dict, device="cuda", outpu
         "gpu": torch.cuda.get_device_name(device) if cuda else None,
         "slurm_job_id": os.environ.get("SLURM_JOB_ID"),
         "code_commit": code_revision(),
+        "config_hash": digest(config),
+        "core_code_hash": code_identity(),
+        "device_memory_bytes": torch.cuda.get_device_properties(device).total_memory
+        if cuda
+        else None,
         "graphs_sha256": graphs.identity,
         "batch_ids": ids,
         "stages": [measure_stage(root, r, graph_root, config, ids, device) for r in range(2)],
+        "largest_batch_ids": largest_ids,
     }
+    try:
+        result["largest_batch_stages"] = [
+            measure_stage(root, r, graph_root, config, largest_ids, device) for r in range(2)
+        ]
+        result["largest_batch_status"] = "measured"
+    except torch.cuda.OutOfMemoryError as exc:
+        result["largest_batch_stages"] = []
+        result["largest_batch_status"] = "out_of_memory"
+        result["largest_batch_error"] = str(exc)
+    if cuda:
+        torch.cuda.empty_cache()
     atomic_write(output or root / "pilot_resources.json", result)
     return result
 

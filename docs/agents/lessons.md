@@ -78,3 +78,5 @@
 srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，必须另存checkpoint副本与结果并记录共享GPU条件。固定批次原生pooling与segment mean即使前向/梯度通过容差，也不能据此静默改写运行中src或checkpoint身份；共享GPU计时不能推断完整训练加速。通过ssh bash -s传入管理脚本时，srun默认stdin可能消耗后续脚本文本；后续使用--input=none，权威结果以独立输出文件为准，不因管理端未打印尾部而重复启动。
 
 - 2026-11-02T03:18:02+08:00：资源测量必须分清整轮训练统计与固定批次模型副本探测。隔离代理损失可在不读标签或改权重文件时测forward/backward/Adam内存，lr=0仍会改变副本BN/优化器状态；报告应记录批次、测量窗口与OS页缓存未知状态，不能把PyTorch allocator峰值或校验+反序列化耗时冒充整轮训练峰值/裸盘带宽。新增诊断仅置于scripts，避免使运行中核心身份失效。Windows pytest默认Temp ACL失败时复用workspace专用basetemp/cache_dir，不改断言。
+
+- 2026-11-02T03:46:18+08:00：共享GPU的独立训练可保留单任务RNG/配置/顺序，但训练墙钟含资源争用；全部训练子进程必须退出后再逐个运行部署基准。资源门控应绑定真实验收、config/core/graphs和报告SHA，并测最大原子数批次而不只测随机批次；峰值余量仍不是绝对保证。21天单波时限用于容纳退回1进程的最多4任务，不增加每任务优化预算。MemAvailable而非MemFree用于Linux可用内存规划；本节点前者约228.5GiB、后者约2.8GiB。重跑前先保存旧报告/执行账本，防止硬中断时把旧结果当作新完成结果。
