@@ -564,3 +564,6 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T06:14:57+08:00：pending分组实现本地全量49项回归通过（pytest工作区独立basetemp）；最终候选发布前校验接口补充后3项调度测试再次通过，ruff format/check及git diff --check通过。覆盖全29项唯一分组、全部已启动wave保护、来源/配置拒绝和真实dispatcher选组；下一步Slurm CPU集成复核，未发布运行时文件。
+
+
+- 2026-11-02T06:17:54+08:00：真实Linux Slurm898通过全部22项self_evolution测试（6.92秒），固定日志已SFTP拉回。runtime分组发布前后复核候选SHA、完整29覆盖、来源/配置/图/审计哈希及唯一既有wave000任务原样，load_schedule重读等于候选；当前895_0仍RUNNING，893依赖保留。文档对应链接/路径存在，git diff --check通过。

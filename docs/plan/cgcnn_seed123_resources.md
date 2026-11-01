@@ -55,3 +55,6 @@ r1按patience结束于164epoch/114308步，训练/验证5231.45秒，best验证M
 保留已启动第0组全部4项任务，仅把其余25任务按当前数据审计中的有效标签数降序排列，仍保持8组、每组最多4任务和最后1项。来源/配置/图/审计SHA绑定的运行时分组文件由 [task_schedule.py](../../scripts/self_evolution/task_schedule.py) 校验；任何已存在wave ledger的成员变化都会拒绝。模型、任务seed、训练预算、缓存链和测试规则均不变。
 
 用每组最大有效标签数之和作为barrier工作量代理，原顺序288676，均衡后223656，减少约22.5%。该指标忽略early stopping、原子数和共享资源竞争，不能当作实测加速。先完成本地回归及Slurm CPU检查，再发布运行时调度文件；既有第0组继续原进程，后续排队wave启动时读取分组，无需取消或重提数组。
+
+
+实际启用记录（2026-11-02T06:17:54+08:00）：本地49项、Slurm898的22项CPU检查通过，入口aae5124已同步。运行时`<work>/run/pool/task_schedule.json` SHA `8c3cf7f017ccf2794584db01c8dc55dcd8c5d54c86a3904736cbb5f2048ebfcb`，发布前后全部既有ledger检查通过（仅wave000）；排队895_1–7继续原数组，不重启895_0，893仍依赖整个数组完成。第1待启动组为kpoint_length_unit、encut、magmom_oszicar、epsx；原始任务命名空间/种子不变。
