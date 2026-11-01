@@ -17,7 +17,8 @@ Replace SETUP_JOB/PREPARE_JOB with returned Slurm job IDs. Keep the proxy-owning
 live during online setup/download; each network job verifies SOCKS access independently.
 Offline setup can instead set `CGCNN_WHEELHOUSE` to a task directory containing Linux cp310 wheels
 and `SHA256SUMS`; all files are checked before pip uses `--no-index --find-links`.
-Pinned NumPy/pymatgen/matplotlib versions stay unchanged. A verified source ZIP transferred by scp
+Production pins the existing NumPy 2.2.6/pymatgen 2025.10.7/matplotlib 3.10.3 combination;
+only the small missing pytest dependencies need transfer. A verified source ZIP transferred by scp
 to the configured downloads directory also avoids a compute-node download; preparation still checks
 official MD5 and size before reading records.
 The runtime uses a dedicated `--system-site-packages` venv to read the already installed

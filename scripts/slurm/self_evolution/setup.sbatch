@@ -20,7 +20,7 @@ export PIP_CACHE_DIR="$runtime/pip-cache"
 if [[ -n "${CGCNN_WHEELHOUSE:-}" ]]; then
     (cd "$CGCNN_WHEELHOUSE" && sha256sum -c SHA256SUMS)
     "$python_bin" -m pip install --no-index --find-links "$CGCNN_WHEELHOUSE" \
-        numpy==1.26.4 pymatgen==2024.5.1 matplotlib==3.9.4 pytest==8.3.5
+        numpy==2.2.6 pymatgen==2025.10.7 matplotlib==3.10.3 pytest==8.3.5
 else
 export ALL_PROXY="${CGCNN_PROXY:-socks5h://127.0.0.1:1080}"
 export HTTP_PROXY="$ALL_PROXY" HTTPS_PROXY="$ALL_PROXY"
@@ -36,7 +36,7 @@ if ! "$python_bin" -m pip show PySocks >/dev/null 2>&1; then
     "$python_bin" -m pip install --no-index "$bootstrap"
 fi
 "$python_bin" -m pip install --only-binary=:all: --timeout 30 --retries 2 \
-    numpy==1.26.4 pymatgen==2024.5.1 matplotlib==3.9.4 pytest==8.3.5
+    numpy==2.2.6 pymatgen==2025.10.7 matplotlib==3.10.3 pytest==8.3.5
 fi
 # Install source without modifying inherited user packages or asking a resolver to replace torch.
 "$python_bin" -m pip install --no-deps --no-build-isolation -e .

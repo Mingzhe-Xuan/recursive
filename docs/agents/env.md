@@ -64,3 +64,5 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 工作目录 outputs/self_evolution/jarvis2021-seed123，完整模型链与缓存存于持久根盘，不只保存在 /dev/shm。实际安装与网络结果在后续记录，不把计划记作成功。
 
 - 2026-11-02T01:19+08:00：setup 878 的在线网络探针失败，未产生 SETUP_COMPLETE。新增 CGCNN_WHEELHOUSE 完全离线安装分支，传输目录为任务 runtime/cgcnn-bootstrap，10 项 wheel 包括原固定 NumPy/pymatgen/matplotlib 及 pytest 的 Python3.10 补充依赖；不替换已共享 torch，不降低固定版本或验收要求。
+
+- 2026-11-02T01:24+08:00：正式训练前修订最终环境协议，使用服务器已安装的 numpy==2.2.6、pymatgen==2025.10.7、matplotlib==3.10.3，torch==2.8.0+cu128 仍只读继承；专用 venv 仅补 pytest==8.3.5 及必要纯 Python依赖。原因是 32 MB SCP 也被跳板中断，而上述材料库组合本已存在，CGCNN 无旧版本硬约束。新版环境必须通过相同 GPU、原生数值和缓存链测试，不能以继承成功替代验收。精简离线目录改为 runtime/cgcnn-inherited-bootstrap（6 wheel/466,401 bytes），旧部分传输目录保留未使用。

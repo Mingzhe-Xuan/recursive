@@ -13,7 +13,7 @@ dependencies = ["torch>=2.1"]
 dev = ["pytest>=8", "ruff>=0.6"]
 mattersim = ["mattersim==1.2.3"]
 mace = ["mace-torch==0.3.16"]
-self-evolution = ["numpy>=1.26,<2", "pymatgen==2024.5.1", "matplotlib>=3.8,<3.10"]
+self-evolution = ["numpy==2.2.6", "pymatgen==2025.10.7", "matplotlib==3.10.3"]
 
 [tool.setuptools.packages.find]
 where = ["src"]

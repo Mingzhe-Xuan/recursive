@@ -471,3 +471,9 @@ staging 结果：服务器先 pull 到 `0709315` 并创建任务目录；短 scp
 setup 878 已由 scontrol 确认为 FAILED/35，日志为空且发生在 curl 探针，未安装项目包。增加显式离线 wheelhouse 分支，安装前逐项 SHA-256，保留原已锁定 numpy/pymatgen/matplotlib 版本，不降低 GPU/单元测试门槛。固定数据下载 URL 切换到 Figshare 官方 API /v2/file/download/29204826，仍验证原 MD5/大小。检查 Bash 语法、源 manifest、离线文件哈希与大小、README 命令一致；随后真实 Slurm setup 验收。
 
 实际结果（2026-11-02T01:19+08:00）：离线 wheelhouse 共 10 个 wheel、31,866,325 bytes，逐项 SHA-256 清单已生成；固定 JARVIS ZIP 为 31,911,815 bytes，官方 MD5 通过，本地 SHA-256 03e5af365067117d97c73b83fc74b86f79cdba4cc592b346f5aa2209a24c3925。通用 manifest loader 接受 API 路由与原 MD5；setup/prepare Bash 语法和 git diff --check 通过。此修复不改变模型/训练协议，仅切换网络路径；真实离线安装待服务器 Slurm 验收。
+
+## 2026-11-02T01:23+08:00：预训练前环境协议调整（计划）
+
+SCP 32 MB 环境包被跳板重置，未达到离线验收。实测服务器现有 numpy 2.2.6/pymatgen 2025.10.7/matplotlib 3.10.3 是已安装的兼容组合，CGCNN 纯 PyTorch 本身不要求旧版本，故在任何真实训练前改为精确锁定这些继承版本；仅传 7 个纯 Python 测试依赖共约0.5 MB。模型/数据/训练配置、原生差分与缓存链验收标准全部保持。检查精确 pin、离线清单和 Bash 语法；必须通过同一真实 Slurm GPU 和 8 项集成测试才完成环境验收。
+
+实际结果（2026-11-02T01:24+08:00）：精简环境包为 6 个 Linux 所需纯 Python wheel、466,401 bytes（Windows colorama 不需要），逐项 SHA-256 复验通过；ruff、setup Bash、compileall 通过，CGCNN 8 项本地验收再次通过。生产精确版本断言已加入 GPU 检查脚本，真实环境仍待 Slurm 验收。

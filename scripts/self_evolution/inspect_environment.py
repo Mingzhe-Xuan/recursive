@@ -30,6 +30,13 @@ result = {
     "packages": versions,
 }
 if args.gpu:
+    for name, expected in {
+        "numpy": "2.2.6",
+        "pymatgen": "2025.10.7",
+        "matplotlib": "3.10.3",
+        "pytest": "8.3.5",
+    }.items():
+        assert versions[name] == expected, f"unexpected {name}: {versions[name]}"
     import torch
 
     assert torch.cuda.is_available(), "no CUDA device"
