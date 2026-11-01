@@ -41,3 +41,11 @@ formation energy 第 0 轮按 validation patience 停在 **222 epoch / 154734 �
 全库缓存已完成：**55712 结构、562055 原子、64 维 float32、218 分片**；远端完整缓存目录轻量统计为 **147579938 字节（140.74 MiB）**，包含分片及元数据，生成/校验累计 **12.91 秒**。缓存生成路径逐片校验完成后已进入第 1 轮。缓存/直接链在 16 个固定结构的数值检查通过（atol=2e-5、rtol=1e-4），节点最大绝对误差 **6.1988831e-06**；该一致性探针的覆盖范围是 16 个结构。
 
 小型证据已拉回 `outputs/self_evolution/cgcnn-seed123-evidence/`，包括 `round0_training.json`、`round0_cache_timing.json`、`chain_manifest_round0.json`、`chain_verification_round0.json`、`pool_migration.json` 和 `pool_check_894.out`，均保持 Git 忽略。正式队列现为 **890 → afterok 891 → afterok 895（8 波）→ afterany 893**，旧 pending 892 已取消；Slurm894以 ExitCode0:0 完成18项CPU集成检查。真实GPU资源报告仍待第1轮完成后的891，不能提前声称已测。
+
+## 两轮验收与并发启动（2026-11-02T05:49:31+08:00）
+
+r1按patience结束于164epoch/114308步，训练/验证5231.45秒，best验证MAE0.04402161 eV/atom。完整缓存55712结构/562055原子，147595808字节，8.13秒。Slurm890/891均ExitCode0:0，891在32结构通过官方native/wrapper、单结构/批量及两阶段链/缓存检查，容差仍atol2e-5/rtol1e-4；这是组合容差，节点绝对最大差4.5776e-5不能单独与atol比较。尚未进行最终预设轮数的测试评估。
+
+真实独立副本测量：代表批次64结构/699原子，第0/1轮reserved均150MiB；最大原子数批次64结构/5238原子，第0/1轮reserved均672MiB，allocated约525.5/528.7MiB。均为指定批次代理步骤的PyTorch allocator统计，不是全训练峰值。缓存首次校验读取/拼接约0.184秒（代表r1）和0.090秒（最大批次r1），OS页缓存未知，不作为裸盘带宽。
+
+895_0（实际job897）按真实报告选择4并发，四个训练进程及每任务历史已确认。初始短窗口每任务每epoch约28–31秒，与原单任务约30秒同量级；任务/阶段与数据不同，不能将其视作整个矩阵严格4倍加速。全部训练结束后才串行评测。验收/资源/补充manifest SHA已在本地核验并保存在忽略的证据目录。

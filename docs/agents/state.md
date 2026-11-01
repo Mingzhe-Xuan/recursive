@@ -1,22 +1,22 @@
 # 当前状态
 
-CGCNN 单 seed（123）已实现并运行，核心src/config保持4379c88，pool入口13f4fde，最新交付审计/CLI入口896a171。本地46项回归通过；Slurm888通过CUDA检查和原12项CPU集成，894在Linux通过18项CPU集成；896已通过更新后的19项（COMPLETED、ExitCode0:0，6.95秒pytest），真实两轮CUDA验收891仍待pilot结束。
+CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETED/ExitCode0:0。r0为222epoch、best验证MAE0.04822800 eV/atom；r1为164epoch/114308步、best验证MAE0.04402161、训练/验证5231.45秒、86813参数（含投影5980）。两轮均缓存完整55712结构/562055原子/64维float32；r1缓存8.13秒、147595808字节。第0轮权重/缓存未改变。
 
-890仍在node221运行：形成能第0轮已完成222epoch、154734步，最优验证MAE0.04822800 eV/atom，训练/验证6698.23秒；第0轮全库缓存55712结构、562055原子、64维float32、218分片，147579938字节、12.91秒。16结构缓存/直接链检查通过，节点最大差6.198883e-6（既定atol2e-5/rtol1e-4）。第1轮最新observer已完成128epoch、best验证MAE0.04402161，无failure，尚未完成该轮。
+891真实CUDA验收passed：32结构native/wrapper最大差0、batch/single差4.172325e-7；0→1直接链/缓存在既定atol2e-5+rtol1e-4组合容差内通过（逐阶段最大绝对差1.7166e-5/4.5776e-5，不能只用绝对容差解读）。两份完整配置/分片字节/来源补充manifest SHA与验收引用一致，真实全分片审计通过。代码核心仍4379c88、入口896a171，本地46项和Slurm896的19项CPU集成通过。
 
-正式依赖已迁移并核验为 **890 → afterok 891 → afterok 895（0–7%1）→ afterany 893**。895按8组覆盖全部29任务，每组最多4个独立训练进程共享本组所申请的一GPU，实际并发由891真实资源报告门控；全部训练退出后串行评测/部署计时。旧892在确认全部PENDING并hold后取消，未重启/取消890。durable迁移ledger phase=complete，本地已有副本。
+完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom原始输入r1对照、optb88vdw_bandgap/optb88vdw_total_energy/ehull第0轮。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；剩余波1–7等待，893仍afterany895_*。
 
 正式work_root：/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final。
-本地证据：outputs/self_evolution/cgcnn-seed123-evidence，已拉回环境/数据审计、原生第0轮完整training/history/cache_timing/链核查、pool迁移与894日志。889此前已完成55712结构0失败构图及29任务划分；原始55723行/55712唯一ID的重复和冲突标签处理已审计。生成证据均被Git忽略。资源实测及约47.5天串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能按并发数直接许诺加速。
+本地证据：outputs/self_evolution/cgcnn-seed123-evidence，已拉回real_acceptance/pilot_resources、两轮training/history/cache_timing、两份补充manifest、wave0/context与早期数据审计。全库55712构图/29任务划分此前已完成，原始重复ID/冲突标签已审计。生成证据均Git忽略。
 
-完整研究实验尚未完成，goal保持active。尚无最终测试MAE或跨轮曲线；当前链manifest仅包含已完成第0轮、target_max_round仍为5。
+完整研究实验尚未完成，goal保持active。已跑通真实r0→全库缓存→r1→全库缓存和串行链，尚无完整r0–5/全部必要对照或最终测试曲线。资源口径与串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能把短窗口并发吞吐当作完整实验加速承诺。
 
 # 当前计划
 
-1. 续查本地observer工具会话96216：每55秒复核890/891/895/893，最多180次，监控第1轮缓存完成、failure或890句柄缺失后退出。旧4846/17629均已正常退出，不推断训练停止；观察超时后仍检查同一作业，不重启。
-2. 完成890第1轮训练/全库缓存与直接链检查；891随后进行真实CUDA native/batch/cache和代表/最大原子数批次资源测量。GPU峰值/IO结果未测前不得记为通过。
-3. 895在afterok891满足并验证报告SHA、config/core/geometry后按资源选择1–4并发，覆盖29任务r0–5和原始输入/累计步数对照；失败/OOM按真实状态处理，不缩减范围。
-4. 893在895全部波结束后汇总MAE曲线、验证选轮、计算预算及完整覆盖表。审计全部任务、缓存链、对照、图表及失败记录后才可将goal标记complete；排队不代表完成。
+1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话8154每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T05:49:05.146343+08:00，4任务均实际训练、无failure、0/29 report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
+2. 继续895全部8波、29任务、seed123、r0–5及原始输入/累计步数对照；formation energy复用已完成两阶段及缓存，不能重复训练或缩减目标。
+3. 观察并发运行的实际吞吐/内存与失败；如worker失败，用源日志/Slurm终态定位并恢复，观察超时或本地monitor退出不代表计算失败。不得只凭计划文件宣称进度。
+4. 893在895全部波结束后汇总MAE曲线/验证选轮/预算/覆盖；完成全部模型、控制、缓存/补充manifest、图表和失败审计后才可标记goal complete。不得以两轮pilot完成替代完整矩阵完成。
 
 # 变更记录
 
@@ -155,3 +155,5 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-02T04:40:34+08:00：896a171已由Guqq代理pull同步，现有prepared源manifest SHA和graph_config轻量复核通过，核心src/config diff为空。Slurm896完成当前19项CPU集成（ExitCode0:0，6.95秒），包括真实Linux任务锁/完整元数据/对照预检和环境失败阻断；真实全库补充审计将随891/正式任务执行，当前890继续原第1轮无重启。observer96216仍确认RUNNING，r1epoch85、best验证MAE0.04418608。下一步等待两轮完成和891真实CUDA/资源验收，再审计895并发决策及完整矩阵结果。
 
 - 2026-11-02T05:02:38+08:00：本轮为verified wait，续查原observer96216，连续确认原890 RUNNING；第1轮推进到128epoch、best验证MAE0.04402161，train_done/cache_done仍false且无failure。未改源码/配置/预算/队列，未重启计算；下一步继续等待第1轮及891实际验收。
+
+- 2026-11-02T05:49:31+08:00：进入全任务矩阵阶段：890/891均成功结束，r1完整164epoch/114308步、best验证MAE0.04402161，全库缓存完成；真实CUDA32结构native/batch/两阶段cache-chain验收和两份补充manifest/全分片审计通过。资源报告最大批次672MiB reserved支持4并发，895_0/job897四个worker已由PID/训练日志/history证实运行，剩余波待队列。证据已拉回并本地核验SHA/完整配置，observer8154继续全矩阵，目标仍active。

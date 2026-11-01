@@ -555,3 +555,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-02T04:40:34+08:00：远端源码同步/元数据前置检查通过（HEAD896a171，prepared source SHA与当前官方来源manifest匹配、graph_config等于冻结配置、核心src/config差异为空）；Slurm896为COMPLETED/ExitCode0:0/runtime8秒，固定日志19 passed in 6.95s。此为CPU集成和脚本检查，不是全库审计或两轮真实GPU验收。文档路径、作业ID、schema字段和git diff --check通过；未因仅文档更新重跑训练。
 
 - 2026-11-02T05:02:38+08:00（仅文档）：原observer96216的真实squeue/history连续确认890仍RUNNING，第1轮128epoch、best验证MAE0.04402161，完成标记均未生成且无failure。核对数据为验证指标、原作业与持久handle不变、文档路径和git diff --check通过；本轮无代码变更，不重复执行模型测试。
+
+- 2026-11-02T05:57:29+08:00（真实pilot/矩阵验收）：scontrol确认890/891均COMPLETED、ExitCode0:0；891 runtime7秒，真实CUDA32结构native/wrapper差0、batch/single差4.172325e-7、0→1缓存/链通过既定组合容差，阶段节点最大绝对差1.7166e-5/4.5776e-5。两份补充manifest及resource报告经SFTP回读，SHA与验收引用、完整config、55712成功ID/0失败、562055原子及逐片字节合计均核对通过。最大64结构5238原子reserved峰值672MiB、代表699原子150MiB；报告为独立副本固定批次指标。895_0/job897实际4个PID、4份日志和history证实训练，无failure，0/29完整report。只读新observer8154 latest/JSONL正常，文档链接/路径和git diff --check通过；本轮无业务代码变动。

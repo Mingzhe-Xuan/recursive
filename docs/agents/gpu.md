@@ -159,3 +159,9 @@
 - 2026-11-02T04:31:51+08:00：本地46项回归通过并提交推送后，连接Guqq首先仓库检查/代理pull，同步新scripts审计/入口，然后仅通过Slurm pool_check.sbatch提交当前19项CPU集成复核；以新版本ledger避免重复提交，读取队列/小型配置身份检查。不得在登录节点运行全缓存哈希/测试/编译，不修改890/895计算或依赖。
 
 - 2026-11-02T04:35:33+08:00：连接Guqq先仓库检查/代理pull，只读检查新版896 CPU复核的scontrol终态和固定日志19项测试结果，同时确认890/891/895/893状态；不重新提交或改调度，不在登录节点运行审计/测试。
+
+- 2026-11-02T05:25:29+08:00：observer96216确认r1训练164epoch/缓存完成、890不在活动队列且895_0已RUNNING后正常退出。连接Guqq先仓库检查/代理pull，只读核对890/891终态/日志、real_acceptance与pilot_resources、r1训练/缓存/链元数据、895 wave0执行ledger/环境与worker进程。仅轻量读取小型JSON/日志和Slurm/进程查询，不重启任何计算或直接跑评测。
+
+- 2026-11-02T05:37:09+08:00：890/891已核查COMPLETED/ExitCode0:0、895_0四个worker已实际训练。先SSH仓库检查/代理pull，再SFTP只读拉回real_acceptance/pilot_resources、r1 training/history/cache_timing、两份补充manifest、wave0执行ledger与四个环境/上下文小文件；不复制大型缓存tensor，不改计算或源码。用于本地核验报告SHA/完整配置和两轮成果。
+
+- 2026-11-02T05:39:46+08:00：两轮pilot与891已完成，建立全矩阵只读持久SSH监控（先仓库检查/代理pull）。每55秒从squeue确认895真实活动wave，读取对应任务的小型history/上下文/链阶段、全部wave终态；本地O(1)更新latest JSON并追加JSONL，不处理预测/缓存tensor。观察到失败、活动句柄缺失冲突或数组结束即退出供核查；不自动重提/修改计算。最多180轮。

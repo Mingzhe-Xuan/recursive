@@ -84,3 +84,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-02T04:05:23+08:00：生成嵌套Python/SSH管理脚本时，内层r"..."无法阻止外层普通字符串把\b变成退格。管理脚本执行前需检查不可打印控制字符，并用ast及regex样例检查日志/依赖门控；本轮错误在任何hold/提交/取消之前被日志门控拦截。pending迁移按hold旧数组→提交带验收依赖的新数组→重接并核验汇总afterany→取消旧pending的顺序执行，durable ledger保留阶段和ID。依据[Slurm scontrol](https://slurm.schedmd.com/scontrol.html)和[数组依赖说明](https://slurm.schedmd.com/job_array.html)，数组ID的afterany覆盖所有元素，避免取消旧数组后汇总提前运行。
 
 - 2026-11-02T04:31:51+08:00：已经被下游checkpoint绑定的基础cache manifest不可为补字段而就地改写；用补充manifest引用其SHA、再由根链引用补充SHA，既保留训练输入身份又提供完整交付字段。发布前应验证所有阶段、在任务锁内原子发布且避免时间戳破坏幂等。评测不能等遍历主链测试后才发现缺对照，应在公开入口预先检查所有对照。多任务长Slurm allocation需要每个晚启动CUDA子进程复核环境，单次job启动检查不足；错误检查必须在训练前停止并留下failure。
+
+- 2026-11-02T05:57:29+08:00：Slurm数组别名与实际job ID不同，当前895_0对应897，状态查询/环境文件应同时保留两者，不能把ID不同当作错误任务。CUDA缓存/链检查使用atol+rtol组合：本次最大节点绝对误差4.5776e-5虽大于atol2e-5，仍满足结合期望值大小的rtol1e-4；不得仅比较全局最大绝对差判定失败或放松容差。固定批次显存测量可用于保守并发规划，但不能冒充整轮峰值。长监控在本地原子写latest并追加JSONL，避免随历史增长反复重写大文件；远端只读小型管理元数据。
