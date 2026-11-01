@@ -155,3 +155,6 @@
 
 
 - 2026-11-02T07:01:24+08:00：上一goal turn为verified wait及资源核查；本轮通过原observer8154连续24次有界轮询、约18分钟verified wait，实际squeue/history持续确认895_0/job897 RUNNING。最新2026-11-02T07:00:35.745747+08:00：formation_energy_peratom controls/original/round_001 epoch195/steps135915；optb88vdw_bandgap round_000 epoch202/steps140794；optb88vdw_total_energy round_000 epoch192/steps133824；ehull round_000 epoch196/steps135828。无failure、0/29完整报告，阶段尚未转换；未改模型、配置、预算或队列。下一步等待既有训练结束并核验全库缓存/对照转换，完整29项r0–5与必要对照目标仍active。
+
+
+- 2026-11-02T07:37:47+08:00：完成带隙r0阶段转换核验（本轮为持续verified wait后的实际实验progress）。r0按validation patience结束于266epoch/185402步、最佳验证MAE0.1585009272 eV、训练/验证7784.60秒；缓存13.916秒，55712唯一ID集合与已验收全库完全一致、562055原子/64维float32/218分片。checkpoint SHA 2beb0e53…、cache SHA e2820265…与training/timing/root chain/16结构一致性记录相互匹配，config/core/graph身份一致。16结构直接链/缓存最大节点差1.7166e-5，通过固定atol2e-5+rtol1e-4；第1轮已实际训练（拉回初始7epoch历史）。小型证据及本地metadata核验JSON保持Git忽略。最新2026-11-02T07:37:16.037377+08:00四worker仍训练、无failure、0/29完整报告；全29项r0–5/对照/最终测试仍未完成，目标继续active。下一步续查带隙r1、形成能对照及总能/ehull的r0→缓存→r1转换。

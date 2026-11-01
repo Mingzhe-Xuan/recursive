@@ -579,3 +579,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T07:01:24+08:00：仅更新本轮实时等待记录，无源码/配置变更；不重复模型测试。检查observer工具handle仍活动、真实RUNNING及无failure证据、state历史保留和相关计划路径存在，git diff --check通过。完整实验仍未达到全29任务六轮/对照/最终曲线验收条件。
+
+
+- 2026-11-02T07:36:28+08:00：带隙r0真实产物核验计划：SFTP小型metadata后，检查cache manifest SHA与timing/root chain一致、checkpoint/config/core/graph身份一致、55712唯一结构ID与已验收全库ID集合相同、562055原子/64维float32/218分片、完整training history及步数/最佳验证值一致、固定16结构chain验证记录和r1正向训练进展。仅核对metadata，不在本地重跑训练或加载缓存tensor；全分片tensor检查由Slurm生成路径完成。
+
+
+- 2026-11-02T07:37:47+08:00：带隙r0真实产物检查全部通过：完整55712 ID集合、562055原子/64维float32/218分片、manifest SHA/timing/chain及checkpoint/config/core/graph身份、266条history/185402步/最优验证值、16结构既定容差记录和r1正步数。核验结果在忽略目录transition_metadata_audit.json；本地仅metadata检查，未复制/重算缓存tensor，Slurm publish_cache路径已逐片验证SHA/有限值/形状。state历史原文保留，文档路径/格式和git diff --check通过，无代码/配置变更，不重复既有49项测试。

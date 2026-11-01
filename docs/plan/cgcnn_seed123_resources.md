@@ -61,3 +61,8 @@ r1按patience结束于164epoch/114308步，训练/验证5231.45秒，best验证M
 
 
 并发复核（2026-11-02T06:41:36+08:00记录）：首组4任务运行时，在当前Slurm897 allocation中以短时srun查询nvidia-smi元数据，GPU utilization单点为90%，NVML memory.used/total为4423/32607MiB；scontrol节点CPUAlloc16/48、CPULoad5.65。NVML总显存口径与PyTorch可用设备内存口径不同，此值不替换既有资源门控。单点利用率既不是SM占用率，也不足以估计8并发吞吐，因此保留已验收4并发，没有进一步更改资源申请/波次/任务成员。
+
+
+## 带隙第0轮完成（2026-11-02T07:37:47+08:00记录）
+
+optb88vdw_bandgap在四任务共享GPU条件下按patience结束于266epoch/185402步，训练/验证累计7784.60秒，best验证MAE **0.15850093 eV**。全库缓存55712结构/562055原子/64维float32/218分片，13.916秒；checkpoint SHA `2beb0e53ec60ee20d6cf4a6975bd9a17aefd8b25f08b5c43080817fc22b857e6`，cache manifest SHA `e2820265d07b557e6730db45559470b4b262bc264dc4f9ecd312234bb7e481a3`。小型证据已拉回`outputs/self_evolution/cgcnn-seed123-evidence/optb88vdw_bandgap/`，metadata审计的完整ID覆盖/身份绑定通过。16固定结构链探针最大节点差1.7166e-5，在固定组合容差内通过；此探针不等同全库逐结构直接链数值对照。第1轮已实际训练，测试评估仍延后。

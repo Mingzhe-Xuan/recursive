@@ -174,3 +174,6 @@
 
 
 - 2026-11-02T06:34:44+08:00：连接Guqq先仓库检查/代理pull，只读核对895/893、node221 CPU/内存/GPU可分配资源；在当前任务allocation897中用srun --overlap --input=none执行短时nvidia-smi元数据查询（不训练、不推理）。评估仅pending波提升并发的可行性；不改调度或现有任务。
+
+
+- 2026-11-02T07:32:57+08:00：observer8154于07:31:45发现optb88vdw_bandgap缓存轮数变1。连接Guqq先仓库检查/代理pull，再只读核对该任务r0 training/cache_timing/manifest统计、chain及一致性记录、r1 history和全部活动worker。仅小型元数据与Slurm查询，不加载权重/缓存tensor、不直接训练或评测。允许随后SFTP拉回对应小型证据；不改现有任务/源码。
