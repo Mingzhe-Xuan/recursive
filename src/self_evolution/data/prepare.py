@@ -13,10 +13,11 @@ import zipfile
 from self_evolution.io import atomic_write, digest, file_hash, load_tensor, read_json
 
 from .graphs import GraphConfig, builder_identity, make_graph
+from .normalize import canonicalize_records
 from .tasks import TASKS, grouped_split, select_labels
 
 
-def load_records(path: Path, source: dict) -> list[dict]:
+def load_records(path: Path, source: dict) -> tuple[list[dict], dict]:
     artifact = source["artifacts"][0]
     if path.stat().st_size != artifact["size_bytes"]:
         raise ValueError("dataset byte size mismatch")
@@ -30,9 +31,24 @@ def load_records(path: Path, source: dict) -> list[dict]:
         if source["json_member"] not in archive.namelist():
             raise ValueError("expected JSON member missing")
         records = json.loads(archive.read(source["json_member"]))
-    if not isinstance(records, list) or len(records) != source["expected_structures"]:
-        raise ValueError("unexpected snapshot record count")
-    return records
+    if not isinstance(records, list) or len(records) != source["expected_raw_records"]:
+        raise ValueError(f"unexpected raw snapshot record count: {len(records)}")
+    normalized, audit = canonicalize_records(records)
+    if len(normalized) != source["expected_structures"]:
+        raise ValueError(f"unexpected normalized structure count: {len(normalized)}")
+    if (
+        "expected_duplicate_ids" in source
+        and len(audit["duplicate_ids"]) != source["expected_duplicate_ids"]
+    ):
+        raise ValueError("unexpected source duplicate-ID count")
+    if "expected_label_conflicts" in source:
+        observed = {
+            task: sorted(row["jid"] for row in values)
+            for task, values in audit["label_conflicts"].items()
+        }
+        if observed != source["expected_label_conflicts"]:
+            raise ValueError("unexpected source label conflicts")
+    return normalized, audit
 
 
 def _prepare_graph(args):
@@ -78,7 +94,7 @@ def prepare_dataset(
 ) -> dict:
     source = read_json(source_path)
     started = time.perf_counter()
-    records = load_records(archive, source)
+    records, source_audit = load_records(archive, source)
     ids = [r["jid"] for r in records]
     if any(not isinstance(jid, str) or not jid for jid in ids) or len(ids) != len(set(ids)):
         raise ValueError("invalid or duplicate structure IDs")
@@ -131,6 +147,7 @@ def prepare_dataset(
             "label_audit": counts,
             "labels": labels,
             "dataset_sha256": dataset_hash,
+            "excluded_conflicting_labels": source_audit["label_conflicts"].get(task, []),
         }
         try:
             task_info["split"] = grouped_split(labels, groups, split_seed)
@@ -144,6 +161,7 @@ def prepare_dataset(
         coverage.append({k: v for k, v in task_info.items() if k not in {"labels", "split"}})
     audit = {
         "dataset_sha256": dataset_hash,
+        "source_normalization": source_audit,
         "structures": len(records),
         "exact_duplicate_groups": sum(
             v > 1 for v in __import__("collections").Counter(groups.values()).values()

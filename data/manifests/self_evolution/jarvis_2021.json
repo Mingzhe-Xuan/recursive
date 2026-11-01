@@ -4,7 +4,11 @@
   "source_api": "https://api.figshare.com/v2/articles/6815699",
   "official_catalog": "https://github.com/usnistgov/jarvis/blob/master/jarvis/db/figshare.py",
   "snapshot": "jdft_3d-8-18-2021",
-  "expected_structures": 55722,
+  "expected_raw_records": 55723,
+  "expected_structures": 55712,
+  "expected_duplicate_ids": 5,
+  "expected_label_conflicts": {"formation_energy_peratom": ["JVASP-97311"]},
+  "normalization": "same_id_same_structure_merge; conflicting_labels_excluded_per_task",
   "json_member": "jdft_3d-8-18-2021.json",
   "task_source": "https://github.com/usnistgov/alignn#2-on-jarvis-dft-2021-dataset-regression",
   "artifacts": [

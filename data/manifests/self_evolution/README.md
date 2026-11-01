@@ -1,7 +1,10 @@
 # JARVIS-DFT 2021 source
 
 `jarvis_2021.json` fixes Figshare file 29204826, official MD5, byte count and JSON member.
-It is the 55,722-structure snapshot used for the original ALIGNN task table.
+The audited archive contains 55,723 raw rows and 55,712 unique IDs, not 55,722 unique structures.
+Five IDs repeat. Repeated same-ID/same-structure records are merged; JVASP-97311 has conflicting
+formation-energy values, so that label alone is excluded. All structures remain cache inputs.
+Both raw and normalized counts are fixed; the original official checksum is unchanged.
 Official metadata: https://api.figshare.com/v2/articles/6815699
 
 The ZIP and unpacked records are generated inputs and are ignored by Git.

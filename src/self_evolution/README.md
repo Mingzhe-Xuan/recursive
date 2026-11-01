@@ -7,10 +7,13 @@ linear map from the previous hidden width to the original 92-dimensional atom de
 The previous stage and its float32 node cache are immutable inputs, with no gradient across stages.
 Distance features and periodic neighbors are shared; learned node representations evolve.
 
-The pinned 2021 JARVIS library contains 55,722 structures. All 29 scalar regression tasks from
+The pinned 2021 JARVIS archive contains 55,723 raw rows and 55,712 unique structure IDs.
+All 29 scalar regression tasks from
 the official ALIGNN results table are included, including EFG and effective masses.
 The grouped deterministic 80/10/10 split is a project split, not an exact reproduction of
-unavailable original paper IDs. Duplicate grouping detects same-cell structures up to translation
+unavailable original paper IDs. Repeated identical IDs/structures are merged with a full audit;
+conflicting finite labels are excluded only for the affected task, without choosing one value.
+The structure remains in the whole-library feature cache. Duplicate grouping detects same-cell structures up to translation
 and permutation, not all possible equivalent lattice bases. Zero labels remain valid.
 
 Use the commands in [scripts](../../scripts/self_evolution/README.md).
