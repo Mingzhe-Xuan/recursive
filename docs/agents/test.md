@@ -567,3 +567,6 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T06:17:54+08:00：真实Linux Slurm898通过全部22项self_evolution测试（6.92秒），固定日志已SFTP拉回。runtime分组发布前后复核候选SHA、完整29覆盖、来源/配置/图/审计哈希及唯一既有wave000任务原样，load_schedule重读等于候选；当前895_0仍RUNNING，893依赖保留。文档对应链接/路径存在，git diff --check通过。
+
+
+- 2026-11-02T06:21:42+08:00：本轮仅更新verified-wait文档记录，无代码/配置改动，不新增训练测试。检查state变更记录原历史逐字保留、当前观测包含真实RUNNING队列与无failure证据，文档路径存在；提交前git diff --check通过。训练未完成不能当作完整实验验收。

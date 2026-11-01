@@ -143,3 +143,6 @@
 
 
 - 2026-11-02T06:17:54+08:00：调度入口aae5124已推送并Guqq代理pull；Slurm898固定日志确认22 passed in 6.92s。候选runtime分组经SHA/来源/配置/全部既有ledger校验后原子发布，SHA 8c3cf7f017ccf2794584db01c8dc55dcd8c5d54c86a3904736cbb5f2048ebfcb；唯一已有wave000成员原样保护，895不取消/不重提，未来wave读取新分组，893依赖不变。最新实际观测2026-11-02T06:17:30.378172+08:00四任务持续训练、无failure、0/29报告完成；完整目标仍active。
+
+
+- 2026-11-02T06:21:42+08:00：上一goal turn为progress（aae5124调度及运行时分组发布）；本轮为verified wait，通过工具会话8154重复读取实际SSH/squeue与训练history，最新2026-11-02T06:21:10.398471+08:00确认895_0/job897仍RUNNING。formation_energy_peratom controls/original/round_001 epoch117/steps81549；optb88vdw_bandgap round_000 epoch120/steps83640；optb88vdw_total_energy round_000 epoch115/steps80155；ehull round_000 epoch116/steps80388。无failure、0/29报告完成，895_1–7仍PENDING；未重启/重提/改预算，完整29项r0–5及对照目标继续active。下一步等待现有训练阶段结束并核验缓存/控制转换。
