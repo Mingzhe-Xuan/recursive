@@ -553,3 +553,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 实际结果（2026-11-02T04:31:51+08:00）：全部46项pytest通过（原45+1个CLI环境门控测试），ruff/format/py_compile及git diff --check通过。扩展三阶段集成在标签文件缺席时发布完整配置/来源/字节数/逐片SHA/成功失败ID补充manifest，重复发布SHA一致；checkpoint、基础manifest和全部3阶段分片SHA保持不变。缺对照、跨任务control、错来源/配置及分片损坏会拒绝且旧链/审计不部分改写，核心评测兼容新增链字段。期间一个测试临时变量定义顺序错误导致NameError，已修正后完整重跑通过，未删改断言。负向环境检查模拟失败证明训练未调用并记录failure。真实Slurm CPU复核及真实两轮GPU验收仍待，不提前记通过。
 
 - 2026-11-02T04:40:34+08:00：远端源码同步/元数据前置检查通过（HEAD896a171，prepared source SHA与当前官方来源manifest匹配、graph_config等于冻结配置、核心src/config差异为空）；Slurm896为COMPLETED/ExitCode0:0/runtime8秒，固定日志19 passed in 6.95s。此为CPU集成和脚本检查，不是全库审计或两轮真实GPU验收。文档路径、作业ID、schema字段和git diff --check通过；未因仅文档更新重跑训练。
+
+- 2026-11-02T05:02:38+08:00（仅文档）：原observer96216的真实squeue/history连续确认890仍RUNNING，第1轮128epoch、best验证MAE0.04402161，完成标记均未生成且无failure。核对数据为验证指标、原作业与持久handle不变、文档路径和git diff --check通过；本轮无代码变更，不重复执行模型测试。
