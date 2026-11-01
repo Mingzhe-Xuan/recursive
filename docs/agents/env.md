@@ -54,3 +54,11 @@ MatterSim 环境由 `scripts/slurm/setup_mattersim_env.sbatch` 创建。在线�
 MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch` 在目标计算节点下载到 `${RECURSIVE_RUNTIME_ROOT}/checkpoints/mattersim/mattersim-v1.0.0-1M.pth`；脚本使用 `.partial` 断点续传并在成功后原子改名，随后输出文件大小和 SHA-256。不得给真实验收脚本传官方别名，因为 MatterSim 1.2.3 会把别名下载硬编码到 `~/.local/mattersim/pretrained_models`。`mattersim_k01.sbatch` 默认读取上述任务路径，也可用 `MATTERSIM_CHECKPOINT` 显式覆盖。
 
 本地解析结果：以 Linux x86_64、CPython 3.10、ABI `cp310` 和 binary-only 约束解析出 144 个 wheel（772,031,965 bytes）。核心选择包括 `mattersim==1.2.3`、`torch==2.14.0`、`e3nn==0.6.0`、`numpy==2.2.6`、`setuptools==84.0.0`、`wheel==0.48.0` 和 `PySocks==1.7.1`；完整版本以后续服务器生成的 `mattersim-freeze.txt` 为准。本地 `--no-index` dry-run 与 `SHA256SUMS` 144/144 校验均通过。
+
+## 2026-11-02T01:09+08:00：CGCNN seed 123 专用环境（创建计划）
+
+- 实测基础 Python 3.10.12；用户只读包包含 torch 2.8.0+cu128、numpy 2.2.6、pymatgen 2025.10.7、matplotlib 3.10.3，GPU 为 RTX 5090、驱动 570.211.01。
+- 任务 venv 拟建于 /home/xmz/recursive/outputs/self_evolution/runtime/cgcnn-seed123/venv，先执行 python3 -m venv --system-site-packages；继承已安装 torch 以避免重复下载 CUDA 闭包，但不修改用户目录包。
+- 仅在 venv 内安装覆盖：numpy==1.26.4、pymatgen==2024.5.1、matplotlib==3.9.4、pytest==8.3.5。若缺少 PySocks，先通过 curl 获取官方 1.7.1 wheel，SHA-256 2725bd0a9925919b9b51739eea5f9e2bae91e83288108a9ad338b2e3a4435ee5，离线引导。
+- scripts/slurm/self_evolution/setup.sbatch 在 Slurm 中创建环境、安装、记录有效 sys.path/用户包继承状态、完整 pip freeze、CUDA 短检查及测试。正式计算只使用该 venv；pip 配置要求处于 venv，源码 editable install 使用 --no-deps，避免改动共享 torch。
+- 工作目录 outputs/self_evolution/jarvis2021-seed123，完整模型链与缓存存于持久根盘，不只保存在 /dev/shm。实际安装与网络结果在后续记录，不把计划记作成功。

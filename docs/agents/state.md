@@ -1,14 +1,14 @@
 # 当前状态
 
-Goal 1 的通用递归核心以及 MatterSim、MACE、DPA-2 三个 wrapper 已完成本地实现，当前全套 27 项测试通过。MatterSim 已改用可安装的 PyTorch 2.8.0/CUDA 12.8 闭包；本地 wheelhouse 共 162 项，Linux/CPython 3.10 离线解析与 162/162 SHA-256 复验通过，服务器增量下载作业 511 正在运行。MACE 的独立本地 wheelhouse 已完成：49 个 wheel、637.90 MiB，离线 dry-run 与 49/49 SHA-256 通过；服务器已 staging 清单与审计 wheel。DPA-2 的 Zenodo 10461723 数据归档 manifest 与官方 MD5 支持已完成。
+当前任务：按 plan_2.md 实现并验证 CGCNN 单 seed（123）的 Sequential Self-Evolution。范围包括完整 JARVIS 回归任务清单、第 0–5 轮训练/全库缓存、线性投影、历史链冻结、必要对照与 MAE/计算预算报告。本地流程已实现，35 项测试通过，准备提交同步与真实 Slurm 验收；既有三 backbone 计划尚未提交，按用户授权纳入后续任务提交。旧 Goal 1 历史保留，不复用其过期服务器状态。
 
 # 当前计划
 
-1. node221 增量下载作业 511 已使用 162 项版本化清单提交；等待账号下现有作业 508 释放节点后启动，并监控到 162/162 哈希通过。
-2. 更新后的完整 wheelhouse 通过服务器 162/162 哈希后，由 Slurm 重建任务专用虚拟环境并完全离线安装；随后下载官方 checkpoint、运行 MatterSim K=0/K=1。
-3. MACE 的 48 项官方 URL、49 项总哈希与小型审计 wheel 已完成服务器 staging；97 材料 PhononDB manifest 也已固定作者提交、MP↔Togo 映射和来源哈希。待 MatterSim 下载完成后再补齐共享/官方 wheel，并用已完成的离线 setup 创建隔离环境。
-4. 将 job ID、日志、版本、checkpoint checksum 和结果 JSON 同步回本地并完成验收记录。
-5. `matbench_phonons` 官方 manifest 与通用校验下载器已完成；待 wheel 作业释放网络后在服务器任务数据目录执行下载，再进入递增 depth scan。
+1. 固定 CGCNN 官方源码、JARVIS 快照、全部任务和确定性 split；先规划测试。
+2. 在独立 self_evolution 包实现 CGCNN、原子缓存、训练、完整链推理与评测；模块各含 README。
+3. 完成本地有意义的测试和原生数值对照，提交推送源码，再通过服务器 git pull 同步。
+4. 登记连接用途，核查当前集群/持久存储，创建并记录任务 venv；计算均走 Slurm。
+5. 验证真实两轮闭环后运行 seed 123 的全部任务、第 0–5 轮及必要对照，拉取结果并审计。
 
 # 变更记录
 
@@ -103,3 +103,11 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-09-28：完成 DPA-2 Repformer 实现、fake K=0/K=1 回归、真实 OpenLAM 验收脚本和 Slurm 入口；全套 16 项测试通过。下一步是在取得正确 Git remote URL 后依次提交 MatterSim、MACE、DPA-2 的真实 GPU 作业。
 - 2026-09-28：按用户要求在工作区执行 `git init -b main`，仓库根目录确认为当前项目目录；未暂存、未提交、未配置 remote。
 - 2026-09-28：用户确认 remote 为 `https://github.com/Mingzhe-Xuan/recursive.git`；已验证远端 `main` 存在、本地分支正在跟踪且工作区干净，进入服务器 Slurm 验收阶段。
+
+- 2026-11-02 00:35 +08:00：进入三 backbone Sequential Self-Evolution 计划阶段。用户选定 CGCNN、Matformer、iComFormer，并允许额外线性层；下一步编写 plan_2.md，区分逐轮监督训练与推理计算量，保留旧 Goal 1 历史。
+
+- 2026-11-02 00:41 +08:00：完成 docs/plan/plan_2.md，定义三个 backbone 的逐任务节点缓存、线性投影、新阶段训练、全任务覆盖、固定划分和预算对照；UTF-8、12 节标题、数学/围栏、8 个本地链接及历史保留检查通过。下一步为后续实施的数据与官方接口审计，本轮未运行训练。
+
+- 2026-11-02T00:45+08:00：开始用户授权的 CGCNN 单 seed 完整实施，seed 123；下一步固定数据任务和原生模型，并实现可验收的循环流程，不缩小为仅 mock 验证。
+
+- 2026-11-02T01:09+08:00：完成本地实现阶段与 35 项测试、静态检查；服务器确认空闲 RTX 5090 和 246 GiB 持久可用空间，已制定独立 venv 计划。下一步提交、push、服务器 pull 后运行 setup/prepare 和真实两轮 pilot。

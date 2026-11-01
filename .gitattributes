@@ -1,0 +1,2 @@
+src/self_evolution/backbones/cgcnn/upstream/* -text
+scripts/slurm/self_evolution/*.sbatch text eol=lf

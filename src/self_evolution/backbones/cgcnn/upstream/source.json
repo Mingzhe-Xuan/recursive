@@ -1,0 +1,11 @@
+{
+  "repository": "https://github.com/txie-93/cgcnn",
+  "commit": "f42ab233c4ee0c416879d6bc2d22a264418413ad",
+  "license": "MIT",
+  "files": {
+    "model.py": "4059a136d7bdf09f2c51d30736ab9957747a57346c1179f6dbc0ef1540ef0d7d",
+    "LICENSE": "29b499b111e32f8e39a0b121f317857a08eccbe9d6b34ba1704020cf6b99d4ba",
+    "atom_init.json": "cb90bd2257dbf8cfc4e6b2b6d4348d4616e8e9680f1339b1461137032e0f1894",
+    "data.py": "0a944efa570da47d07593d86f5b0fe864b3489b0fe8c17e440a7ff67a43b9be0"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "dataset_id": "jarvis_dft_2021_self_evolution",
+  "source_api": "https://api.figshare.com/v2/articles/6815699",
+  "official_catalog": "https://github.com/usnistgov/jarvis/blob/master/jarvis/db/figshare.py",
+  "snapshot": "jdft_3d-8-18-2021",
+  "expected_structures": 55722,
+  "json_member": "jdft_3d-8-18-2021.json",
+  "task_source": "https://github.com/usnistgov/alignn#2-on-jarvis-dft-2021-dataset-regression",
+  "artifacts": [
+    {
+      "filename": "jdft_3d-8-18-2021.json.zip",
+      "url": "https://ndownloader.figshare.com/files/29204826",
+      "size_bytes": 31911815,
+      "md5": "8f619035a2cd8030de1ce38ce8b561b2"
+    }
+  ]
+}

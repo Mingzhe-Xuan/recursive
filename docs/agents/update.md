@@ -91,3 +91,7 @@
 - 2026-09-29：完成首个论文数据交付单元：新增 `matbench_phonons` 官方来源/SHA-256 manifest 和标准库校验下载器，覆盖续传、Range 回退、错误哈希与路径逃逸；全套 21 项测试通过。
 - 2026-09-29：完成 MACE 论文 v1 的 97-material PhononDB manifest；作者提交树、97 个 MP↔Togo 映射、PBE 标签/超胞与两项来源哈希交叉一致，全套 22 项测试通过。
 - 2026-09-29：MatterSim 作业 507 完成 144/144 且服务器独立哈希复验通过；离线 setup 509 随即暴露 torch 2.14 的 Linux 条件依赖缺失。已确认 PyPI 无其精确 NCCL 版本，改为重建显式 torch 2.8.0/CUDA 12.8 闭包。
+
+- 2026-11-02 00:41 +08:00：新增 docs/plan/plan_2.md，工作名称 Sequential Self-Evolution（亦可称 Sequential Test-Time Scaling）。覆盖 CGCNN、Matformer、iComFormer、完整 JARVIS 回归任务清单、pooling 前原子特征全库缓存、额外线性层、逐阶段随机初始化及历史冻结、默认第 0–5 轮/三个 seeds、必要对照、MAE/累计计算曲线、模块接口、测试与 Slurm 阶段。更新当前状态并保留旧 Goal 1 历史；本轮只改文档。
+
+- 2026-11-02T01:09+08:00：完成 CGCNN seed123 本地流程实现：固定 MIT 官方源码/描述符和 JARVIS 2021 元数据、29 任务、周期构图/分组划分、线性投影、完整训练/缓存链、断点与哈希保护、原始输入和累计步数对照、延后测试评测及 MAE/时间曲线；新增独立模块 README、配置与 Slurm 入口。35 项测试和静态检查通过，当前准备提交同步并开展真实服务器验收。

@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "backbone": "cgcnn",
+  "seed": 123,
+  "max_round": 5,
+  "initialization": "independent_random",
+  "threads": 4,
+  "model": {
+    "atom_input": 92,
+    "edge_input": 41,
+    "hidden": 64,
+    "convolutions": 3,
+    "head_hidden": 128,
+    "head_layers": 1
+  },
+  "graph": {"radius": 8.0, "neighbors": 12, "step": 0.2},
+  "training": {
+    "epochs": 300,
+    "patience": 50,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "optimizer": "Adam",
+    "loss": "normalized_mse",
+    "scheduler": "constant",
+    "normalization": "training_only_mean_sample_std"
+  },
+  "cache": {"shard_size": 256, "dtype": "float32"},
+  "verification": {"atol": 0.00002, "rtol": 0.0001},
+  "controls": ["original", "cumulative_optimizer_steps"],
+  "split": {"seed": 123, "source": "project_grouped_80_10_10"},
+  "baseline_protocol": {
+    "architecture": "official_CGCNN_defaults",
+    "native_forward_acceptance": "float32_atol_2e-5_rtol_1e-4",
+    "literature_comparison": "report_all_deviations; not_exact_paper_split",
+    "label_normalization_difference": "all_training_labels_only; official sampled full dataset",
+    "training_difference": "Adam_300_epochs_patience50; official_default_SGD_30_epochs"
+  },
+  "test_policy": "evaluate_fixed_rounds_after_complete_chain; select_round_on_validation_only",
+  "budget_match": "actual_cumulative_optimizer_steps; constant_lr; no_early_stop_for_matched_control"
+}
