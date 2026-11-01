@@ -152,3 +152,6 @@
 
 
 - 2026-11-02T06:41:36+08:00：上一轮为verified wait，本轮续查原observer8154并核对真实资源；Slurm897仍RUNNING，最新2026-11-02T06:41:20.594669+08:00为formation_energy_peratom epoch157、optb88vdw_bandgap epoch161、optb88vdw_total_energy epoch154、ehull epoch157，无failure、0/29报告。短时Slurm srun元数据查询实测GPU利用率90%、NVML显存4423/32607MiB，节点CPUAlloc16/48、CPULoad5.65；单点利用率不能证明更高并发收益，因此保持已验证4并发、8波和已发布不可变分组，不改预算或重提作业。下一步等待阶段完成和缓存/对照转换，完整目标仍active。
+
+
+- 2026-11-02T07:01:24+08:00：上一goal turn为verified wait及资源核查；本轮通过原observer8154连续24次有界轮询、约18分钟verified wait，实际squeue/history持续确认895_0/job897 RUNNING。最新2026-11-02T07:00:35.745747+08:00：formation_energy_peratom controls/original/round_001 epoch195/steps135915；optb88vdw_bandgap round_000 epoch202/steps140794；optb88vdw_total_energy round_000 epoch192/steps133824；ehull round_000 epoch196/steps135828。无failure、0/29完整报告，阶段尚未转换；未改模型、配置、预算或队列。下一步等待既有训练结束并核验全库缓存/对照转换，完整29项r0–5与必要对照目标仍active。
