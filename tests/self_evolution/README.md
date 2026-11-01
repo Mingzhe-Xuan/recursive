@@ -19,3 +19,7 @@ idempotent supplement publication and unchanged checkpoints/base manifests. Miss
 cross-task control metadata, wrong source/configuration and corrupt shards are rejected before
 publication/test evaluation. The CLI environment-gate test simulates inspection failure and proves
 that CUDA training is not called; CPU tests do not access a GPU for this negative case.
+
+Schedule tests verify complete task coverage, protected wave membership, source/configuration
+rejection and actual dispatcher task selection. Candidate validation also works before publication,
+without creating a runtime schedule. They do not estimate actual GPU speed.

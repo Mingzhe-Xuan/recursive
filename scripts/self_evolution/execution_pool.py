@@ -11,18 +11,22 @@ import sys
 import time
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from self_evolution.data.tasks import TASKS
 from self_evolution.io import atomic_write, code_identity, digest, file_hash, read_json
 from self_evolution.pipeline.chain import task_lock
+from task_schedule import load_schedule, validate_groups
 
 GIB = 1024**3
 
 
-def wave_tasks(index: int, size: int = 4) -> list[str]:
+def wave_tasks(index: int, size: int = 4, schedule=None) -> list[str]:
     names = list(TASKS)
     if index < 0 or size < 1 or index * size >= len(names):
         raise ValueError("wave index outside the complete task list")
+    if schedule is not None:
+        return validate_groups(schedule)[index]["tasks"]
     return names[index * size : (index + 1) * size]
 
 
@@ -75,11 +79,20 @@ def host_available_bytes():
 
 
 def run_wave(
-    prepared, run, config_path, config, index, workers, device="cuda", cli=None, gate=None
+    prepared,
+    run,
+    config_path,
+    config,
+    index,
+    workers,
+    device="cuda",
+    cli=None,
+    gate=None,
+    schedule=None,
 ):
     if not 1 <= workers <= 4:
         raise ValueError("worker count must be between one and four")
-    names = wave_tasks(index)
+    names = wave_tasks(index, schedule=schedule)
     workers = min(workers, len(names))
     if workers < 1:
         raise ValueError("workers must be positive")
@@ -259,6 +272,9 @@ def enrich_summary(run: Path, summary: dict) -> dict:
                 for wave in waves
             ),
             "wave_wall_scope": "launcher lifetime, excludes scheduler/bootstrap overhead",
+            "task_schedule_sha256": file_hash(run / "pool/task_schedule.json")
+            if (run / "pool/task_schedule.json").is_file()
+            else None,
             "observed_reserved_gpu_seconds": sum(
                 (wave.get("wave_wall_seconds", 0) + wave.get("previous_observed_wall_seconds", 0))
                 * wave.get("allocated_gpu_count", 0)
@@ -294,6 +310,7 @@ def main():
         raise RuntimeError("production pool requires a Slurm allocation")
     config = read_json(args.config)
     resources = validate_gate(args.output, config, args.prepared / "graphs/manifest.json")
+    schedule = load_schedule(args.output, args.prepared, config)
     host_available = host_available_bytes()
     workers = select_workers(
         resources,
@@ -308,9 +325,19 @@ def main():
         "host_available_before_launch_bytes": host_available,
         "memory_rule": "2*largest peak reserved + 1GiB per worker, 75% GPU; host planning 8GiB/worker",
         "fallback": "one worker if largest-batch measurement is unavailable or headroom is low",
+        "task_schedule_sha256": file_hash(args.output / "pool/task_schedule.json")
+        if schedule is not None
+        else None,
     }
     result = run_wave(
-        args.prepared, args.output, args.config, config, args.wave_index, workers, gate=gate
+        args.prepared,
+        args.output,
+        args.config,
+        config,
+        args.wave_index,
+        workers,
+        gate=gate,
+        schedule=schedule,
     )
     print(result)
     raise SystemExit(0 if result["status"] == "complete" else 1)

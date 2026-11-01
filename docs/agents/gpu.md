@@ -165,3 +165,6 @@
 - 2026-11-02T05:37:09+08:00：890/891已核查COMPLETED/ExitCode0:0、895_0四个worker已实际训练。先SSH仓库检查/代理pull，再SFTP只读拉回real_acceptance/pilot_resources、r1 training/history/cache_timing、两份补充manifest、wave0执行ledger与四个环境/上下文小文件；不复制大型缓存tensor，不改计算或源码。用于本地核验报告SHA/完整配置和两轮成果。
 
 - 2026-11-02T05:39:46+08:00：两轮pilot与891已完成，建立全矩阵只读持久SSH监控（先仓库检查/代理pull）。每55秒从squeue确认895真实活动wave，读取对应任务的小型history/上下文/链阶段、全部wave终态；本地O(1)更新latest JSON并追加JSONL，不处理预测/缓存tensor。观察到失败、活动句柄缺失冲突或数组结束即退出供核查；不自动重提/修改计算。最多180轮。
+
+
+- 2026-11-02T06:14:57+08:00：计划连接Guqq，先检查任务仓库并代理git pull，再提交一次带持久账本的Slurm CPU调度回归（完整self_evolution测试）；仅轻量查询队列/ledger/日志，不改运行中895或源码，不在登录节点执行测试。后续只读复核日志及runtime分组发布/SFTP另行登记。

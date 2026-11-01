@@ -67,7 +67,7 @@ When sharing an existing task-owned Slurm allocation through `srun --jobid=... -
 that condition with `--shared-gpu`; these timings are exploratory, not exclusive-device benchmarks.
 
 `execution_pool.py` is an optional full-matrix scheduler: eight waves (`--array=0-7%1`),
-each covering up to four tasks in stable task-index order. It requires the real CUDA acceptance
+each covering up to four tasks (stable task-index order by default). It requires the real CUDA acceptance
 and matching resource/config/core/geometry hashes. `pilot_resources.py` also probes the 64 structures
 with the largest atom counts (or the configured smaller batch); an OOM is recorded explicitly and
 forces the scheduler to one worker. Otherwise it caps workers using measured reserved memory,
@@ -100,3 +100,11 @@ audits require Slurm. Audit IO is included in pool wave wall time, outside the o
 cache-generation timer. Each CUDA `run`/`evaluate` also rechecks exact environment versions through
 `inspect_environment.py` and records an action/PID-specific environment JSON, including late-starting
 workers within an existing allocation.
+
+`task_schedule.py` supports an optional `<work>/run/pool/task_schedule.json` for balancing
+pending groups by valid-label counts. The eight group capacities and all 29 tasks remain fixed.
+The schedule binds the exact config, dataset, graph manifest and label audit hashes, and refuses
+to change any existing wave ledger. Validate a candidate with `validate_schedule` before atomic
+publication; publish once, keep it immutable, and preserve every already-started group. Scheduling
+changes no task seed, training budget, model or evaluation rule. Wave gates and final summary
+record the schedule SHA256. Label counts are a workload proxy, not measured speed.
