@@ -501,3 +501,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 新增独立Slurm验收入口：在890成功后加载真实第0轮checkpoint与晶体图，在CUDA上比较官方native forward与wrapper，固定atol2e-5/rtol1e-4；检查单结构/批量一致、eval buffers/权重不变及0→1直接链/缓存一致，不读取任何标签。仅验收成功后允许全29任务seed123第0–5轮和必要对照数组运行，汇总作业afterany保留失败覆盖表。检查新增Python/Bash语法、README命令和只读标签边界；实际GPU结果必须等待真实pilot。
 
 实际结果（2026-11-02T02:12+08:00）：新GPU验收脚本ruff/compileall与accept.sbatch Bash语法、README命令检查通过；不改核心src或训练配置，故不使890缓存/恢复身份失效。真实验收仍须890完成后在Slurm执行，不记为已通过。实测888已通过12项GPU环境集成测试；889全库55712结构0失败、29/29任务ready，116.02秒完成；890已运行至第0轮epoch4，best验证MAE0.1457127 eV/atom，测试标签未用于选择。
+
+2026-11-02T02:15+08:00：全任务每个Slurm作业新增已有inspect_environment的启动复核，记录独立环境JSON并断言精确版本/GPU，防止长矩阵运行期间只读继承包被外部更新而静默混用；Bash语法与ruff通过。该检查函数已在888真实GPU验收通过，未修改src或优化/数据协议。

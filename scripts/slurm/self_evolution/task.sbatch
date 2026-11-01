@@ -15,6 +15,8 @@ test -f "$runtime/manifests/SETUP_COMPLETE"
 export OMP_NUM_THREADS=4 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=4
 export CUBLAS_WORKSPACE_CONFIG=:4096:8
 export MPLCONFIGDIR="$runtime/matplotlib" XDG_CACHE_HOME="$runtime/cache"
+"$python_bin" scripts/self_evolution/inspect_environment.py --gpu \
+    --output "$work/run/environments/task-${SLURM_JOB_ID}.json"
 arguments=(--prepared "$work/prepared" --output "$work/run" --device cuda)
 if [[ -n "${CGCNN_TASK:-}" ]]; then
     arguments+=(--task "$CGCNN_TASK")
