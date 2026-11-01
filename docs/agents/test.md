@@ -503,3 +503,7 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 实际结果（2026-11-02T02:12+08:00）：新GPU验收脚本ruff/compileall与accept.sbatch Bash语法、README命令检查通过；不改核心src或训练配置，故不使890缓存/恢复身份失效。真实验收仍须890完成后在Slurm执行，不记为已通过。实测888已通过12项GPU环境集成测试；889全库55712结构0失败、29/29任务ready，116.02秒完成；890已运行至第0轮epoch4，best验证MAE0.1457127 eV/atom，测试标签未用于选择。
 
 2026-11-02T02:15+08:00：全任务每个Slurm作业新增已有inspect_environment的启动复核，记录独立环境JSON并断言精确版本/GPU，防止长矩阵运行期间只读继承包被外部更新而静默混用；Bash语法与ruff通过。该检查函数已在888真实GPU验收通过，未修改src或优化/数据协议。
+
+## 2026-11-02T02:21+08:00：实际运行证据与提交前文档检查
+
+本轮仅记录进度。小型JSON回读显示55712结构、29任务ready、项目metadata0.1.0、原始55723行；训练history有32个完成epoch，best验证MAE0.07208431。scontrol分别确认891 afterok890、892 afterok891（0–28%1）、893 afterany892_*，890为RUNNING。git check-ignore确认本地审计/训练生成物被忽略；实际路径、作业ID和Markdown格式检查通过。提交前git diff --check通过，未重复声称最终实验或真实pilot验收已完成。
