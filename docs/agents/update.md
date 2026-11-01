@@ -113,3 +113,5 @@
 - 2026-11-02T02:21+08:00：890实测到第0轮epoch32、best验证MAE0.07208431；全任务后续链891/892/893已排队并经scontrol确认890→afterok891→afterok892_0–28%1→afterany893。已拉回data_audit/environment/raw_snapshot_audit/jobs/round0_history到忽略的本地outputs证据目录。本轮没有最终测试MAE或完整循环曲线，仍需完成真实两轮和29任务r0–5+对照。
 
 - 2026-11-02T02:32:08+08:00：新增独立CGCNN执行诊断脚本，在复制的checkpoint上比较原生pooling与segment候选前向/梯度及算子开销；脚本和文档静态检查通过，尚未执行GPU诊断。核心src/config和890训练未变。
+
+- 2026-11-02T02:35:29+08:00：真实执行诊断通过既定前向/梯度门槛，识别pooling开销，但保留原训练路径以维护正在运行的协议；共享GPU计时不作为完整训练加速结论。890第0轮已62epoch、best验证MAE0.05821373，891/892/893依赖复核有效。已拉回诊断、算子表及最新训练history，目标仍active。

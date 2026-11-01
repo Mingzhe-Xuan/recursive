@@ -121,3 +121,9 @@
 - 2026-11-02T02:18+08:00：已核实890 RUNNING至epoch27、best验证MAE0.07208431；891真实CUDA验收、892全29任务数组、893汇总已按afterok/afterany排队，ledger位于final/extension-da702f6.tsv。计划下一连接先pull，再只读核查依赖条件；随后SFTP拉回小型环境/原始审计/清理后审计/ledger/训练history到本地outputs证据目录，数据生成物不进入Git。
 
 - 2026-11-02T02:25+08:00：继续active目标，上一目标轮为实现/真实数据/训练启动的progress。本连接先pull，再只读核实890/891/892/893与两阶段history/失败文件/验收状态；另读取srun帮助以判断是否能在任务自有分配内做短诊断，不实际启动额外计算，不修改/重启已运行作业。
+
+- 2026-11-02T02:32:35+08:00：连接Guqq首先确认任务仓库并代理git pull，核查890仍RUNNING后，在其自有Slurm allocation内srun --overlap执行短时隔离checkpoint诊断；只读原训练与64个图，不读取标签，不直接在登录节点计算，不取消/修改890，诊断结果另存任务outputs。权限内：同步、查询和Slurm计算。
+
+- 2026-11-02T02:33:25+08:00：连接Guqq首先代理git pull，查询890队列/训练history与隔离Slurm步骤输出；仅轻量读取已落盘diagnostic.json和step.log，不重复启动、不改训练。
+
+- 2026-11-02T02:34:05+08:00：先SSH确认仓库并代理pull、只读核查依赖，再通过SFTP拉回新增执行诊断JSON/算子表和更新训练history至本地忽略目录；只读小型结果，不操作源码/其他任务或启动计算。SFTP连接仅传输同一已确认仓库的生成结果。
