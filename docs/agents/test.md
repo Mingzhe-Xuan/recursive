@@ -529,3 +529,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 新增scripts级两阶段资源诊断，在真实pilot成功后由已有891验收入口调用，不改src/config/训练身份。记录全部缓存manifest覆盖/实际字节数、随机固定批次图装载与首次校验缓存读取、H2D/原生forward-backward-Adam副本步骤计时及PyTorch峰值allocated/reserved显存；明确为固定批次、零目标代理损失、lr=0副本、OS页缓存未知，不冒充整轮训练峰值或裸盘带宽。测试在已有三阶段CPU集成夹具中暂时移走任务标签文件，验证诊断仍可运行、CPU显存项为空、两阶段缓存覆盖与checkpoint/manifest SHA不变；真实GPU数值必须等pilot后Slurm891，提前只记静态/CPU验证。执行ruff/编译、对应集成测试及Slurm Bash语法，任何失败修复后再提交。
 
 实际结果（2026-11-02T03:18:02+08:00）：全部39项pytest通过（扩展已有三阶段测试，数量未增加），覆盖真实文件标签缺席、两阶段完整缓存元数据、所有checkpoint/manifest/分片SHA不变、异协议拒绝及CPU显存字段为空；ruff/格式/py_compile/accept.sbatch Bash语法/git diff --check通过。首次pytest因默认Temp和.pytest_cache ACL在setup阶段失败，改用任务专用workspace --basetemp及cache_dir后通过，未降低断言。真实GPU峰值/IO结果仍须891在pilot结束后执行。核心src和训练配置未改。
+
+- 2026-11-02T03:21:00+08:00：远端同步后轻量验收通过：HEAD ee775bc，accept_real.py引用audit_pilot，新增脚本存在；git diff 4379c88 HEAD -- src/self_evolution configs/self_evolution为空；squeue890 RUNNING、891 afterok890等待。未在登录节点执行资源/训练脚本或编译。文档链接和git diff --check通过；GPU资源测量仍未执行。
