@@ -585,3 +585,15 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T07:37:47+08:00：带隙r0真实产物检查全部通过：完整55712 ID集合、562055原子/64维float32/218分片、manifest SHA/timing/chain及checkpoint/config/core/graph身份、266条history/185402步/最优验证值、16结构既定容差记录和r1正步数。核验结果在忽略目录transition_metadata_audit.json；本地仅metadata检查，未复制/重算缓存tensor，Slurm publish_cache路径已逐片验证SHA/有限值/形状。state历史原文保留，文档路径/格式和git diff --check通过，无代码/配置变更，不重复既有49项测试。
+
+
+- 2026-11-02T09:27:19+08:00：新增阶段metadata核验计划：总能/ehull r0及带隙r1的完整55712 ID覆盖、562055原子/64维float32/218分片、cache/timing/root chain/checkpoint/config/core/graph SHA和父缓存绑定、训练history/步数/最佳验证值及16结构组合容差记录；形成能original1的原始输入模式/无父缓存、与主链相同训练划分/归一化、配置与source身份及300epoch/209100步。只读metadata；逐片tensor校验保留Slurm生成路径口径。观察器重建应得到实际RUNNING和当前新阶段，不据观察超时重提训练。
+
+
+- 2026-11-02T09:29:37+08:00：四性质汇总实现单元测试计划：外部执行范围绑定配置与精确四任务、其他25明确deferred；不改src/config核心身份；四任务全部完整才可标记当前scope complete，缺一个/一轮/必要控制仍partial；曲线/CSV仅四性质且coverage区分deferred；无scope文件默认29项兼容；Slurm队列只取消验证为PENDING的895_1–7、保留895_0/job897，汇总就绪前held893。本地测试/静态和Slurm CPU复核后才释放汇总。
+
+
+- 2026-11-02T09:40:21+08:00：四性质范围实现：显式selected/deferred配置SHA绑定、延期task入口训练前拒绝、report-only view复用固定绘图器、完整0–5轮/两对照及执行状态验证、当前scope完成计数4/其余25延期。完整本地57项通过，ruff format/check通过；无src/config科学身份变化，Slurm CPU与实际scope发布待进行。
+
+
+- 2026-11-02T09:42:55+08:00：最终候选范围验证接口加入后，8项范围测试再次通过；此前完整57项回归通过。ruff format --check/check、文档路径检查及git diff --check通过，git diff 4379c88 -- src/self_evolution configs/self_evolution为空。已从原提交脚本确认汇总893显式CGCNN_WORK_ROOT为当前final工作目录，可验收后安全释放原汇总。

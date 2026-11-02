@@ -108,3 +108,18 @@ to change any existing wave ledger. Validate a candidate with `validate_schedule
 publication; publish once, keep it immutable, and preserve every already-started group. Scheduling
 changes no task seed, training budget, model or evaluation rule. Wave gates and final summary
 record the schedule SHA256. Label counts are a workload proxy, not measured speed.
+
+`execution_scope.py` reads an optional `<work>/run/execution_scope.json` with schema 1,
+a name, config_hash, selected_tasks and deferred_tasks. The two lists must partition the
+29-property catalog exactly. Without the file, the original 29-property behavior applies.
+With it, run/evaluate reject deferred properties before training, while preparation and full-library
+feature caching remain unchanged. The scope does not modify the immutable scientific config.
+
+Scoped summary validates every required round/control report against its protocol, chain and
+training metadata, then copies only accepted selected-property reports into a temporary report-only
+view. It reuses the pinned plotter without changing its global task registry or source identity.
+Plots and metrics.csv contain selected properties; summary.json retains 29 coverage rows with
+other properties explicitly deferred, and completion is measured against selected_tasks only.
+Previous report directories are archived. Pool execution contexts still prevent interrupted tasks
+from appearing complete. Cancel pending deferred waves before enabling a narrower scope; never
+change an already-running wave's members or the immutable task_schedule.json.

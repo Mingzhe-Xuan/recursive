@@ -158,3 +158,6 @@
 
 
 - 2026-11-02T07:37:47+08:00：完成带隙r0阶段转换核验（本轮为持续verified wait后的实际实验progress）。r0按validation patience结束于266epoch/185402步、最佳验证MAE0.1585009272 eV、训练/验证7784.60秒；缓存13.916秒，55712唯一ID集合与已验收全库完全一致、562055原子/64维float32/218分片。checkpoint SHA 2beb0e53…、cache SHA e2820265…与training/timing/root chain/16结构一致性记录相互匹配，config/core/graph身份一致。16结构直接链/缓存最大节点差1.7166e-5，通过固定atol2e-5+rtol1e-4；第1轮已实际训练（拉回初始7epoch历史）。小型证据及本地metadata核验JSON保持Git忽略。最新2026-11-02T07:37:16.037377+08:00四worker仍训练、无failure、0/29完整报告；全29项r0–5/对照/最终测试仍未完成，目标继续active。下一步续查带隙r1、形成能对照及总能/ehull的r0→缓存→r1转换。
+
+
+- 2026-11-02T09:40:21+08:00：四性质范围实现：显式selected/deferred配置SHA绑定、延期task入口训练前拒绝、report-only view复用固定绘图器、完整0–5轮/两对照及执行状态验证、当前scope完成计数4/其余25延期。完整本地57项通过，ruff format/check通过；无src/config科学身份变化，Slurm CPU与实际scope发布待进行。

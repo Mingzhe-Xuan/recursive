@@ -64,9 +64,9 @@ def main():
         parser.error("--output required")
     if args.action == "summarize":
         from execution_pool import enrich_summary
-        from self_evolution.evaluation.report import summarize
+        from execution_scope import summarize_scope
 
-        print(json.dumps(enrich_summary(args.output, summarize(args.output, config))))
+        print(json.dumps(enrich_summary(args.output, summarize_scope(args.output, config))))
         return
     if args.task_index is not None:
         if not 0 <= args.task_index < len(TASKS):
@@ -74,6 +74,11 @@ def main():
         args.task = list(TASKS)[args.task_index]
     if args.task is None or args.prepared is None:
         parser.error("--task/--task-index and --prepared required")
+    from execution_scope import load_scope
+
+    scope = load_scope(args.output, config)
+    if scope is not None and args.task not in scope["selected_tasks"]:
+        parser.error("task is outside the current execution scope and has been deferred")
     failure = args.output / "cgcnn" / args.task / f"seed_{config['seed']}" / "failure.json"
     try:
         if args.device.split(":")[0] == "cuda":

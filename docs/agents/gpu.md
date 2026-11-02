@@ -177,3 +177,15 @@
 
 
 - 2026-11-02T07:32:57+08:00：observer8154于07:31:45发现optb88vdw_bandgap缓存轮数变1。连接Guqq先仓库检查/代理pull，再只读核对该任务r0 training/cache_timing/manifest统计、chain及一致性记录、r1 history和全部活动worker。仅小型元数据与Slurm查询，不加载权重/缓存tensor、不直接训练或评测。允许随后SFTP拉回对应小型证据；不改现有任务/源码。
+
+
+- 2026-11-02T09:26:24+08:00：code-mode host超时/代际失效后，原8154输出SSH被远端关闭且本地watch Python进程已缺失；连接Guqq先仓库检查/代理pull，仅查询895/893队列、四任务training/cache/chain/控制及failure小型metadata，重建真实阶段状态。允许后续关联SFTP拉回新增阶段小文件。不得由观察失效重启/取消/重提训练；观察器重建另行记录。
+
+
+- 2026-11-02T09:27:19+08:00：已确认旧observer8154终态SSH255/本地进程缺失，895_0实际仍RUNNING。新建只读watch SSH（先仓库检查/代理pull），每55秒查询原895及活动history，最多180轮；只替换观察器，不重启训练。该连接确认pull后，关联SFTP拉回总能/ehull r0、带隙r1缓存及形成能original1对照的metadata证据，不传权重/tensor。
+
+
+- 2026-11-02T09:29:37+08:00：用户明确本阶段仅四性质0–5轮，其余以后。连接Guqq先仓库检查/代理pull，核对895_0仍RUNNING且895_1–7全PENDING；先hold当前pending汇总893，再仅取消895_1–7并记录持久范围账本。保留897/895_0及所有训练/缓存/数据；不取消整个895，不改源码或科学配置。四性质汇总就绪并检查后再release893。
+
+
+- 2026-11-02T09:42:55+08:00：四性质实现本地57项及最终8项复核通过。计划连接Guqq先仓库检查/代理pull，使用持久ledger仅提交一次Slurm CPU全self_evolution集成（预计30项），同时确认897仍运行、其他pending组已撤销、893 held；不在登录节点跑测试，不修改训练配置/源码。scope发布/SFTP与汇总release另行记录。

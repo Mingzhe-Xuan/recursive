@@ -1,5 +1,13 @@
 # Sequential Self-Evolution：JARVIS-DFT 性质预测的逐阶段特征循环计划
 
+## 当前执行范围（2026-11-02T09:40:21+08:00 用户调整）
+
+本阶段只执行 **CGCNN、seed123、四个性质、第0–5轮**：formation_energy_peratom（形成能）、optb88vdw_bandgap（带隙）、optb88vdw_total_energy（总能）、ehull。保留原始输入独立重训和累计优化步数两项必要对照；每轮仍在完整55712结构库上缓存特征，模型/优化配置不变。
+
+其余25性质以及另外两个backbone保留为后续工作。下文完整研究矩阵是长期计划，本阶段验收仅要求上述四性质全部六轮、对照、缓存链与测试曲线完成；不能把延期性质计为当前阶段失败，也不能只凭已完成基线宣布本阶段完成。
+
+运行中的895_0/job897四进程保留；895_1–7已在PENDING状态撤销。汇总893暂held，待外部execution_scope.json与四性质汇总通过本地及Slurm CPU验证后释放；配置SHA绑定的范围文件独立于训练协议，避免使既有checkpoint失效。
+
 ## 1. 目标、命名与范围
 
 使用 CGCNN、Matformer、iComFormer 三个 backbone，分别开展以下实验：

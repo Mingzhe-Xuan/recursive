@@ -285,13 +285,19 @@ def enrich_summary(run: Path, summary: dict) -> dict:
             ],
         }
         for row in summary["coverage"]:
+            if row["status"] == "deferred":
+                continue
             path = (
                 run / "cgcnn" / row["task"] / f"seed_{summary['seed']}" / "execution_context.json"
             )
             if path.is_file() and read_json(path)["status"] != "complete":
                 row["status"] = "failed" if read_json(path)["status"] == "failed" else "incomplete"
         summary["completed_tasks"] = sum(row["status"] == "complete" for row in summary["coverage"])
-        summary["status"] = "complete" if summary["completed_tasks"] == len(TASKS) else "partial"
+        summary["status"] = (
+            "complete"
+            if summary["completed_tasks"] == summary.get("required_tasks", len(TASKS))
+            else "partial"
+        )
         atomic_write(run / "reports/summary.json", summary)
     return summary
 

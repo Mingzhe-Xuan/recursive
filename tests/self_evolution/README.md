@@ -23,3 +23,8 @@ that CUDA training is not called; CPU tests do not access a GPU for this negativ
 Schedule tests verify complete task coverage, protected wave membership, source/configuration
 rejection and actual dispatcher task selection. Candidate validation also works before publication,
 without creating a runtime schedule. They do not estimate actual GPU speed.
+
+Scope tests cover all four properties through rounds 0..5 and both required controls,
+exclude even existing deferred reports from plots/CSV, preserve default 29-property behavior,
+reject scope/config drift and deferred CLI launches, and refuse missing controls/rounds/training
+metadata or stale execution contexts. Synthetic reports verify aggregation, not model accuracy.
