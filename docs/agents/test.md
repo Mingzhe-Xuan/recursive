@@ -635,3 +635,7 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-02T23:14:43+08:00：残差验证实现单元测试计划：1）Fprev+sigma*delta单位与残差loss等价、零delta不重复加均值；2）同R0、同direct预算/seed、三分支CPU0–2真实训练、预算逐轮精确匹配、仅累计预测val MAE选新checkpoint；3）中途checkpoint恢复与连续训练等价，旧模型/BN/源ckpt及cache SHA不变；4）节点＋预测archive全ID/原子/float32/shape/字节/SHA、部分写入恢复、错parent/协议/腐坏拒绝；5）test标签变化不影响残差训练数值/训练标准化；6）完整4性质/3方案/3轮报告覆盖、缺失不填零、曲线允许变差。代码前置本计划；完成后本地完整回归/ruff/语法/路径检查，Guqq pull后Slurm CPU及真实GPU链验收，全部满足再正式训练。
 
 - 2026-11-02T23:39:53+08:00：残差实现提交前检查通过：全仓库62项pytest（43.27秒），另行新包5项通过；ruff format/check、三个sbatch逐个bash -n、Python3.10 AST、模块README/文档路径、单文件<10MiB、git diff --check通过。与4379c88比较src/self_evolution及configs/self_evolution零差异；全部生成物位于忽略目录。覆盖三分支0–2、累计残差单位/梯度、全缓存、源冻结、固定预算/seed、恢复等价、test标签隔离、epoch>=1选择及错误协议/过期GPU门禁拒绝。下一步服务器Slurm CPU和真实GPU验收，依赖成功后正式新实验。
+
+- 2026-11-02T23:42:46+08:00：Slurm900测试基础设施失败：--basetemp父diagnostics不存在，pytest10项通过/25个setup错误，模型断言未执行；901/902被成功依赖阻止。修复单元计划：check.sbatch先mkdir -p指定study/diagnostics；逐个bash -n及临时全新父目录模拟验证，再提交同步/Slurm重跑同35项，不改变断言与成功标准。
+
+- 2026-11-02T23:43:44+08:00：check.sbatch父目录修复验证通过：全新tmp/residual-fresh-parent/diagnostics下原5项残差测试15.02秒通过、bash -n与git diff --check通过；未修改测试断言。服务器需重跑原35项，900失败证据保留。

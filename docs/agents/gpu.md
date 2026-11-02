@@ -221,3 +221,9 @@
 - 2026-11-02T22:27:16+08:00：精确数组别名895_0已取消，确认CANCELLED/ExitCode0:15、无活动895元素且原五个训练/launcher PID消失，893 held。新连接先仓库检查/代理pull，只读复核暂停账本/空训练队列/held汇总，再关联SFTP将暂停账本、检查证明与四份已验证last/best/config备份拉回本地忽略目录。无新训练/评测。
 
 - 2026-11-02T23:39:53+08:00：用户已明确授权独立残差验证。下一连接Guqq先检查/home/xmz/recursive存在并以显式SOCKS代理git pull --ff-only；核对旧897已取消、893保持held。仅在新outputs/residual_scaling/cgcnn-seed123-r012-v1创建作业账本与日志，依次提交Slurm CPU检查、afterok依赖的GPU真实验收、再afterok依赖的正式八条残差链/验证汇总。所有计算均Slurm；现有task venv复用、不改依赖，不恢复旧0–5或释放893，不修改服务器受Git管理源码。作业提交账本防重复；读取队列/metadata是轻量管理。
+
+- 2026-11-02T23:41:27+08:00：独立验证作业已提交900 CPU、901 afterok900 GPU验收、902 afterok901正式实验。下一连接先仓库检查/代理pull，仅查询这三个新作业、CPU/验收日志及新输出metadata，确认旧893仍held；不重复提交、不更改训练。
+
+- 2026-11-02T23:42:12+08:00：900依赖失败，901正确阻止正式验收、902未运行；sacct在该集群禁用，查询脚本在读日志前退出。下一连接仓库检查/代理pull后只读900日志与scontrol终态，定位CPU门禁失败，不放宽检查、不提交新训练。
+
+- 2026-11-02T23:43:44+08:00：下一连接Guqq先仓库检查/代理pull，同步check.sbatch父目录修复；确认901/902属于新残差任务且仍pending后只取消这两个失效依赖，保存submission-attempt-900，再重提同CPU→GPU验收→正式实验afterok链。旧893 held/旧训练暂停不变，全部计算Slurm。

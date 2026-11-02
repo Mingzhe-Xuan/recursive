@@ -11,5 +11,6 @@ runtime="${CGCNN_RUNTIME_ROOT:-$PWD/outputs/self_evolution/runtime/cgcnn-seed123
 study="${RESIDUAL_WORK_ROOT:-$PWD/outputs/residual_scaling/cgcnn-seed123-r012-v1}"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1
 export MPLCONFIGDIR="$runtime/matplotlib"
+mkdir -p "$study/diagnostics"
 "$runtime/venv/bin/python" -m pytest tests/self_evolution tests/residual_scaling \
     -p no:cacheprovider --basetemp "$study/diagnostics/cpu-${SLURM_JOB_ID}"
