@@ -185,3 +185,5 @@
 
 
 - 2026-11-02T22:32:14+08:00：用户要求实际暂停训练，现已完成停训管理阶段。先hold893并在现有Slurm897内CPU加载验证四份last/best/config、模型/optimizer/RNG及完整epoch字段，复制恢复备份；首次scancel897返回0仍RUNNING，复核后改scancel --verbose895_0，实际2026-11-02T22:23:42+08:00确认JobState=CANCELLED/ExitCode0:15，所有895训练元素消失、原四worker及launcher PID退出，资源释放。893保持JobHeldUser。原始checkpoint/全部缓存/数据/日志保留，wave/context已标paused并记录暂停前已发生墙钟成本。formation_energy_peratom controls/original/round_003 已校验备份epoch265/steps184705；optb88vdw_bandgap controls/cumulative/round_002 已校验备份epoch392/steps273224；optb88vdw_total_energy controls/cumulative/round_002 已校验备份epoch60/steps41820；ehull controls/cumulative/round_002 已校验备份epoch179/steps124047。暂停账本及备份已SFTP到本地并复核last/best SHA及config身份，生成物全部Git忽略。当前四性质0–5轮未完成，整体goal为paused而非complete；旧连续运行ETA失效，不自动恢复训练。恢复须明确授权、保持core/config身份，并将held893依赖改到新job后再release。
+
+- 2026-11-02T23:39:53+08:00：完成独立CGCNN残差验证实现：src/residual_scaling分为protocol/cache/training/pipeline/reporting，三组共用旧R0、复用direct R1/R2、两新分支严格匹配实际步数和seed，eta1且固定R0统计。增加成对节点/累计预测归档、恢复/身份校验、验证曲线、独立Slurm CPU/GPU门禁和最多4 worker调度。全62项本地回归及静态检查通过；旧核心/配置未改，旧0–5/893继续暂停。计划docs/plan/residual_scaling_validation.md。

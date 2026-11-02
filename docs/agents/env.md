@@ -70,3 +70,5 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 2026-11-02T01:33+08:00：Slurm879环境GPU与8项集成测试通过；实际材料库精确版本已核实。发现venv默认旧setuptools将editable元数据记为UNKNOWN，新增任务venv内setuptools==70.2.0/wheel==0.45.1覆盖，并新增项目metadata 0.1.0断言。离线bootstrap现8个wheel；此修复不更改模型、数据或训练预算。
 
 - 2026-11-02T02:12+08:00：888最终环境真实验收成功：Python3.10.12、torch2.8.0+cu128、CUDA12.8/RTX5090、numpy2.2.6、pymatgen2025.10.7、matplotlib3.10.3、pytest8.3.5、setuptools70.2.0、wheel0.45.1，项目metadata recursive-atomistic-backbones0.1.0，12项测试通过。正式work_root=/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final；完整图数据hash85da743bbe3ef70e6c429af2b7d026b20a375dac665a8d0485a4725e282ec376，891之前的实际pilot为890。
+
+- 2026-11-02T23:37:27+08:00：本次独立残差验证复用现有/home/xmz/recursive/outputs/self_evolution/runtime/cgcnn-seed123/venv，不创建新环境、不安装/更改依赖。服务器Python3.10.12/Torch2.8.0+cu128/numpy2.2.6/pymatgen2025.10.7/matplotlib3.10.3/pytest8.3.5，以Slurm环境检查为准；src通过入口sys.path访问新包。本地Python3.12/Torch2.11 CPU仅做回归，不能替代真实CUDA验收。

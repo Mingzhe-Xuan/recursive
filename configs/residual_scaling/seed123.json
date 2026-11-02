@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "name": "cgcnn_residual_scaling_seed123_r012",
+  "seed": 123,
+  "max_round": 2,
+  "eta": 1.0,
+  "expected_structures": 55712,
+  "tasks": ["formation_energy_peratom", "optb88vdw_bandgap", "optb88vdw_total_energy", "ehull"],
+  "variants": ["direct", "raw_residual", "feature_residual"],
+  "budget": "legacy_direct_actual_optimizer_steps",
+  "initialization": "legacy_direct_stage_seed_and_native_initialization",
+  "normalization": "fixed_round_zero_training_statistics",
+  "checkpoint_selection": "best_ensemble_validation_mae_after_epoch_one",
+  "test_policy": "sealed_during_method_selection"
+}
