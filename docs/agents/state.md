@@ -6,11 +6,13 @@ CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETE
 
 891真实CUDA验收passed：32结构native/wrapper最大差0、batch/single差4.172325e-7；0→1直接链/缓存在既定atol2e-5+rtol1e-4组合容差内通过（逐阶段最大绝对差1.7166e-5/4.5776e-5，不能只用绝对容差解读）。两份完整配置/分片字节/来源补充manifest SHA与验收引用一致，真实全分片审计通过。代码核心仍4379c88、入口896a171，核心验收时本地46项和Slurm896的19项CPU集成通过；当前入口4fb240b新增四性质范围，本地57项/Slurm899的30项通过。
 
-完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom累计步数r1对照、optb88vdw_bandgap原始输入r1对照、optb88vdw_total_energy/ehull按当前history继续第1轮或后续对照。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；其他波1–7按用户要求取消，893已释放，依赖仍afterany895_*。
+完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom 第1轮累计步数对照、optb88vdw_bandgap 第1轮原始输入对照、optb88vdw_total_energy 第1轮、ehull 第1轮原始输入对照。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；其他波1–7按用户要求取消，893已释放，依赖仍afterany895_*。
 
 带隙新增完成阶段：optb88vdw_bandgap r0为266epoch/185402步，best验证MAE0.15850093 eV（非测试值），训练/验证7784.60秒。全库55712结构/562055原子/64维float32/218分片缓存13.916秒，cache SHA e2820265…、checkpoint SHA 2beb0e53…；本地元数据/完整ID集合与身份核验通过，16结构链探针通过。服务器查询确认其r1已按patience结束139epoch/96883步，best验证MAE0.15119844 eV，第二份缓存已完成；当前original1对照继续，完整链/对照/测试尚未完成。
 
 已核验新增结果：总能/ehull r0均300epoch完成（验证MAE分别0.05124270/0.11916633），全库缓存与身份覆盖通过；带隙r1完成139epoch（验证MAE0.15119844）且第二份全库缓存通过核验。形成能original1对照完成300epoch（验证MAE0.04533868），累计步数对照继续。上述均为验证指标，最终测试仍延后。
+
+ehull新增完成阶段：r1为207epoch/143451步、验证MAE0.11350609；全库缓存与父身份/训练划分/投影参数核验通过，缓存9.729秒。其original1对照继续，完整0–5轮仍待完成。
 
 正式work_root：/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final。
 本地证据：outputs/self_evolution/cgcnn-seed123-evidence，已拉回real_acceptance/pilot_resources、两轮training/history/cache_timing、两份补充manifest、wave0/context与早期数据审计。全库55712构图/29任务划分此前已完成，原始重复ID/冲突标签已审计。生成证据均Git忽略。
@@ -23,7 +25,7 @@ CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETE
 
 历史待启动组均衡文件SHA 8c3cf7f…保留不改写；用户收敛范围后895_1–7已取消，当前仅wave000四任务继续。
 
-1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话26141每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T09:50:22.941194+08:00，4任务均实际训练、无failure、0/4当前性质report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
+1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话26141每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T09:54:58.007342+08:00，4任务均实际训练、无failure、0/4当前性质report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
 2. 继续当前895_0四性质、seed123、r0–5及原始输入/累计步数对照；formation energy复用已完成两阶段及缓存，不能重复训练或缩减目标。
 3. 观察并发运行的实际吞吐/内存与失败；如worker失败，用源日志/Slurm终态定位并恢复，观察超时或本地monitor退出不代表计算失败。不得只凭计划文件宣称进度。
 4. 893在895_0结束后按已启用四性质范围汇总MAE曲线/验证选轮/预算/覆盖；完成全部模型、控制、缓存/补充manifest、图表和失败审计后才可标记goal complete。不得以两轮pilot完成替代四性质完整矩阵完成。
@@ -211,3 +213,9 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 
 
 - 2026-11-02T09:51:16+08:00：新增真实metadata核验通过：总能r0 300epoch/209100步、best验证MAE0.05124270436、缓存14.027秒；ehull r0 300epoch/207900步、best验证0.11916632863、缓存14.113秒；带隙r1 139epoch/96883步、best验证0.15119843529、缓存9.329秒/86813参数（投影5980）。三份缓存均55712唯一ID/562055原子/64维float32/218分片，完整ID集合、cache/timing/chain/checkpoint/config/core/graph及父缓存身份匹配，固定16结构组合容差检查记录一致。形成能original1为300epoch/209100步、best验证0.04533867818，独立原始输入/相同训练ID与归一化核验通过；累计对照继续，目标269042步。数据/审计JSON均保持Git忽略；最新2026-11-02T09:50:22.941194+08:00四任务仍训练、无failure，本阶段完整结果尚未完成。
+
+
+- 2026-11-02T09:53:32+08:00：上一goal turn完成用户四性质范围调整，为progress。当前进入ehull r1产物核验；原观察器26141实际确认895_0仍RUNNING，ehull cached_rounds=2/original1对照继续，其余三任务正常，无failure。下一步拉回并核验r1完整ID覆盖、父缓存/权重/config/core/graph身份、训练归一化及固定组合容差记录；不将两轮完成当作本阶段六轮实验完成。
+
+
+- 2026-11-02T09:55:54+08:00：完成ehull r1产物核验（本轮progress）。r1按patience结束207epoch/143451步，best验证MAE0.11350609162，训练/验证6198.72秒；全库第二份缓存9.729秒、55712唯一结构/562055原子/64维float32/218分片。checkpoint SHA c7a4f7d3ab6cf44da47d95f7d43839977e642890fffe46b089a8697c4eb27be9、cache SHA 7bfefe867e79e963ca1d58820e0195c6dc2b5431c60a4ba7429c2b4b8f722cc4、父缓存SHA 520e75542644a8881e0e0132de5faa042c8107c108fdf1166816c14aa177e994与chain/timing/config/core/graph匹配；与r0相同训练归一化/ID hash，新增投影5980参数（总86813），累计主链351351步。16结构链探针两阶段最大节点差2.6703e-5/2.8610e-5，按固定atol2e-5+rtol1e-4组合容差通过，不能只与绝对容差比较。小型metadata及审计JSON已拉回并Git忽略。最新2026-11-02T09:54:58.007342+08:00当前四worker仍训练、无failure，四性质完整0–5轮/对照/最终曲线仍未完成。下一步等待总能r1与现有对照，并核验后续转换。

@@ -192,3 +192,6 @@
 
 
 - 2026-11-02T09:45:12+08:00：计划先SSH仓库检查/代理pull后只读核验899的30项CPU日志；通过后关联SFTP上传execution_scope候选（任务outputs临时文件）并拉回新增四性质阶段metadata。第二次管理SSH先仓库检查/代理pull，再验证候选SHA/config/完整catalog划分/现有wave000四成员/895仅0运行，原子发布scope，复核load_scope后释放held893并核对依赖仍afterany895。持久ledger记录阶段，不新提或重启训练；若测试未通过，不发布、不释放。
+
+
+- 2026-11-02T09:53:32+08:00：连接Guqq先仓库检查/代理pull，仅核对895_0/893与当前四性质scope；关联SFTP拉回ehull r1 training/cache_timing/cache manifest/chain/16结构一致性小型metadata。当前EHULL已两份缓存并进入original1对照；不加载权重/tensor，不重启任何训练，不更改科学配置或范围。

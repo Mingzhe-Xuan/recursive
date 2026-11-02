@@ -606,3 +606,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T09:51:16+08:00：本次仅收尾文档：实际scope发布前后SHA/config/四任务现有ledger一致，汇总893释放后依赖未改；新增产物metadata检查通过。检查旧state历史逐字保留、计划/脚本路径存在、生成物受.gitignore覆盖及git diff --check通过，无进一步源码变更。当前仍未满足四性质完整六轮/对照/测试曲线完成条件。
+
+
+- 2026-11-02T09:53:32+08:00：ehull r1真实metadata检查范围：55712唯一结构ID与已验收全库一致，562055原子/64维float32/218分片，cache manifest SHA/timing/root chain/checkpoint/config/core/graph/父缓存一致；与r0相同训练归一化/ID hash，投影参数增加5980；完整history、optimizer_steps/最优验证值与16结构固定atol+rtol记录匹配。仅metadata，本地不重新加载或处理缓存tensor；逐片检查仍由Slurm生成路径完成。
+
+
+- 2026-11-02T09:55:54+08:00：ehull r1计划内metadata检查全部通过：精确全库ID集合与原子数/特征维度/分片数、权重/父缓存/manifest/chain身份、训练归一化/ID hash、独立阶段种子、投影参数差5980、207条history/143451步/最佳验证值、累计351351步、16结构固定组合容差记录。实际Slurm895_0仍RUNNING、893 PENDING(Dependency)。仅更新文档，无源码/配置变更，不重跑模型测试；旧state历史保留，路径/生成物忽略及git diff --check通过。
