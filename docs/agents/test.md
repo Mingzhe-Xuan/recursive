@@ -597,3 +597,12 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T09:42:55+08:00：最终候选范围验证接口加入后，8项范围测试再次通过；此前完整57项回归通过。ruff format --check/check、文档路径检查及git diff --check通过，git diff 4379c88 -- src/self_evolution configs/self_evolution为空。已从原提交脚本确认汇总893显式CGCNN_WORK_ROOT为当前final工作目录，可验收后安全释放原汇总。
+
+
+- 2026-11-02T09:51:16+08:00：完成用户四性质范围调整。4fb240b已Guqq pull并通过Slurm899全部30项CPU集成（12.01秒），本地57项和最终8项均通过。runtime execution_scope.json SHA ef3595e2a3d20845dca44d5386a0eee5e6bbcb0082c588e65c09041de13ef3a0已校验config及wave000四成员后原子发布，895_1–7取消、895_0/job897继续、893已release且仍afterany895。其他25性质明确deferred，训练核心/预算/seed/全库55712结构缓存不变；当前验收仅四性质0–5轮及必要对照。
+
+
+- 2026-11-02T09:51:16+08:00：新增真实metadata核验通过：总能r0 300epoch/209100步、best验证MAE0.05124270436、缓存14.027秒；ehull r0 300epoch/207900步、best验证0.11916632863、缓存14.113秒；带隙r1 139epoch/96883步、best验证0.15119843529、缓存9.329秒/86813参数（投影5980）。三份缓存均55712唯一ID/562055原子/64维float32/218分片，完整ID集合、cache/timing/chain/checkpoint/config/core/graph及父缓存身份匹配，固定16结构组合容差检查记录一致。形成能original1为300epoch/209100步、best验证0.04533867818，独立原始输入/相同训练ID与归一化核验通过；累计对照继续，目标269042步。数据/审计JSON均保持Git忽略；最新2026-11-02T09:50:22.941194+08:00四任务仍训练、无failure，本阶段完整结果尚未完成。
+
+
+- 2026-11-02T09:51:16+08:00：本次仅收尾文档：实际scope发布前后SHA/config/四任务现有ledger一致，汇总893释放后依赖未改；新增产物metadata检查通过。检查旧state历史逐字保留、计划/脚本路径存在、生成物受.gitignore覆盖及git diff --check通过，无进一步源码变更。当前仍未满足四性质完整六轮/对照/测试曲线完成条件。

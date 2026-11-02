@@ -189,3 +189,6 @@
 
 
 - 2026-11-02T09:42:55+08:00：四性质实现本地57项及最终8项复核通过。计划连接Guqq先仓库检查/代理pull，使用持久ledger仅提交一次Slurm CPU全self_evolution集成（预计30项），同时确认897仍运行、其他pending组已撤销、893 held；不在登录节点跑测试，不修改训练配置/源码。scope发布/SFTP与汇总release另行记录。
+
+
+- 2026-11-02T09:45:12+08:00：计划先SSH仓库检查/代理pull后只读核验899的30项CPU日志；通过后关联SFTP上传execution_scope候选（任务outputs临时文件）并拉回新增四性质阶段metadata。第二次管理SSH先仓库检查/代理pull，再验证候选SHA/config/完整catalog划分/现有wave000四成员/895仅0运行，原子发布scope，复核load_scope后释放held893并核对依赖仍afterany895。持久ledger记录阶段，不新提或重启训练；若测试未通过，不发布、不释放。

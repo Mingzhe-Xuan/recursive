@@ -68,3 +68,9 @@ r1按patience结束于164epoch/114308步，训练/验证5231.45秒，best验证M
 ## 带隙第0轮完成（2026-11-02T07:37:47+08:00记录）
 
 optb88vdw_bandgap在四任务共享GPU条件下按patience结束于266epoch/185402步，训练/验证累计7784.60秒，best验证MAE **0.15850093 eV**。全库缓存55712结构/562055原子/64维float32/218分片，13.916秒；checkpoint SHA `2beb0e53ec60ee20d6cf4a6975bd9a17aefd8b25f08b5c43080817fc22b857e6`，cache manifest SHA `e2820265d07b557e6730db45559470b4b262bc264dc4f9ecd312234bb7e481a3`。小型证据已拉回`outputs/self_evolution/cgcnn-seed123-evidence/optb88vdw_bandgap/`，metadata审计的完整ID覆盖/身份绑定通过。16固定结构链探针最大节点差1.7166e-5，在固定组合容差内通过；此探针不等同全库逐结构直接链数值对照。第1轮已实际训练，测试评估仍延后。
+
+
+- 2026-11-02T09:51:16+08:00：完成用户四性质范围调整。4fb240b已Guqq pull并通过Slurm899全部30项CPU集成（12.01秒），本地57项和最终8项均通过。runtime execution_scope.json SHA ef3595e2a3d20845dca44d5386a0eee5e6bbcb0082c588e65c09041de13ef3a0已校验config及wave000四成员后原子发布，895_1–7取消、895_0/job897继续、893已release且仍afterany895。其他25性质明确deferred，训练核心/预算/seed/全库55712结构缓存不变；当前验收仅四性质0–5轮及必要对照。
+
+
+- 2026-11-02T09:51:16+08:00：新增真实metadata核验通过：总能r0 300epoch/209100步、best验证MAE0.05124270436、缓存14.027秒；ehull r0 300epoch/207900步、best验证0.11916632863、缓存14.113秒；带隙r1 139epoch/96883步、best验证0.15119843529、缓存9.329秒/86813参数（投影5980）。三份缓存均55712唯一ID/562055原子/64维float32/218分片，完整ID集合、cache/timing/chain/checkpoint/config/core/graph及父缓存身份匹配，固定16结构组合容差检查记录一致。形成能original1为300epoch/209100步、best验证0.04533867818，独立原始输入/相同训练ID与归一化核验通过；累计对照继续，目标269042步。数据/审计JSON均保持Git忽略；最新2026-11-02T09:50:22.941194+08:00四任务仍训练、无failure，本阶段完整结果尚未完成。
