@@ -227,3 +227,15 @@
 - 2026-11-02T23:42:12+08:00：900依赖失败，901正确阻止正式验收、902未运行；sacct在该集群禁用，查询脚本在读日志前退出。下一连接仓库检查/代理pull后只读900日志与scontrol终态，定位CPU门禁失败，不放宽检查、不提交新训练。
 
 - 2026-11-02T23:43:44+08:00：下一连接Guqq先仓库检查/代理pull，同步check.sbatch父目录修复；确认901/902属于新残差任务且仍pending后只取消这两个失效依赖，保存submission-attempt-900，再重提同CPU→GPU验收→正式实验afterok链。旧893 held/旧训练暂停不变，全部计算Slurm。
+
+- 2026-11-02T23:45:54+08:00：重提903 CPU/904 GPU验收/905正式实验。下一连接先仓库检查/代理pull，仅查询submission指向的三作业scontrol、日志与新实验JSON metadata，保存本地忽略证据；不加载模型/tensor、不重复提交、旧893 held不变。
+
+- 2026-11-02T23:47:38+08:00：下一连接仓库检查/代理pull，仅查看903/904/905验收/训练状态、四任务归档与短诊断metadata，保存本地忽略快照；排除CPU测试预期负例目录。不提交/重启作业，不改旧893。
+
+- 2026-11-02T23:49:39+08:00：连接Guqq前登记：先检查仓库/显式SOCKS代理git pull；仅只读查询新残差submission所指作业scontrol/日志/JSON metadata并下载小型快照。无tensor加载/训练/作业改动，旧893保持held。
+
+- 2026-11-02T23:51:17+08:00：连接Guqq前登记：先检查仓库/显式SOCKS代理git pull；仅只读查询新残差submission所指作业scontrol/日志/JSON metadata并下载小型快照。无tensor加载/训练/作业改动，旧893保持held。
+
+- 2026-11-02T23:52:47+08:00：连接Guqq前登记：先检查仓库/显式SOCKS代理git pull；仅只读查询新残差submission所指作业scontrol/日志/JSON metadata并下载小型快照。无tensor加载/训练/作业改动，旧893保持held。
+
+- 2026-11-02T23:54:09+08:00：连接Guqq前登记：先检查仓库/显式SOCKS代理git pull；仅只读查询新残差submission所指作业scontrol/日志/JSON metadata并下载小型快照。无tensor加载/训练/作业改动，旧893保持held。

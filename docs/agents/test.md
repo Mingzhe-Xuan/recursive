@@ -639,3 +639,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-02T23:42:46+08:00：Slurm900测试基础设施失败：--basetemp父diagnostics不存在，pytest10项通过/25个setup错误，模型断言未执行；901/902被成功依赖阻止。修复单元计划：check.sbatch先mkdir -p指定study/diagnostics；逐个bash -n及临时全新父目录模拟验证，再提交同步/Slurm重跑同35项，不改变断言与成功标准。
 
 - 2026-11-02T23:43:44+08:00：check.sbatch父目录修复验证通过：全新tmp/residual-fresh-parent/diagnostics下原5项残差测试15.02秒通过、bash -n与git diff --check通过；未修改测试断言。服务器需重跑原35项，900失败证据保留。
+
+- 2026-11-02T23:46:41+08:00：Slurm903 COMPLETED/ExitCode0:0，35项CPU测试13.90秒通过，修复成立；904真实GPU验收运行中、905成功依赖等待。diagnostics/cpu-903中的failure.json是test_environment_failure_prevents_cuda_training_and_is_recorded预期负例，不能计为科学实验失败；正式failure扫描排除diagnostics。旧893保持held。
+
+- 2026-11-02T23:52:24+08:00：Slurm904真实GPU验收COMPLETED/ExitCode0:0（6分55秒）。四性质各direct R0–2全部55712结构导入/全分片审计/验证MAE复核/直接链通过；两残差方案各R1/R2的4步诊断均完整缓存55712结构并直接链对齐。最大节点差raw7.63e-6/feature1.526e-5、累计预测差<=1.193e-6，既定atol2e-5+rtol1e-4未放宽；最大批64结构/5238原子反向/Adam内存两组均704643072字节reserved（约672MiB），显存总33679736832字节。短诊断仅正确性/资源，MAE不进入正式比较；源旧core/config未改。905按成功依赖启动四worker。
+
+- 2026-11-02T23:55:03+08:00：正式905首阶段健康检查通过：23:54:21快照四worker均完成3–4epoch、每个2091–2788 updates，loss/MAE有限、无正式failure；CPU测试预期负例排除。新实验尚无完成阶段，不宣称改善。文档提交前核对四性质来源MAE在固定容差内、预算合计1767548、README/计划/入口路径存在、outputs/tmp均忽略、state历史只追加、git diff --check通过。仅文档与运行证据更新，不重复模型测试。

@@ -189,3 +189,7 @@
 - 2026-11-02T23:39:53+08:00：完成独立CGCNN残差验证实现：src/residual_scaling分为protocol/cache/training/pipeline/reporting，三组共用旧R0、复用direct R1/R2、两新分支严格匹配实际步数和seed，eta1且固定R0统计。增加成对节点/累计预测归档、恢复/身份校验、验证曲线、独立Slurm CPU/GPU门禁和最多4 worker调度。全62项本地回归及静态检查通过；旧核心/配置未改，旧0–5/893继续暂停。计划docs/plan/residual_scaling_validation.md。
 
 - 2026-11-02T23:43:44+08:00：修复独立Slurm CPU检查入口未创建pytest basetemp父目录的问题。原900仅setup失败，901/902未启动；仅新增mkdir，5项本地回归和脚本检查通过，下一步取消这两个失效pending依赖并提交新的成功依赖链。科学核心/残差实现/检查标准不变。
+
+- 2026-11-02T23:52:24+08:00：独立残差验证已通过本地62项、Slurm903的35项CPU及Slurm904真实GPU门禁；四性质旧direct R0–2只读导入完整55712结构库，并验证两种残差R1/R2累计预测/节点缓存与实时链一致。正式Slurm905已于2026-11-02 23:51:20+08:00启动，按LPT先总能/ehull两分支各四worker，再形成能/带隙，预算1767548新updates；最终自动汇总36个验证点和曲线。旧893仍JobHeldUser、旧0–5不恢复。
+
+- 2026-11-02T23:55:03+08:00：正式905已核对连续3–4个epoch正常，当前无完成的新正式阶段，尚不能判断残差效果。四worker先跑总能/ehull，后续形成能/带隙，训练完成自动生成验证CSV/JSON/四性质曲线。门禁记录及首轮健康快照本地保存outputs/residual_scaling/cgcnn-seed123-evidence；当前范围、旧暂停状态及恢复点已更新。
