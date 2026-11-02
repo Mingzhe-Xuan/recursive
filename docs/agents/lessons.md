@@ -89,3 +89,6 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 
 
 - 2026-11-02T06:17:54+08:00：按组等待全部任务结束的调度会受组内最长任务限制；可用固定数据审计的有效标签数作粗略工作量代理，仅重排未启动组。调度文件必须覆盖所有任务恰好一次、保持组容量并绑定来源/配置/图/审计SHA；发布前检查每一份已有wave ledger，保护已启动成员。运行中父进程可能已加载旧代码，故保留既有组并让未来进程读取外部不可变分组，不修改训练核心身份。工作量代理改善不能等同实测速度。
+
+
+- 2026-11-02T22:29:34+08:00：暂停已提交训练要区分agent goal paused与Slurm实际停训。先hold afterany汇总，再验证/备份checkpoint并通过Slurm停止，最后核对队列与原训练PID消失；不能把scancel返回0当作停止证明。本次Guqq Slurm21.08.5对数字897的scancel返回0后895_0仍RUNNING，改用精确数组别名scancel --verbose 895_0才确认CANCELLED/ExitCode0:15；这是本次集群观测，勿泛化为所有Slurm的行为。保留last的model/optimizer/RNG/history以及best/config，原子保存使完整epoch断点可用。恢复时需先把held893的afterany依赖改到新作业，再release；旧895取消后其依赖可能已满足。暂停元数据应保存已发生的wave墙钟，避免恢复账本漏算成本。

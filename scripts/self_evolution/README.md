@@ -123,3 +123,18 @@ other properties explicitly deferred, and completion is measured against selecte
 Previous report directories are archived. Pool execution contexts still prevent interrupted tasks
 from appearing complete. Cancel pending deferred waves before enabling a narrower scope; never
 change an already-running wave's members or the immutable task_schedule.json.
+
+Operator pause uses the last complete epoch checkpoint: hold the dependent report job first,
+validate and back up each task's last.pt/best.pt/config.json inside its existing Slurm allocation,
+then cancel the exact array element and verify both queue removal and training PID exit.
+The current run was paused as `895_0` (numeric job 897); report 893 remains held.
+Its pause ledger is `<work>/run/pause-user-20261102-2210/pause_state.json`, with validated
+checkpoint copies and a checkpoint_precheck.json. Source weights, all caches and logs remain.
+The wave/context status is paused, and observed wall time before interruption is preserved.
+
+Resume only on an explicit user request, with the same core/config identity and work root.
+Submit only wave zero (`--array=0`) through pool.sbatch for the current four-property scope;
+the original last.pt files may contain newer progress than the separate pause backups.
+Record the new Slurm job ID, change held report 893's dependency to `afterany:NEW_ARRAY_JOB`,
+verify it, then release 893. Its old dependency on canceled array 895 must be replaced first.
+Do not restart deferred waves 1..7 or change the immutable task schedule.

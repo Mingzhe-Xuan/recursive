@@ -624,3 +624,9 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 
 
 - 2026-11-02T22:07:59+08:00：本次仅只读状态/验证数值比较及文档更新：实际squeue、training完成标记/活动history、相邻轮次相对变化和已完成matched-step控制比较核对；未运行训练/推理/最终测试，无源码配置改动。旧state历史保留，快照/计算结果受Git忽略，git diff --check通过，不重复模型测试。
+
+
+- 2026-11-02T22:16:10+08:00：停训管理单元检查计划：验证897归属/当前scope精确四任务、893在停止训练前已hold；通过当前Slurm allocation CPU诊断读取四个last.pt并加载模型/optimizer、核对identity/config/core/hash及epoch/steps/history/RNG字段，备份last/best/config。仅这些条件通过后取消897；确认本任务无活动895元素/无遗留训练PID、893保持held、原始checkpoint/缓存/源码未删除、暂停账本可定位恢复epoch。不把用户停训记录为模型失败或实验完成。
+
+
+- 2026-11-02T22:32:14+08:00：停训管理最终检查通过。893先held；Slurm897内4个checkpoint CPU读取/model.load_state_dict/Adam状态加载、RNG/history/config/core身份检查通过并备份；改用895_0后实际CANCELLED/ExitCode0:15、无活动训练元素及原PID残留。暂停账本phase=stopped，原始断点仍存在；本地SFTP复制的4份last/best SHA及config身份全部匹配。source/cache未删除，wave墙钟成本保留。仅文档和运行期管理记录，无科学源码/配置修改；state旧历史完整保留、生成物忽略、路径与git diff --check通过，不重跑训练测试。此前数字897停止未生效的检查未被降低或忽略，已用真实终态/进程退出补齐验收。

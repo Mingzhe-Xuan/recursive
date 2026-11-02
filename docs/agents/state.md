@@ -1,12 +1,14 @@
 # 当前状态
 
+实际训练已按用户要求暂停：2026-11-02 22:23:42 +0800，Slurm895_0/job897已取消并确认无训练进程残留；893汇总保持held。所有checkpoint/缓存/日志保留，四任务恢复备份已验证并保存到服务器及本地。整体实验未完成，不自动恢复。
+
 用户最新范围：本阶段仅CGCNN seed123的形成能、带隙、总能、ehull四性质，各做0–5轮及既定必要对照；其余25性质明确延后，不能计为当前阶段失败或继续排队执行。科学配置/全库缓存仍保持原协议。
 
 CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETED/ExitCode0:0。r0为222epoch、best验证MAE0.04822800 eV/atom；r1为164epoch/114308步、best验证MAE0.04402161、训练/验证5231.45秒、86813参数（含投影5980）。两轮均缓存完整55712结构/562055原子/64维float32；r1缓存8.13秒、147595808字节。第0轮权重/缓存未改变。
 
 891真实CUDA验收passed：32结构native/wrapper最大差0、batch/single差4.172325e-7；0→1直接链/缓存在既定atol2e-5+rtol1e-4组合容差内通过（逐阶段最大绝对差1.7166e-5/4.5776e-5，不能只用绝对容差解读）。两份完整配置/分片字节/来源补充manifest SHA与验收引用一致，真实全分片审计通过。代码核心仍4379c88、入口896a171，核心验收时本地46项和Slurm896的19项CPU集成通过；当前入口4fb240b新增四性质范围，本地57项/Slurm899的30项通过。
 
-完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom第3轮原始输入对照、optb88vdw_bandgap/optb88vdw_total_energy/ehull第2轮累计步数对照。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；其他波1–7按用户要求取消，893已释放，依赖仍afterany895_*。
+暂停作业：895_0/job897，终态CANCELLED/ExitCode0:15；原四个CUDA worker及launcher已退出。wave/context记录为paused，893为PENDING(JobHeldUser)。最近可恢复检查记录位于run/pause-user-20261102-2210；原始last.pt保留，本地另有已验证备份。
 
 带隙新增完成阶段：optb88vdw_bandgap r0为266epoch/185402步，best验证MAE0.15850093 eV（非测试值），训练/验证7784.60秒。全库55712结构/562055原子/64维float32/218分片缓存13.916秒，cache SHA e2820265…、checkpoint SHA 2beb0e53…；本地元数据/完整ID集合与身份核验通过，16结构链探针通过。服务器查询确认其r1已按patience结束139epoch/96883步，best验证MAE0.15119844 eV，第二份缓存已完成；当前original1对照继续，完整链/对照/测试尚未完成。
 
@@ -16,25 +18,27 @@ ehull新增完成阶段：r1为207epoch/143451步、验证MAE0.11350609；全库
 
 只读查询更新（22:06）：形成能主链完成r3（验证0.04334153），其他三性质完成r2；总能r2验证0.04668208、ehull r2验证0.11466173。形成能r2→r3仅改善0.163%，总能r1→r2仅改善0.041%，带隙/ehull r2较r1分别回升0.726%/1.018%。所有数值仍为验证指标，最终测试尚未开展；新增缓存交付审计不在本次只读查询范围。
 
-当前ETA（11月2日16:33只读查询）：包含两类对照的四性质全训练，150epoch后续演化情景约52小时至11月4日晚；后续均300epoch情景约71小时至11月5日下午。未来早停未知，非完成时间承诺，不含最终评测/绘图。
+旧连续运行ETA因实际停训而失效；恢复后再按新进度重估。
 
 正式work_root：/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final。
 本地证据：outputs/self_evolution/cgcnn-seed123-evidence，已拉回real_acceptance/pilot_resources、两轮training/history/cache_timing、两份补充manifest、wave0/context与早期数据审计。全库55712构图/29任务划分此前已完成，原始重复ID/冲突标签已审计。生成证据均Git忽略。
 
-完整研究实验尚未完成；用户已暂停goal自动推进，既有Slurm训练继续，本次仅按用户问题只读查询。已跑通真实r0→全库缓存→r1→全库缓存和串行链，尚无四性质完整r0–5/全部必要对照或最终测试曲线。资源口径与串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能把短窗口并发吞吐当作完整实验加速承诺。
+完整研究实验尚未完成；用户已暂停goal自动推进，实际Slurm训练亦已停止，不再自动推进。已跑通真实r0→全库缓存→r1→全库缓存和串行链，尚无四性质完整r0–5/全部必要对照或最终测试曲线。资源口径与串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能把短窗口并发吞吐当作完整实验加速承诺。
 
 # 当前计划
 
-自动推进保持暂停；以下为保留的实验计划。本次状态查询不表示恢复goal，既有Slurm作业继续运行。原只读observer26141已超过其预设观察窗口，不将旧handle当作当前活跃证明；本次以新SSH实际squeue/training查询为准。
+保持实际训练和自动推进暂停。只有用户明确要求恢复时，才按scripts/self_evolution/README.md的断点恢复流程重新提交wave0，并重接held893依赖；不启动其他25性质。
 
-已撤销尚未运行的895_1–7，保留当前四任务895_0/job897；四性质汇总入口已通过Slurm899并发布scope，893已释放。既有29性质长期计划保留为后续范围，当前验收以四性质完整六轮和对照为准。
+自动推进保持暂停；以下为保留的实验计划。本次状态查询不表示恢复goal，既有Slurm训练已停止。原只读observer26141已超过其预设观察窗口，不将旧handle当作当前活跃证明；本次以新SSH实际squeue/training查询为准。
+
+已撤销尚未运行的895_1–7，保留当前四任务895_0/job897；四性质汇总入口已通过Slurm899并发布scope，893已挂起。既有29性质长期计划保留为后续范围，当前验收以四性质完整六轮和对照为准。
 
 历史待启动组均衡文件SHA 8c3cf7f…保留不改写；用户收敛范围后895_1–7已取消，当前仅wave000四任务继续。
 
-1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话26141每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T22:06:15.584708+08:00，4任务均实际训练、无failure、0/4当前性质report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
-2. 继续当前895_0四性质、seed123、r0–5及原始输入/累计步数对照；formation energy复用已完成两阶段及缓存，不能重复训练或缩减目标。
-3. 观察并发运行的实际吞吐/内存与失败；如worker失败，用源日志/Slurm终态定位并恢复，观察超时或本地monitor退出不代表计算失败。不得只凭计划文件宣称进度。
-4. 893在895_0结束后按已启用四性质范围汇总MAE曲线/验证选轮/预算/覆盖；完成全部模型、控制、缓存/补充manifest、图表和失败审计后才可标记goal complete。不得以两轮pilot完成替代四性质完整矩阵完成。
+1. 主动推进/观察均停止；暂停状态以pause_state.json终态及队列/原PID退出证据为准，不自动重建监控或重启训练。
+2. 保留四性质seed123的0–5轮及必要对照原目标与全部现有产物；当前暂停未完成，后续是否恢复由用户决定。
+3. 不自动训练、推理、评测或释放893；只在用户请求时查看保留结果。
+4. 如将来恢复，先将893依赖改到新训练job，再release；全部六轮/对照/缓存/预测/图表审计通过后才可宣布当前四性质目标完成。
 
 # 变更记录
 
@@ -237,3 +241,9 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 
 
 - 2026-11-02T22:07:59+08:00：goal继续paused，仅响应用户进度/scaling问题只读查询。实际2026-11-02T22:06:15.584708+08:00895_0/job897 RUNNING16小时44分，893 PENDING(Dependency)，四任务无failure/无测试report。形成能主链完成r3（98epoch/68306步、验证0.04334152541），r2→r3改善约0.163%；当前original3对照241epoch。带隙主链到r2，cumulative2进度256496/377774步。总能新增r2完成99epoch/69003步、验证0.04668207961，r1→r2仅改善约0.041%；当前cumulative2为24395/475354步。ehull新增r2完成147epoch/101871步、验证0.11466172945，比r1回升约1.018%；当前cumulative2为107415/453222步。带隙r2比r1回升约0.726%。四性质r1均优于已完成matched-step对照，但更深轮次已表现任务相关的边际递减/波动；单seed验证证据不足以宣称稳定scaling规律。未修改/提交任何训练、未恢复自动推进。
+
+
+- 2026-11-02T22:16:10+08:00：按用户明确新请求进入实际停训阶段（此前仅goal自动推进暂停，Slurm仍运行）。计划先hold汇总893，再验证并备份四任务断点，停止897并确认队列/进程终止；保留所有实验产物和后续恢复信息，不再自动训练。
+
+
+- 2026-11-02T22:32:14+08:00：用户要求实际暂停训练，现已完成停训管理阶段。先hold893并在现有Slurm897内CPU加载验证四份last/best/config、模型/optimizer/RNG及完整epoch字段，复制恢复备份；首次scancel897返回0仍RUNNING，复核后改scancel --verbose895_0，实际2026-11-02T22:23:42+08:00确认JobState=CANCELLED/ExitCode0:15，所有895训练元素消失、原四worker及launcher PID退出，资源释放。893保持JobHeldUser。原始checkpoint/全部缓存/数据/日志保留，wave/context已标paused并记录暂停前已发生墙钟成本。formation_energy_peratom controls/original/round_003 已校验备份epoch265/steps184705；optb88vdw_bandgap controls/cumulative/round_002 已校验备份epoch392/steps273224；optb88vdw_total_energy controls/cumulative/round_002 已校验备份epoch60/steps41820；ehull controls/cumulative/round_002 已校验备份epoch179/steps124047。暂停账本及备份已SFTP到本地并复核last/best SHA及config身份，生成物全部Git忽略。当前四性质0–5轮未完成，整体goal为paused而非complete；旧连续运行ETA失效，不自动恢复训练。恢复须明确授权、保持core/config身份，并将held893依赖改到新job后再release。
