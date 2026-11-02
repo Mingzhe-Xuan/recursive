@@ -195,3 +195,6 @@
 
 
 - 2026-11-02T09:53:32+08:00：连接Guqq先仓库检查/代理pull，仅核对895_0/893与当前四性质scope；关联SFTP拉回ehull r1 training/cache_timing/cache manifest/chain/16结构一致性小型metadata。当前EHULL已两份缓存并进入original1对照；不加载权重/tensor，不重启任何训练，不更改科学配置或范围。
+
+
+- 2026-11-02T13:36:24+08:00：goal仍paused；仅响应用户“训练到哪里、是否仍scaling”只读查询。连接Guqq先仓库检查/代理pull，再查询895_0/893与四性质各轮training/history/chain/failure元数据；不重启观察器、不提交/恢复/取消训练、不运行测试集评估。结果保存本地忽略目录以供本次回答比较。

@@ -6,7 +6,7 @@ CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETE
 
 891真实CUDA验收passed：32结构native/wrapper最大差0、batch/single差4.172325e-7；0→1直接链/缓存在既定atol2e-5+rtol1e-4组合容差内通过（逐阶段最大绝对差1.7166e-5/4.5776e-5，不能只用绝对容差解读）。两份完整配置/分片字节/来源补充manifest SHA与验收引用一致，真实全分片审计通过。代码核心仍4379c88、入口896a171，核心验收时本地46项和Slurm896的19项CPU集成通过；当前入口4fb240b新增四性质范围，本地57项/Slurm899的30项通过。
 
-完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom 第1轮累计步数对照、optb88vdw_bandgap 第1轮原始输入对照、optb88vdw_total_energy 第1轮、ehull 第1轮原始输入对照。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；其他波1–7按用户要求取消，893已释放，依赖仍afterany895_*。
+完整矩阵895已运行第0组：alias895_0/实际Slurm job897，4个独立CUDA worker正在执行formation_energy_peratom第2轮原始输入对照、optb88vdw_bandgap/optb88vdw_total_energy/ehull第1轮累计步数对照。实际squeue、四个PID、日志/history均证实进展，不以ledger计划值替代运行证据。代表64结构699原子reserved峰值150MiB，最大原子批次64结构5238原子峰值672MiB；资源报告SHA cdf2f91b…绑定实际4并发决策。全部训练退出后才串行评测；其他波1–7按用户要求取消，893已释放，依赖仍afterany895_*。
 
 带隙新增完成阶段：optb88vdw_bandgap r0为266epoch/185402步，best验证MAE0.15850093 eV（非测试值），训练/验证7784.60秒。全库55712结构/562055原子/64维float32/218分片缓存13.916秒，cache SHA e2820265…、checkpoint SHA 2beb0e53…；本地元数据/完整ID集合与身份核验通过，16结构链探针通过。服务器查询确认其r1已按patience结束139epoch/96883步，best验证MAE0.15119844 eV，第二份缓存已完成；当前original1对照继续，完整链/对照/测试尚未完成。
 
@@ -14,18 +14,22 @@ CGCNN seed123的真实两轮pilot已完成，890/891均经scontrol确认COMPLETE
 
 ehull新增完成阶段：r1为207epoch/143451步、验证MAE0.11350609；全库缓存与父身份/训练划分/投影参数核验通过，缓存9.729秒。其original1对照继续，完整0–5轮仍待完成。
 
+只读查询新增结果（13:36）：形成能r2验证MAE0.04341245，r1累计步数对照已完成（0.04503067）；总能r1完成（0.04670103）。上述新阶段本次仅核对training/chain元数据，尚未执行新增全缓存交付审计。
+
 正式work_root：/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final。
 本地证据：outputs/self_evolution/cgcnn-seed123-evidence，已拉回real_acceptance/pilot_resources、两轮training/history/cache_timing、两份补充manifest、wave0/context与早期数据审计。全库55712构图/29任务划分此前已完成，原始重复ID/冲突标签已审计。生成证据均Git忽略。
 
-完整研究实验尚未完成，goal保持active。已跑通真实r0→全库缓存→r1→全库缓存和串行链，尚无四性质完整r0–5/全部必要对照或最终测试曲线。资源口径与串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能把短窗口并发吞吐当作完整实验加速承诺。
+完整研究实验尚未完成；用户已暂停goal自动推进，既有Slurm训练继续，本次仅按用户问题只读查询。已跑通真实r0→全库缓存→r1→全库缓存和串行链，尚无四性质完整r0–5/全部必要对照或最终测试曲线。资源口径与串行参照见 [资源记录](../plan/cgcnn_seed123_resources.md)，不能把短窗口并发吞吐当作完整实验加速承诺。
 
 # 当前计划
+
+自动推进保持暂停；以下为保留的实验计划。本次状态查询不表示恢复goal，既有Slurm作业继续运行。原只读observer26141已超过其预设观察窗口，不将旧handle当作当前活跃证明；本次以新SSH实际squeue/training查询为准。
 
 已撤销尚未运行的895_1–7，保留当前四任务895_0/job897；四性质汇总入口已通过Slurm899并发布scope，893已释放。既有29性质长期计划保留为后续范围，当前验收以四性质完整六轮和对照为准。
 
 历史待启动组均衡文件SHA 8c3cf7f…保留不改写；用户收敛范围后895_1–7已取消，当前仅wave000四任务继续。
 
-1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话26141每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T09:54:58.007342+08:00，4任务均实际训练、无failure、0/4当前性质report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
+1. 原pilot observer96216因完成标记正常退出；全矩阵只读observer工具会话26141每55秒查询实际squeue并读取活动wave/任务history，最多180轮。最新观测2026-11-02T13:36:34.251632+08:00，4任务均实际训练、无failure、0/4当前性质report完成。只读latest JSON/追加JSONL在本地outputs保存，不自动重启作业。
 2. 继续当前895_0四性质、seed123、r0–5及原始输入/累计步数对照；formation energy复用已完成两阶段及缓存，不能重复训练或缩减目标。
 3. 观察并发运行的实际吞吐/内存与失败；如worker失败，用源日志/Slurm终态定位并恢复，观察超时或本地monitor退出不代表计算失败。不得只凭计划文件宣称进度。
 4. 893在895_0结束后按已启用四性质范围汇总MAE曲线/验证选轮/预算/覆盖；完成全部模型、控制、缓存/补充manifest、图表和失败审计后才可标记goal complete。不得以两轮pilot完成替代四性质完整矩阵完成。
@@ -219,3 +223,6 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 
 
 - 2026-11-02T09:55:54+08:00：完成ehull r1产物核验（本轮progress）。r1按patience结束207epoch/143451步，best验证MAE0.11350609162，训练/验证6198.72秒；全库第二份缓存9.729秒、55712唯一结构/562055原子/64维float32/218分片。checkpoint SHA c7a4f7d3ab6cf44da47d95f7d43839977e642890fffe46b089a8697c4eb27be9、cache SHA 7bfefe867e79e963ca1d58820e0195c6dc2b5431c60a4ba7429c2b4b8f722cc4、父缓存SHA 520e75542644a8881e0e0132de5faa042c8107c108fdf1166816c14aa177e994与chain/timing/config/core/graph匹配；与r0相同训练归一化/ID hash，新增投影5980参数（总86813），累计主链351351步。16结构链探针两阶段最大节点差2.6703e-5/2.8610e-5，按固定atol2e-5+rtol1e-4组合容差通过，不能只与绝对容差比较。小型metadata及审计JSON已拉回并Git忽略。最新2026-11-02T09:54:58.007342+08:00当前四worker仍训练、无failure，四性质完整0–5轮/对照/最终曲线仍未完成。下一步等待总能r1与现有对照，并核验后续转换。
+
+
+- 2026-11-02T13:38:26+08:00：goal维持用户paused状态，仅响应进度/scaling问题做只读服务器查询（未恢复自动推进，未更改/提交/取消任何训练）。实际2026-11-02T13:36:34.251632+08:00895_0/job897 RUNNING8小时14分、893 PENDING(Dependency)，四性质无failure、无最终测试report。形成能主链r2完成94epoch/65518步、验证MAE0.04341245115、已有3份缓存标记，当前original2对照174epoch；original1验证0.04533867818、累计步数r1对照269042步已完成/验证0.04503066799。带隙r1验证0.15119843529、累计对照186099/282285步；总能r1完成283epoch/197251步、验证0.04670103468、累计对照50184/406351步；ehull r1验证0.11350609162、累计对照108108/351351步。当前只有形成能完成到第2轮，其他到第1轮；全部数值为验证指标，不能据此宣布0–5轮完成或稳定scaling规律。查询快照在Git忽略目录current_status_user_query.json。
