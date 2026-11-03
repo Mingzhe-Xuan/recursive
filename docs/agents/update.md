@@ -217,3 +217,5 @@
 - 2026-11-03T12:16:59+08:00：913正式训练健康确认：形成能R0完成2 epoch/2786次更新，首两epoch验证MAE 0.305869→0.167904。仍须等待正式R1/R2，尚无scaling结论。
 
 - 2026-11-03T12:49:15+08:00：实现CGCNN×2从零端到端对照（159197参数），相同R0/R1初始seed、64→92桥接和唯一末端readout。39项关联回归通过；报告包含缓存direct R1主对照、残差R1辅助、encoder更新预算内的最佳MAE、训练和缓存成本。准备提交Slurm CPU验收/GPU验收/正式四性质任务依赖链，正常排队等待913释放GPU。
+
+- 2026-11-03T12:52:39+08:00：CGCNN×2已提交914 CPU→915 GPU验收→916正式四性质；914完成，915 PENDING(Resources)、916 PENDING(Dependency)。iComformer913继续RUNNING，未受干预。后续自动产出joint vs cached direct R1的MAE/学习曲线/更新预算与耗时对照。
