@@ -243,3 +243,5 @@
 - 2026-11-03T09:10:43+08:00：连接Guqq前登记：先检查仓库/显式SOCKS代理git pull；仅只读查询新残差submission所指作业scontrol/日志/JSON metadata并下载小型快照。无tensor加载/训练/作业改动，旧893保持held。
 
 - 2026-11-03T09:12:28+08:00：用户请求训练完成结果。下一连接先仓库检查/显式SOCKS代理git pull，只读核对新实验8分支/16阶段的training/source/cache manifest/chain_check等JSON及小型checkpoint文件SHA，读取现成reports PNG/SVG/CSV/JSON通过SSH拉回并核对SHA。全分片tensor校验已在905汇总内执行，本次不重载tensor/不跑评测或训练、不释放旧893。仅轻量元数据/文件校验和下载，许可范围内。
+
+- 2026-11-03T09:48:56+08:00：用户授权两项只读诊断。下一连接Guqq前已检查权限：先确认/home/xmz/recursive仓库存在并显式SOCKS代理git pull；仅在新outputs/recursive_diagnostics/cgcnn-seed123-r012-v1创建提交账本/日志并sbatch CPU analyze作业。该作业先跑诊断测试，再读取完成实验全库缓存/历史、计算train/val指标并绘图；所有批量计算在Slurm，无模型更新/真实重新训练/推理/test评估，旧893不释放。复用原venv不改依赖，不在服务器编辑Git源码。

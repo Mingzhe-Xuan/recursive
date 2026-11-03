@@ -94,3 +94,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-02T22:29:34+08:00：暂停已提交训练要区分agent goal paused与Slurm实际停训。先hold afterany汇总，再验证/备份checkpoint并通过Slurm停止，最后核对队列与原训练PID消失；不能把scancel返回0当作停止证明。本次Guqq Slurm21.08.5对数字897的scancel返回0后895_0仍RUNNING，改用精确数组别名scancel --verbose 895_0才确认CANCELLED/ExitCode0:15；这是本次集群观测，勿泛化为所有Slurm的行为。保留last的model/optimizer/RNG/history以及best/config，原子保存使完整epoch断点可用。恢复时需先把held893的afterany依赖改到新作业，再release；旧895取消后其依赖可能已满足。暂停元数据应保存已发生的wave墙钟，避免恢复账本漏算成本。
 
 - 2026-11-02T23:37:27+08:00：残差实验采用独立src/residual_scaling以保留旧checkpoint/core身份。节点缓存必须与累计物理单位预测成对归档；归一化固定R0，残差累加不能再次加均值。每轮仅从训练后的checkpoint选择，禁止用eta=0历史回退伪造单调曲线。匹配direct实际优化步数隔离预算，墙钟和投影参数差另行报告。
+
+- 2026-11-03T09:48:56+08:00：纠错诊断必须同时检查方向和幅度：Pearson=1也可能因过量修正而全部样本变差；报告MSE cross term与delta²代价、改善人数和MAE贡献。历史train loss是参数/BN随batch变化的online MSE，不能与val MAE直接作泛化差距；最佳checkpoint缓存提供同eval口径的train/val MAE/RMSE。新增诊断包放到独立src/recursive_diagnostics，避免改变已完成训练实现hash。

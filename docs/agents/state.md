@@ -1,22 +1,14 @@
 # 当前状态
 
-本次按用户要求横向展示0→1→2：只读本地已审计summary.json，列出四性质三方案各轮验证MAE及R0→R2相对降幅；数据不变、不连接服务器或启动训练。
-
-独立CGCNN残差验证及本轮结果审查已完成：四性质、seed123、三方案、0–2轮；905执行账本complete，八分支均退出0，16新阶段/1767548 updates齐全，36验证点通过复核。训练池墙钟5.99小时；旧893仍JobHeldUser，无活动新训练。
-
-结果：两种残差八条分支R1→R2都小幅下降（0.055%–1.142%），仍明显边际递减。按0–2轮各方案最佳值比较，形成能direct最好；带隙feature_residual改善0.413%，总能raw_residual改善3.821%，ehull feature_residual改善0.773%。仅单seed验证集，不宣称测试性能或统计显著。
-
-本地报告/图表/审计：outputs/residual_scaling/cgcnn-seed123-evidence；原始服务器结果outputs/residual_scaling/cgcnn-seed123-r012-v1。完整结果与解释见docs/plan/residual_scaling_validation.md。所有产物Git忽略。
-
-旧895_0/job897已暂停取消，旧0–5轮仍未完成，旧goal保持paused；全部checkpoint/缓存/备份保留。src/self_evolution及旧配置仍与4379c88一致。其余25性质延后，未启动多seed或其他backbone。
+用户授权开展两项现有实验诊断：R1/R2修正量对父预测残差的相关性/逐材料改善，以及各轮train/val残差与学习曲线。正在实现独立只读诊断模块，不重新训练、不修改已完成实验和核心身份。原始CGCNN四性质seed123、三方案0–2均已完成；旧0–5/893继续暂停，测试集继续封存。
 
 # 当前计划
 
-本轮展示完整12行0/1/2轮对比及总降幅，避免仅看R2而丢失变化轨迹；保留既定暂停/测试封存状态。
-
-1. 本次只读结果审查完成，向用户展示三方案曲线与验证MAE，区分R2比较和各方案最佳轮次比较。
-2. 保持现有模型/缓存与测试集封存；不启动或恢复新训练。
-3. 旧0–5轮和893继续暂停；若用户另行决定后续实验，再制定相应范围和验收。
+1. 新增独立src/recursive_diagnostics（README、metrics及analysis）和scripts/recursive_diagnostics入口，不改src/self_evolution或src/residual_scaling。
+2. 同轮缓存定义e_prev=y-F_prev、delta=F_r-F_prev，train/val分别计算Pearson/Spearman、方向/幅度、改善人数、MAE/RMSE变化和误差分解；direct同样用相邻轮预测差作参照。
+3. 用最佳checkpoint eval缓存比较0–2训练/验证MAE/RMSE；历史online train MSE与val MAE分开画，计算最佳epoch/末期走势，明确无法重建未保存epoch的eval train MAE。
+4. 本地针对性单测/集成/静态检查通过后提交push，Guqq先登记/pull，仅Slurm CPU执行全库缓存分析与绘图；所有新输出独立目录、源文件SHA只读校验。
+5. 拉回诊断摘要和图表，解释纠错方向、幅度及泛化差距。仅分析train/val，不做系数调参/模型更新或新训练。
 
 # 变更记录
 
@@ -244,3 +236,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-03T09:17:20+08:00：完成独立残差结果审查：905/8分支/16新阶段/36验证点齐全；28缓存manifest及20链检查元数据、固定预算/seed/R0统计/自有父链/CSV全部通过。拉回10份原始报告并校验SHA/字节，生成并目视验证总览/后轮放大图。结论为任务相关的小幅收益与持续边际递减；旧实验继续暂停，下一步仅汇报结果。
 
 - 2026-11-03T09:22:18+08:00：完成用户要求的0–2轮横向比较，复用36点本地审计报告，按未舍入原值计算R0→R2百分比。形成能direct总降9.98%；带隙feature5.00%；总能raw12.38%；ehull feature5.49%。本轮只读本地数值/文档，不新增实验。
+
+- 2026-11-03T09:41:08+08:00：进入用户指定的纠错与泛化诊断实现阶段。历史online训练MSE和val MAE口径不同，采用缓存eval指标直接比较，历史曲线分图呈现。下一步计划测试并实现独立诊断，保持已完成实验身份和测试集封存。
+
+- 2026-11-03T09:50:26+08:00：独立诊断实现与本地验收完成：66项通过，修复集成图表split索引后完整复核。进入服务器CPU分析阶段；下一步提交push、Guqq先pull再sbatch只读分析，不重训、不改既有产物或测试集。

@@ -81,3 +81,13 @@
 这次是方案筛选，测试集继续封存；所有效果均非独立测试结果，也不宣称统计显著。当前不启动多seed、更深轮次或其他backbone，旧0–5轮实验继续暂停。
 
 来源报告SHA256：00d48ddb411053940eed81100b767cfd6c80a4adfc2bcf779c19c4e3f7db789d。
+
+## 2026-11-03T09:41:08+08:00 后续只读诊断计划
+
+使用已有成对预测缓存、checkpoint元数据和完整history，不重新训练。独立模块src/recursive_diagnostics/metrics提供signed correction评估；analysis验证来源与缓存链、区分train/val、汇总曲线并导出报告；scripts/recursive_diagnostics为CLI，scripts/slurm/recursive_diagnostics为CPU计算入口，每模块有README。与旧两个训练包完全分离，保留core/implementation hash。
+
+定义父残差e=y-F_(r-1)、修正delta=F_r-F_(r-1)，只访问train和val标签。相关性同时报告Pearson/Spearman、无中心余弦；改善材料比例按绝对误差比较（tie_atol=1e-8原始单位），区分方向正确、过量修正；MSE收益=2*mean(e*delta)-mean(delta²)。全局最小二乘修正倍率仅作为幅度诊断，不应用或调参，不读取test。
+
+各轮最佳checkpoint的eval缓存统一计算训练/验证MAE/RMSE和父残差尺度，避免训练BN/时刻差异。历史曲线保留online train normalized MSE与val MAE的实际口径，分图，不把它们当作同一指标；报告最佳val epoch、末期训练/验证变化。没有保存的中间checkpoint不能补成逐epoch eval训练MAE，不重训补全。
+
+本地手算/退化情形/合成晶体三方案集成测试后，通过Slurm CPU加载全库archive、核对只读来源SHA、计算train/val指标与相关性/逐材料改善、生成学习曲线及图表。输出独立outputs/recursive_diagnostics；批量结果和图表全部忽略。
