@@ -207,3 +207,5 @@
 - 2026-11-03T11:02:08+08:00：修复iComformer环境namespace碰撞：907实际Jarvis import解析到共享旧Python2包，908被门禁阻止。新增独立venv引导和9个固定PyPI wheel清单，下载/创建venv为轻量管理，离线安装和原生验收仍Slurm；旧CGCNN环境不动。增加Jarvis实际模块必须位于新venv的断言，metadata不足以替代import检查。训练/缓存流水线继续本地开发，未正式训练。
 
 - 2026-11-03T11:18:36+08:00：完成iComformer训练/三分支缓存/恢复/验证报告和诊断接入。generic诊断仅增加可选implementation参数，默认CGCNN行为不变；真实三方案CPU集成和旧诊断6测试通过。环境下载在Jarvis wheel显示100%时curl56收尾失败；bootstrap现严格以文件SHA＋字节校验接收完整partial，未完成/损坏仍阻止，2单测通过。接下来同步并恢复环境/图准备，正式GPU任务尚未提交。
+
+- 2026-11-03T12:02:36+08:00：实现 iComformer GPU 最大图批次资源探测、全库缓存七阶段验收和四性质调度器；加入资源/配置/源码一致性拒绝测试、跨 backbone MAE 与累计参数/更新量对照。完整 77 项测试通过，CPU/构图 909/910 完成。下一步探测显存并提交正式 R0–2。

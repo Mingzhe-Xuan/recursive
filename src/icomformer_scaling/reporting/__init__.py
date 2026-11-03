@@ -35,7 +35,7 @@ def summarize(output, config, old_prepared=None, cgcnn_summary=None, diagnose=Tr
                     raise ValueError("incomplete or changed source branch")
                 if [r["round"] for r in report["rows"]] != [0, 1, 2]:
                     raise ValueError("missing comparison rounds")
-                verified, steps = [], 0
+                verified, steps, parameters = [], 0, 0
                 for r, row in enumerate(report["rows"]):
                     if (
                         row["task"] != task
@@ -70,12 +70,14 @@ def summarize(output, config, old_prepared=None, cgcnn_summary=None, diagnose=Tr
                     ):
                         raise ValueError("missing raw-to-cached chain check")
                     steps += row["optimizer_steps"]
+                    parameters += row["parameters"]
                     verified.append(
                         {
                             **row,
                             "seed": config["seed"],
                             "evaluation_split": "validation",
                             "cumulative_optimizer_steps": steps,
+                            "cumulative_parameters": parameters,
                         }
                     )
                 rows.extend(verified)
@@ -139,6 +141,20 @@ def summarize(output, config, old_prepared=None, cgcnn_summary=None, diagnose=Tr
     reports.replace(output / "reports")
     if complete and cgcnn_summary is not None:
         baseline = read_json(cgcnn_summary)
+        if (
+            baseline["status"] != "complete"
+            or baseline["test_labels_used"]
+            or baseline["scope"]["seed"] != config["seed"]
+        ):
+            raise ValueError("CGCNN comparison requires the completed matching validation study")
+        for task in config["tasks"]:
+            previous_source = read_json(Path(cgcnn_summary).parents[1] / task / "source.json")
+            current_source = read_json(output / task / "source.json")
+            if (
+                previous_source["identity"]["task_sha256"]
+                != current_source["identity"]["task_sha256"]
+            ):
+                raise ValueError("cross-backbone tasks/splits differ")
         values = {(r["task"], r["variant"], r["round"]): r for r in baseline["rows"]}
         comparisons = []
         for row in rows:
@@ -155,6 +171,11 @@ def summarize(output, config, old_prepared=None, cgcnn_summary=None, diagnose=Tr
                     / previous["val_mae"],
                     "icomformer_parameters": row["parameters"],
                     "cgcnn_parameters": previous["parameters"],
+                    "icomformer_cumulative_parameters": row["cumulative_parameters"],
+                    "cgcnn_cumulative_parameters": sum(
+                        values[(row["task"], row["variant"], r)]["parameters"]
+                        for r in range(row["round"] + 1)
+                    ),
                     "icomformer_updates": row["cumulative_optimizer_steps"],
                     "cgcnn_updates": previous["cumulative_optimizer_steps"],
                 }

@@ -257,3 +257,15 @@
 - 2026-11-03T11:02:08+08:00：下一连接Guqq先仓库检查/显式SOCKS代理pull环境修复，执行轻量bootstrap在outputs/icomformer_scaling/runtime/seed123创建独立venv并下载9个官方wheel/SHA核验；不安装/导入重负载。确认908本任务pending后取消，保留source_submission-attempt907，再提交新的Slurm CPU离线安装/原生检查及afterok完整构图。源代码只通过pull更新，旧893/CGCNN环境与结果保持不动。
 
 - 2026-11-03T11:18:36+08:00：下一连接Guqq先仓库检查/代理pull新bootstrap与训练接口；沿用上次已创建独立venv和4.2MB Jarvis.partial，bootstrap先核对完整SHA/大小，正确则原子发布并下载剩余8个固定wheel。成功后才取消908并归档source_submission-attempt907，再提交Slurm CPU离线安装/全部iComformer单测及afterok全库构图。旧893及CGCNN环境不变；不在登录节点执行模型、训练或构图。
+
+- 2026-11-03T11:23:49+08:00：环境准备连续3次受阻后已查阅lessons网络/TLS与SFTP经验，改用本地已校验wheel资源。下一管理SSH先仓库检查/代理pull，仅确认新runtime资源目录；随后关联SFTP上传8个精确SHA匹配的纯Pythonwheel到新wheelhouse的.scp.partial。再一管理SSH先pull，逐文件SHA/大小通过后原子发布，沿用完整Jarvis wheel、不再联网下载，随后只替换908失效pending依赖并提交Slurm CPU检查/构图。旧893/源码/CGCNN环境不变。
+
+- 2026-11-03T11:30:17+08:00：关联SFTP在子系统建立前被Vlab关闭，未发布资源；改用用户许可的legacy SCP exec通道传8个小wheel（总1.47MB）至同一独立wheelhouse，先管理SSH仓库检查/代理pull。资源未提交安装作业，只有全部SHA/大小验证通过后才发布/check，旧环境不变。该步骤仅任务资源传输，不修改受Git源码。
+
+- 2026-11-03T11:37:33+08:00：legacy SCP已退出0，8个依赖资源传入独立wheelhouse。下一连接先仓库检查/代理pull，核对全部9wheel官方SHA/字节（含既有Jarvis），不再联网下载；通过后取消本任务失效pending908、归档旧ledger，提交新Slurm CPU环境/全部单测及afterok完整构图。安装和计算仅Slurm，旧893保持held。
+
+- 2026-11-03T11:43:26+08:00：SCP完整文件已上传，但发布脚本遇到旧SFTP残留.scp.partial校验失败而停止，尚未安装/提交计算。下一连接先仓库检查/代理pull，直接用已测试bootstrap逐一校验最终.whl（忽略不安装旧残片），完整9项通过才取消908并提交新的Slurm CPU/构图链。不是接受损坏partial；以官方SHA匹配的最终文件为准。
+
+- 2026-11-03T11:52:22+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:02:54+08:00：连接 Guqq，先检查仓库并通过显式 SOCKS git pull，再只读核对 909/910 完成记录并提交 iComformer GPU 显存探测。授权范围：新任务 Slurm 提交、轻量状态/日志管理，不改服务器源码，不恢复旧训练。

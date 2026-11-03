@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import traceback
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "src"))
 
@@ -17,7 +18,7 @@ from icomformer_scaling.source import audit
 
 def main():
     parser = argparse.ArgumentParser(__doc__)
-    parser.add_argument("action", choices=["check", "prepare"])
+    parser.add_argument("action", choices=["check", "prepare", "run", "summarize"])
     parser.add_argument(
         "--config", type=Path, default=Path("configs/icomformer_scaling/seed123.json")
     )
@@ -25,6 +26,9 @@ def main():
     parser.add_argument("--old-prepared", type=Path)
     parser.add_argument("--prepared", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--task")
+    parser.add_argument("--device", default="cuda")
+    parser.add_argument("--cgcnn-summary", type=Path)
     args = parser.parse_args()
     if not os.environ.get("SLURM_JOB_ID"):
         raise RuntimeError("all iComformer server work requires Slurm")
@@ -68,13 +72,15 @@ def main():
             "pyg": torch_geometric.__version__,
             "scatter": torch_scatter.__version__,
             "jarvis_atoms": str(Atoms),
+            "jarvis_module_path": str(jarvis.__file__),
+            "venv_prefix": sys.prefix,
             "pip_freeze": subprocess.check_output(
                 [sys.executable, "-m", "pip", "freeze", "--all"], text=True
             ),
         }
         atomic_write(args.output, result)
         print("ENVIRONMENT", versions, flush=True)
-    else:
+    elif args.action == "prepare":
         torch.set_num_threads(1)
         prepare(
             args.archive,
@@ -84,6 +90,47 @@ def main():
             int(os.environ.get("SLURM_CPUS_PER_TASK", "4")),
         )
         print("FULL_GEOMETRY_COMPLETE", flush=True)
+    elif args.action == "run":
+        from icomformer_scaling.pipeline import run_task
+
+        failure = args.output / args.task / "failure.json"
+        try:
+            if args.device.startswith("cuda"):
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "scripts/self_evolution/inspect_environment.py",
+                        "--gpu",
+                        "--output",
+                        str(
+                            args.output.parent
+                            / "environments"
+                            / f"worker-{args.task}-{os.getpid()}.json"
+                        ),
+                    ],
+                    check=True,
+                )
+            run_task(args.prepared, args.old_prepared, args.output, args.task, config, args.device)
+            if failure.exists():
+                failure.unlink()
+        except BaseException as exc:
+            atomic_write(
+                failure,
+                {
+                    "type": type(exc).__name__,
+                    "message": str(exc),
+                    "traceback": traceback.format_exc(),
+                    "slurm_job_id": os.environ["SLURM_JOB_ID"],
+                },
+            )
+            raise
+    else:
+        from icomformer_scaling.reporting import summarize
+
+        result = summarize(args.output, config, args.old_prepared, args.cgcnn_summary)
+        print("SUMMARY", result["status"], "points", len(result["rows"]), flush=True)
+        if result["status"] != "complete":
+            raise RuntimeError("incomplete iComformer comparison")
 
 
 if __name__ == "__main__":

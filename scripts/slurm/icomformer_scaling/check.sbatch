@@ -15,6 +15,7 @@ mkdir -p "$work/diagnostics"
 export PIP_REQUIRE_VIRTUALENV=true PIP_CONFIG_FILE=/dev/null
 export PIP_CACHE_DIR="$runtime/pip-cache"
 "$runtime/venv/bin/python" -m pip install --no-index --no-deps --ignore-installed "$runtime/wheelhouse/"*.whl
+"$runtime/venv/bin/python" -m pip install --no-deps --no-build-isolation -e .
 "$runtime/venv/bin/python" scripts/icomformer_scaling/run.py check \
     --output "$work/environment-cpu-${SLURM_JOB_ID}.json"
 "$runtime/venv/bin/python" -m pytest tests/icomformer_scaling \

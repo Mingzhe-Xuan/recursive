@@ -100,3 +100,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-03T10:46:55+08:00：iComformer官方默认原生参数4966497；当前源包含comforemr import和MatformerConv父类名拼写错误，采用完整源SHA审计＋选择原始声明执行，只修复一个父类AST名称，不改数学。旧pydantic/eComformer依赖不应绑到不变分支。Jarvis Atoms.from_dict对缺props严格报错，使用同坐标/晶胞/元素的显式构造及props可选值保持数据兼容。本地未使用的PyG spline旧DLL可产生被捕获的Windows异常横幅，不能据此跳过实际使用的原生forward/grad/几何验收；服务器须另验ABI。
 
 - 2026-11-03T11:18:36+08:00：资源curl在下载进度100%后也可能因TLS收尾unexpected EOF返回56。必须核对精确字节数和官方SHA；完整且匹配的partial可直接原子发布，不因传输收尾状态重复下载，也不因curl0就跳过文件校验。不匹配仍失败并保留断点，不能用放松TLS或校验规避。已用完整/损坏两类单测验证此路径。
+
+- 2026-11-03T11:23:49+08:00：iComformer环境准备第三次阻塞后已复查已有网络经验：反向SOCKS长传输可在TLS收尾或中途断线。Jarvis大wheel已完整校验；剩余小wheel优先复用tmp/wheelhouse/cgcnn-inherited-bootstrap的相同SHA版本，并SFTP到新任务资源目录。未因网络失败放松哈希、不重新下载已完成资源、不改共享环境。

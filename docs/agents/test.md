@@ -667,3 +667,7 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T11:02:08+08:00：独立环境修复提交前静态验收通过：9个官方PyPI wheel条目共5671652字节，URL域/路径唯一性/SHA长度/大小/Python3.10 AST检查通过；bootstrap与check入口ruff、两sbatch bash -n通过。实际安装/原生测试仍待Slurm；仅替换失效pending908，不降低原生5测试或版本检查。venv内Jarvis实际模块路径增加断言，pip --ignore-installed --no-deps --no-index仅安装新venv，不卸载/覆盖共享包。
 
 - 2026-11-03T11:18:36+08:00：iComformer训练/缓存/诊断单元通过：2个新pipeline测试＋4个既有诊断测试共6项364.34秒通过，真实tiny四层iComformer三方案0–2、精确预算/seed/R0共享、缓存直接链、源文件不变、Adam/RNG中断恢复CPU逐权重一致、test标签隔离、诊断接入及缺失分支不得完成。新bootstrap 2项0.57秒通过：完整partial不联网复用，curl56但内容完整仅在SHA/大小全匹配时接受，损坏始终拒绝。ruff/Python3.10 AST/bash检查通过。旧source/model真实5测试已通过；本地未使用spline兼容警告不改变验收标准。下一步同步后先恢复固定wheel资源，再Slurm原生/集成检查及完整构图。
+
+- 2026-11-03T12:02:36+08:00：GPU 提交单元实际检查：全仓库 77 passed（385.63 秒）；首次全仓库收集因两个 test_pipeline.py 模块同名失败，重命名新测试文件后完整通过。服务器 909：9 passed，14.93 秒；910：55,712/55,712 图，零失败。另检查 Python 3.10 语法、Bash、Ruff、源码 SHA 和文档路径；GPU 原生输出/梯度及七阶段全库缓存链待真实 Slurm 验收。
+
+- 2026-11-03T12:02:54+08:00：本提交静态检查全部通过：Ruff（自有代码，原样 upstream 除外）、20 文件 Python 3.10 AST、5 个 Slurm Bash 语法、git diff --check、旧 self_evolution/residual_scaling 零源码改动。
