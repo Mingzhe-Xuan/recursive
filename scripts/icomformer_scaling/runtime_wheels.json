@@ -1,0 +1,77 @@
+{
+  "source": "official PyPI metadata",
+  "wheels": [
+    {
+      "name": "jarvis-tools",
+      "version": "2026.4.2",
+      "filename": "jarvis_tools-2026.4.2-py2.py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/41/aa/fb4cb11329a80b2aeed36d5026ab8344f49992993076561d0609698df50e/jarvis_tools-2026.4.2-py2.py3-none-any.whl",
+      "sha256": "e5cf007bd6912ec313bef24a86930c40e06162ebbf9248437be12b2a9148d5ef",
+      "bytes": 4200905
+    },
+    {
+      "name": "pytest",
+      "version": "8.3.5",
+      "filename": "pytest-8.3.5-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/30/3d/64ad57c803f1fa1e963a7946b6e0fea4a70df53c1a7fed304586539c2bac/pytest-8.3.5-py3-none-any.whl",
+      "sha256": "c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820",
+      "bytes": 343634
+    },
+    {
+      "name": "setuptools",
+      "version": "70.2.0",
+      "filename": "setuptools-70.2.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/42/54/2a8ecfcc9a714a6fbf86559a4b0f50b126a4ac4269ea8134f2c75c3e73de/setuptools-70.2.0-py3-none-any.whl",
+      "sha256": "b8b8060bb426838fbe942479c90296ce976249451118ef566a5a0b7d8b78fb05",
+      "bytes": 930834
+    },
+    {
+      "name": "wheel",
+      "version": "0.45.1",
+      "filename": "wheel-0.45.1-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl",
+      "sha256": "708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248",
+      "bytes": 72494
+    },
+    {
+      "name": "pluggy",
+      "version": "1.5.0",
+      "filename": "pluggy-1.5.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/88/5f/e351af9a41f866ac3f1fac4ca0613908d9a41741cfcf2228f4ad853b697d/pluggy-1.5.0-py3-none-any.whl",
+      "sha256": "44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669",
+      "bytes": 20556
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.1.0",
+      "filename": "iniconfig-2.1.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/2c/e1/e6716421ea10d38022b952c159d5161ca1193197fb744506875fbb87ea7b/iniconfig-2.1.0-py3-none-any.whl",
+      "sha256": "9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760",
+      "bytes": 6050
+    },
+    {
+      "name": "packaging",
+      "version": "25.0",
+      "filename": "packaging-25.0-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/20/12/38679034af332785aac8774540895e234f4d07f7545804097de4b666afd8/packaging-25.0-py3-none-any.whl",
+      "sha256": "29572ef2b1f17581046b3a2227d5c611fb25ec70ca1ba8554b24b0e69331a484",
+      "bytes": 66469
+    },
+    {
+      "name": "exceptiongroup",
+      "version": "1.2.2",
+      "filename": "exceptiongroup-1.2.2-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/02/cc/b7e31358aac6ed1ef2bb790a9746ac2c69bcb3c8588b41616914eb106eaf/exceptiongroup-1.2.2-py3-none-any.whl",
+      "sha256": "3111b9d131c238bec2f8f516e123e14ba243563fb135d3fe885990585aa7795b",
+      "bytes": 16453
+    },
+    {
+      "name": "tomli",
+      "version": "2.2.1",
+      "filename": "tomli-2.2.1-py3-none-any.whl",
+      "url": "https://files.pythonhosted.org/packages/6e/c2/61d3e0f47e2b74ef40a68b9e6ad5984f6241a942f7cd3bbfbdbd03861ea9/tomli-2.2.1-py3-none-any.whl",
+      "sha256": "cb55c73c5f4408779d0cf3eef9f762b9c9f147a77de7b258bef0a5628adc85cc",
+      "bytes": 14257
+    }
+  ]
+}

@@ -661,3 +661,7 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T10:26:34+08:00：iComformer实现前测试计划：官方源码/许可证/精确SHA审计；原生forward与包装器数值/梯度对齐、节点pool前边界和256→92投影；官方25邻居+晶格几何/边向量/角索引、batch/single、旋转/平移探针；tiny晶体三方案R0–2真实CPU训练/缓存/续训/源冻结/预算seed一致；完整库55712结构与原split/原子顺序绑定；Slurm真实GPU短链与完整缓存/直接链容差、最大图批次显存和环境门禁。依赖缺失的原生模型测试必须在专用服务器venv跑通，不能用stub替代验收。提交前本地适用回归/ruff/语法，服务器全部明显负载走Slurm；正式36点和纠错诊断完成后核验。
 
 - 2026-11-03T10:46:55+08:00：iComformer source/model/graphs阶段验收通过：5项真实依赖pytest（18.12秒），包括官方SHA/许可证、native输出/梯度/BN一致、batch/single、旋转几何、原生周期图逐边一致、投影detach/原输入冻结、tensor图SHA损坏拒绝。ruff通过（上游原文件不格式化），Python3.10 AST/两个bash -n/TOML/package-data/README/路径检查通过。人工最小输入缺props已通过构造Atoms可选字段适配修复；本地PyG导入捕获了未使用的torch-spline-conv旧DLL警告，但使用的PyG/scatter/Jarvis路径全部真实运行、测试退出0，未使用stub。服务器Linux原生ABI仍须Slurm验收。源第三方逐字保留，owned代码检查diff格式，上游仅查精确SHA。
+
+- 2026-11-03T10:58:28+08:00：服务器环境修复验收计划：907因Jarvis namespace碰撞SyntaxError失败，908未运行。需新venv实际import模块路径落在venv、版本2026.4.2、原生5测试通过；各wheel SHA/大小与PyPI元数据一致，安装不解析替换共享Torch。旧源码/环境不修改。原pytest/native标准不降低；bootstrap静态检查后提交，再经Slurm真实验收。
+
+- 2026-11-03T11:02:08+08:00：独立环境修复提交前静态验收通过：9个官方PyPI wheel条目共5671652字节，URL域/路径唯一性/SHA长度/大小/Python3.10 AST检查通过；bootstrap与check入口ruff、两sbatch bash -n通过。实际安装/原生测试仍待Slurm；仅替换失效pending908，不降低原生5测试或版本检查。venv内Jarvis实际模块路径增加断言，pip --ignore-installed --no-deps --no-index仅安装新venv，不卸载/覆盖共享包。

@@ -32,6 +32,7 @@ def main():
     if args.action == "check":
         import torch_geometric
         import torch_scatter
+        import jarvis
         from jarvis.core.atoms import Atoms
 
         versions = {
@@ -56,6 +57,8 @@ def main():
         }
         if any(versions[name] != value for name, value in required.items()):
             raise ValueError(f"unlocked server environment: {versions}")
+        if not Path(jarvis.__file__).resolve().is_relative_to(Path(sys.prefix).resolve()):
+            raise ValueError("Jarvis import must resolve inside the independent iComformer venv")
         result = {
             "status": "passed",
             "versions": versions,

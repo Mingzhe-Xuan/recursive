@@ -7,7 +7,7 @@
 #SBATCH --output=outputs/icomformer_scaling/logs/prepare-%j.out
 set -euo pipefail
 cd "${SLURM_SUBMIT_DIR:?}"
-runtime="$PWD/outputs/self_evolution/runtime/cgcnn-seed123"
+runtime="$PWD/outputs/icomformer_scaling/runtime/seed123"
 old="$PWD/outputs/self_evolution/jarvis2021-seed123-final"
 work="$PWD/outputs/icomformer_scaling/jarvis2021-seed123-r012-v1"
 export OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 MKL_NUM_THREADS=1

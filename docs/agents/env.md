@@ -80,3 +80,9 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 iComformer AST源加载仅执行不变分支，所需PyG/scatter/Jarvis均已存在，未用的eComformer e3nn/torch_sparse和旧pydantic settings依赖不参与加载。正式Slurm check会强制核对核心版本、真实导入ABI、原生CPU单元，并保存pip freeze；后续GPU验收仍必须通过，不能凭metadata认定CUDA可用。本地真实单元环境为Python3.12/Torch2.11 CPU、PyG2.7、scatter2.1.2+pt211cpu、Jarvis2025.5.30，与服务器不同，不能替代服务器验收。
 
 官方README的Jarvis2022.9.16/PyTorch CUDA11.6环境与本次现代固定运行时不同，差异显式保留；目标是官方不变模型与周期几何在统一研究协议下的递归比较，不宣称逐字论文环境/划分/训练配置复现。
+
+## 2026-11-03T10:58:28+08:00 iComformer独立venv修订（配置前计划）
+
+Slurm907发现metadata jarvis-tools2026.4.2存在，但实际jarvis/__init__.py来自同名旧Python2包，import失败；908被afterok门禁阻止，没有构图。不能只凭distribution metadata复用环境。调整为先python3 -m venv --system-site-packages /home/xmz/recursive/outputs/icomformer_scaling/runtime/seed123/venv，再在该venv安装独立jarvis-tools2026.4.2（遮蔽错误namespace）与pytest8.3.5/setuptools70.2.0/wheel0.45.1及纯Python必要bootstrap依赖。共享Torch2.8.0+cu128/PyG2.6.1/scatter2.1.2+pt28cu128/numpy2.2.6只读继承，不修改旧venv或用户site包。
+
+包通过官方PyPI精确wheel URL/SHA清单下载到新runtime/wheelhouse，网络下载仅登录节点显式SOCKS；安装由Slurm CPU check使用--no-index --no-deps离线安装，禁止resolver替换共享Torch。完整pip freeze、实际jarvis模块路径与版本均记录，模块路径必须位于新venv内。未用e3nn/torch_sparse不安装。下载/创建venv是轻量许可，测试/所有构图/模型负载仍Slurm。

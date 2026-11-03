@@ -251,3 +251,7 @@
 - 2026-11-03T10:32:43+08:00：用户授权iComformer四性质0–2实验。下一连接先仓库检查/显式SOCKS代理git pull，仅检查集群/旧893状态、原数据ZIP与prepared/task路径、已有基础包metadata和旧图manifest原子数分布（轻量JSON统计）。不加载tensor/模型、不训练/构图/编译，不修改环境或源码；为专用iComformer环境与GPU资源规划收集信息。
 
 - 2026-11-03T10:46:55+08:00：下一连接Guqq先仓库检查/显式SOCKS代理pull源/图阶段提交，确认新目录不存在已提交作业后，在独立outputs/icomformer_scaling/jarvis2021-seed123-r012-v1登记ledger，提交CPU原生检查和afterok完整55712周期图准备。仅Slurm计算，现有venv只读复用，不安装任何包，保留旧893 held/CGCNN产物。图准备允许和本地训练流水线开发并行，formal训练尚不提交。
+
+- 2026-11-03T10:53:59+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T11:02:08+08:00：下一连接Guqq先仓库检查/显式SOCKS代理pull环境修复，执行轻量bootstrap在outputs/icomformer_scaling/runtime/seed123创建独立venv并下载9个官方wheel/SHA核验；不安装/导入重负载。确认908本任务pending后取消，保留source_submission-attempt907，再提交新的Slurm CPU离线安装/原生检查及afterok完整构图。源代码只通过pull更新，旧893/CGCNN环境与结果保持不动。
