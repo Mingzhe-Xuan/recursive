@@ -687,3 +687,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T12:49:15+08:00：CGCNN×2首批3项真实缓存链集成测试通过（43.20秒）；最终相关回归39 passed（103.76秒），覆盖旧CGCNN/残差和新增4项（梯度、159197参数、native组合、断点恢复、test隔离、来源/门控拒绝、完整/partial报告）。Ruff、Python3.10 AST、3份Slurm Bash、README结构、10MiB限制及旧3个训练包零源码修改检查通过；GPU实际测试随队列执行，未宣称已通过。
 
 - 2026-11-03T12:52:39+08:00：服务器914 CPU验收完成（8秒），新增4项真实链测试通过，四性质prepared/图/原CGCNN模型超参数/归一化/来源checkpoint与旧summary SHA核验全部通过。915 GPU资源排队、916依赖等待，不宣称GPU已验收或训练完成。启动文档检查：作业JSON状态、四任务scope、固定旧summary SHA与相对模块路径存在性通过；diff whitespace通过。
+
+- 2026-11-04T00:46:21+08:00：本次仅状态查询/文档更新：实测JSON核验913 running、R0完整training/result/cache一致、R1未完成且167epoch、loss有限、failure集合为空、R1改善比例算术正确；快照路径存在与diff whitespace检查通过。未运行训练/推理/不必要单元测试。

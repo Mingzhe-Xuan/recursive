@@ -1,15 +1,14 @@
 # 当前状态
 
-CGCNN×2端到端对照已实现并提交：CPU验收 **914 COMPLETED**（8秒，新4项真实链测试与四任务旧来源核验通过）；GPU验收 **915 PENDING/Resources**；正式四性质训练 **916 PENDING/Dependency**，验收通过后自动运行。唯一GPU由iComformer913占用（最新查询RUNNING）；未取消或抢占现有实验，旧893仍保持held。
+截至2026-11-04T00:45:27.141210+08:00，iComformer **913 RUNNING**，已运行12小时33分钟，在node221/RTX5090训练形成能direct **R1 epoch167/300**。R0已满300epoch完成，最佳验证MAE 0.032786123 eV/atom（epoch284），全库缓存/结果已完成。R1当前最佳 0.030492350（epoch148），相对R0降低7.00%；最新epoch167验证MAE 0.031686476，尚未触发patience50，R1未结束/未缓存。形成能R2及两残差分支尚未开始，另外三性质尚未开始。未发现failure.json，训练MSE/验证MAE有限。
 
-结构：两个独立随机初始化的三层原生CGCNN编码器，节点64→92线性桥，无detach、无冻结、无中间缓存，唯一末端pool/readout，共159197参数。四性质seed123、原图/划分/train统计、Adam/.001/batch64/300上限/patience50，test封存。主对照已有缓存direct R1，feature_residual R1为不同读出结构的辅助参考。报告实际更新、编码器更新预算内的最佳MAE及训练/缓存成本，不称严格等算力。新输出 `outputs/joint_cgcnn/seed123-double-v1`，作业账本 `submission.json`，正式结果将位于 `run`/`reports`。本地39项关联回归通过；真实GPU验收尚未执行，暂无结果。
+CGCNN×2独立对照：CPU914验收完成；GPU915 PENDING(Resources)，正式916 PENDING(Dependency)。唯一GPU由913占用，未抢占或取消；旧893保持held。双CGCNN159197参数、四性质seed123、64→92线性桥/唯一末端readout，主对照缓存direct R1。两实验输出分别为 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`；均不使用test标签选择方案。
 
 # 当前计划
 
-1. 新建 src/joint_cgcnn/model、training、study（各README），从零初始化两个独立CGCNN编码器，第一段不保留无用读出；只在第二段pool/readout，无detach/冻结/缓存。
-2. 复用原CGCNN图/标签/训练统计与既有venv，只读旧包和结果；Adam/.001/batch64/300上限/patience50，测试标签封存。报告实际更新/双编码器计算量及旧R0+R1训练/缓存成本，不声称严格等算力。
-3. 测试梯度穿过桥接到第一编码器、手工组合一致、checkpoint/Adam/RNG恢复、数据与来源拒绝、训练/验证与原指标一致；Slurm先真实GPU小样本验收，afterok运行四性质训练并自动对比。
-4. 检查集群资源；新GPU作业正常排队，不打断iComformer913或旧暂停作业。
+1. iComformer913继续单GPU/单性质进程顺序完成形成能、带隙、总能、ehull；每性质direct R0–2后raw_residual R1–2和feature_residual R1–2。验证和训练记录持续保存，测试标签封存。
+2. 跟踪R1完成后与R0比较、R2后判断收益是否递减；在完整链结束后自动汇总纠错相关性和train/val残差，当前不得把未完成R1或未启动R2当作最终scaling结论。
+3. CGCNN×2 CPU914已完成，GPU915等待资源、正式916等待915成功；不干预913或旧893。
 
 # 变更记录
 
@@ -263,3 +262,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-03T12:49:15+08:00：实现/关联测试阶段完成（39 passed）。新增四性质端到端对照即将提交CPU→GPU验收→正式作业；GPU唯一，按队列等待913，不中断现有实验。
 
 - 2026-11-03T12:52:39+08:00：提交并核验914→915→916；914 CPU完成且四任务来源/旧缓存summary哈希核验通过，915资源排队，916等待GPU验收。实验实施/提交阶段完成，待913释放GPU后由Slurm自动验收、训练和报告；不把排队当作已训练。
+
+- 2026-11-04T00:45:18+08:00：进入iComformer进度查询阶段。仅读取Slurm/训练日志/JSON，保留CGCNN×2排队与既有实验；下一步报告实际轮次与验证指标。
+
+- 2026-11-04T00:46:21+08:00：完成用户要求的iComformer只读进度查询：913形成能direct R0完成/R1 epoch167，最佳MAE 0.032786123→0.030492350（阶段性降低7.00%）；R2和其余性质未启动，无错误记录。915/916仍排队。下一步按既有Slurm流程继续训练。

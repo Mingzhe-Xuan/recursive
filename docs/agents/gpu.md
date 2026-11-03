@@ -295,3 +295,5 @@
 - 2026-11-03T12:49:15+08:00：连接Guqq前登记：仓库检查后首先显式SOCKS git pull，创建新joint_cgcnn任务输出/日志并提交check→afterok accept→afterok study的Slurm依赖链，随后仅轻量读取状态/日志。GPU正常排队，不取消或抢占iComformer913，不动旧893，不修改远端受Git管理源码。
 
 - 2026-11-03T12:51:27+08:00：连接Guqq前登记：检查仓库后先显式SOCKS git pull，仅查看joint_cgcnn 914/915/916状态、日志、CPU/GPU证明JSON和队列；轻量管理，不推理训练、不改变913/893，不改远端源码。
+
+- 2026-11-04T00:45:18+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
