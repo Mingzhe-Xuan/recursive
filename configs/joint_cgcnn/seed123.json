@@ -1,0 +1,39 @@
+{
+  "seed": 123,
+  "threads": 4,
+  "model": {
+    "atom_input": 92,
+    "edge_input": 41,
+    "hidden": 64,
+    "convolutions": 3,
+    "head_hidden": 128,
+    "head_layers": 1
+  },
+  "training": {
+    "epochs": 300,
+    "patience": 50,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0,
+    "optimizer": "Adam",
+    "loss": "normalized_mse",
+    "scheduler": "constant",
+    "normalization": "training_only_mean_sample_std"
+  },
+  "verification": {
+    "atol": 2e-05,
+    "rtol": 0.0001
+  },
+  "schema": 1,
+  "name": "cgcnn_double_end_to_end",
+  "expected_structures": 55712,
+  "tasks": [
+    "formation_energy_peratom",
+    "optb88vdw_bandgap",
+    "optb88vdw_total_energy",
+    "ehull"
+  ],
+  "initialization": "independent_fresh_matching_cached_stage_seeds",
+  "test_policy": "sealed_during_method_selection",
+  "budget": "same_300_epoch_patience50_protocol_not_equal_total_compute"
+}

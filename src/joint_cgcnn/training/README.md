@@ -1,0 +1,3 @@
+# Joint optimization
+
+`train(output, config, task, graphs, norm, identity, device)` trains the complete chain with normalized MSE, Adam .001, batch64, maximum300 epochs and validation patience50. It selects a checkpoint only after training epochs. All trainable parameters must have finite gradients. History includes first-encoder/bridge/second-encoder gradient norms. Whole-epoch `last.pt` preserves weights, Adam, CPU/CUDA RNG, patience and history; identity changes fail closed. `load_model` and `evaluate` restore the best checkpoint and evaluate original-unit train or validation MAE. Test labels are not accessed by optimization or evaluation.

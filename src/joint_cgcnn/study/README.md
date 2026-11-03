@@ -1,0 +1,5 @@
+# Cached feature comparison
+
+`inputs` verifies the exact old graph/task, model/training protocol, normalization, initialization seeds, reference checkpoints, source and summary hashes. `run_task` trains from scratch and exports train/validation predictions. `summarize` produces comparison JSON/CSV and learning-curve PNG/SVG; missing or changed results remain incomplete.
+
+The primary reference is cached direct R1: identical encoder/bridge/final-head functional architecture, with separately optimized frozen upstream features. Cached feature_residual R1 is auxiliary and has a different output composition. Report both total joint updates and twice that count as encoder-update applications, cached R0+R1 updates, parameters, training and cache times. The joint best MAE within the cached encoder-update budget is a history-prefix work-proxy comparison, not equal FLOPs. There is one seed; optimizer early stopping and GPU contention can differ. The first cached-stage readout participated in pretraining but is absent from the joint network and final direct-chain inference.

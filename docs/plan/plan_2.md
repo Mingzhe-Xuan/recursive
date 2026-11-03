@@ -410,3 +410,5 @@ Slurm 依赖顺序为 `train_r → cache_r → train_(r+1)`；
 完整几何与native CPU验收先执行，同时本地实现训练/缓存/恢复和三方案集成；随后真实GPU原生/梯度/缓存链/最大批次测试，通过后正式0–2。最终同样输出纠错相关、改善材料比例、train/val残差和学习曲线。更换backbone同时改变容量、深度、几何，不能把所有差异直接归因为参数量。
 
 - 2026-11-03T12:04:38+08:00：GPU资源门控实际结果：Slurm911最大图批64显存不足；改为固定batch32（最大测量reserved25.35GiB），正式训练采用单GPU/单性质进程依次四性质。相对CGCNN batch64的差异明确保留，不能称严格仅改backbone的因果消融；各iComformer残差仍精确匹配自身direct预算。
+
+- 2026-11-03T12:22:45+08:00：新增CGCNN×2端到端对照：src/joint_cgcnn/{model,training,study}分别实现双编码器+64→92桥接、可恢复联合训练、固定数据身份与缓存R1对照报告；scripts/joint_cgcnn与scripts/slurm/joint_cgcnn提供验收/正式调度，各目录README。两个独立随机初始化，第一段仅节点编码，第二段pool/readout，梯度贯穿所有层。四性质seed123原图/划分/train归一化，统一Adam/.001/batch64/300epochs/patience50，test封存。主对照缓存direct R1，辅助显示feature_residual R1但标注读出结构不同；报告总参数、实际更新和双编码器计算/耗时，与缓存法R0+R1及全库缓存耗时并列，不做等算力因果声称。独立输出outputs/joint_cgcnn/seed123-double-v1；不打断iComformer913。

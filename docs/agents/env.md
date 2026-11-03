@@ -90,3 +90,5 @@ Slurm907发现metadata jarvis-tools2026.4.2存在，但实际jarvis/__init__.py�
 - 2026-11-03T12:04:38+08:00：911实际环境：独立venv Torch2.8.0+cu128/PyG2.6.1/scatter2.1.2+pt28cu128/Jarvis2026.4.2，RTX5090总显存33,679,736,832bytes。最大图批64 OOM；批32（2782原子、155898边）float32原生/投影前后向和Adam通过，最高reserved27,216,838,656bytes/allocated25,239,337,984bytes。锁定batch32，保守并发1。
 
 - 2026-11-03T12:13:21+08:00：Slurm912真实GPU原生/梯度与全部缓存链通过，913在同一独立venv运行；env检查证明项目0.1.0 editable与既定Torch/CUDA/numpy/pymatgen/pytest等精确版本匹配。完整运行环境快照保存在新work的environment-{probe,accept,study}-JOB.json；旧CGCNN环境未安装或修改。
+
+- 2026-11-03T12:22:45+08:00：新joint_cgcnn不安装包或创建新环境：只读复用已验收CGCNN任务venv outputs/self_evolution/runtime/cgcnn-seed123/venv；沿用Torch2.8.0+cu128/numpy2.2.6/pymatgen2025.10.7/matplotlib3.10.3。新模块通过脚本src路径导入，不修改已运行的CGCNN/iComformer包。训练/测试/GPU探测均Slurm。

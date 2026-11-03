@@ -102,3 +102,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-03T11:18:36+08:00：资源curl在下载进度100%后也可能因TLS收尾unexpected EOF返回56。必须核对精确字节数和官方SHA；完整且匹配的partial可直接原子发布，不因传输收尾状态重复下载，也不因curl0就跳过文件校验。不匹配仍失败并保留断点，不能用放松TLS或校验规避。已用完整/损坏两类单测验证此路径。
 
 - 2026-11-03T11:23:49+08:00：iComformer环境准备第三次阻塞后已复查已有网络经验：反向SOCKS长传输可在TLS收尾或中途断线。Jarvis大wheel已完整校验；剩余小wheel优先复用tmp/wheelhouse/cgcnn-inherited-bootstrap的相同SHA版本，并SFTP到新任务资源目录。未因网络失败放松哈希、不重新下载已完成资源、不改共享环境。
+
+- 2026-11-03T12:49:15+08:00：CGCNNStage.encode_nodes在递归分支会对输入特征detach，这是缓存训练的正确边界，但直接串联该接口会静默截断端到端梯度。joint_cgcnn明确复用native embedding/convs与projection实现可微桥接，并用全部参数梯度及首段非零梯度测试守护；第一段无用readout不注册，避免参数虚增或无梯度参数。架构说明见src/joint_cgcnn/model/README.md。
