@@ -269,3 +269,7 @@
 - 2026-11-03T11:52:22+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
 
 - 2026-11-03T12:02:54+08:00：连接 Guqq，先检查仓库并通过显式 SOCKS git pull，再只读核对 909/910 完成记录并提交 iComformer GPU 显存探测。授权范围：新任务 Slurm 提交、轻量状态/日志管理，不改服务器源码，不恢复旧训练。
+
+- 2026-11-03T12:03:50+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:05:36+08:00：连接Guqq，仓库检查后首先显式SOCKS git pull，提交新iComformer GPU七阶段验收及afterok依赖的正式四性质训练；只操作本任务账本/Slurm，不修改远端源码或旧作业。

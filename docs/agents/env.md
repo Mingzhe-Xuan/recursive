@@ -86,3 +86,5 @@ iComformer AST源加载仅执行不变分支，所需PyG/scatter/Jarvis均已存
 Slurm907发现metadata jarvis-tools2026.4.2存在，但实际jarvis/__init__.py来自同名旧Python2包，import失败；908被afterok门禁阻止，没有构图。不能只凭distribution metadata复用环境。调整为先python3 -m venv --system-site-packages /home/xmz/recursive/outputs/icomformer_scaling/runtime/seed123/venv，再在该venv安装独立jarvis-tools2026.4.2（遮蔽错误namespace）与pytest8.3.5/setuptools70.2.0/wheel0.45.1及纯Python必要bootstrap依赖。共享Torch2.8.0+cu128/PyG2.6.1/scatter2.1.2+pt28cu128/numpy2.2.6只读继承，不修改旧venv或用户site包。
 
 包通过官方PyPI精确wheel URL/SHA清单下载到新runtime/wheelhouse，网络下载仅登录节点显式SOCKS；安装由Slurm CPU check使用--no-index --no-deps离线安装，禁止resolver替换共享Torch。完整pip freeze、实际jarvis模块路径与版本均记录，模块路径必须位于新venv内。未用e3nn/torch_sparse不安装。下载/创建venv是轻量许可，测试/所有构图/模型负载仍Slurm。
+
+- 2026-11-03T12:04:38+08:00：911实际环境：独立venv Torch2.8.0+cu128/PyG2.6.1/scatter2.1.2+pt28cu128/Jarvis2026.4.2，RTX5090总显存33,679,736,832bytes。最大图批64 OOM；批32（2782原子、155898边）float32原生/投影前后向和Adam通过，最高reserved27,216,838,656bytes/allocated25,239,337,984bytes。锁定batch32，保守并发1。
