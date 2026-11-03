@@ -398,3 +398,13 @@ Slurm 依赖顺序为 `train_r → cache_r → train_(r+1)`；
 - [ComFormer 原论文](https://arxiv.org/abs/2403.11857)
 
 实施时将网页中的移动分支解析为固定 commit，并记录取得时间与本地兼容补丁。
+
+## 2026-11-03T10:45:30+08:00 iComformer四性质0–2执行范围
+
+沿用CGCNN的四性质、seed123、原始55712结构库/标签划分与固定训练归一化；三方案direct/raw_residual/feature_residual，残差匹配同backbone/direct对应轮实际optimizer步数与seed，R0在三组共享，eta1，无历史模型回退制造单调性。原CGCNN结果保持不动，旧0–5和893继续暂停。仅验证集方案比较，test封存。
+
+独立代码src/icomformer_scaling（source/model/graphs/training/pipeline/reporting，各目录README），CLI scripts/icomformer_scaling，Slurm scripts/slurm/icomformer_scaling，输出outputs/icomformer_scaling/jarvis2021-seed123-r012-v1。官方源码固定594e8bad8cd0b24a207c818e09b39ccc0aebcd4d，原始文件和GPLv3 LICENSE逐字保留及SHA审计；显式修复undefined MatformerConv父类名，绕开未使用分支和拼写错误imports。原生iComformer forward直接执行，hook仅导出第四节点层pool前特征；递归投影256→92。图使用官方25邻居/初始cutoff4/晶格方向与距离角度，保留原生有向重复边/并列邻居，不用CGCNN图替代。
+
+主实验使用官方默认256隐藏维/4节点层（原生4966497参数），原子输入92。训练暂采用与CGCNN统一的Adam/.001/常数LR/300epoch上限/patience50、fixed R0 train-only统计；该选择不同于官方AdamW/500epoch/onecycle，不称论文指标复现。批64为资源候选值，正式训练前根据真实GPU最大批次测量决定，若必须改变则先改本地固定配置、提交并重过验收，禁止作业内静默降batch。并发也按实测峰值/CPU内存确定，不预先承诺时长。
+
+完整几何与native CPU验收先执行，同时本地实现训练/缓存/恢复和三方案集成；随后真实GPU原生/梯度/缓存链/最大批次测试，通过后正式0–2。最终同样输出纠错相关、改善材料比例、train/val残差和学习曲线。更换backbone同时改变容量、深度、几何，不能把所有差异直接归因为参数量。

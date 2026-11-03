@@ -1,0 +1,5 @@
+# Official invariant periodic geometry
+
+`make_graph(record, config)` executes the pinned upstream `PygGraph.atom_dgl_multigraph` with 25 neighbors, initial cutoff 4 Angstrom, lattice directions enabled and canonical edge merging disabled, as in the official JARVIS entry. The upstream builder expands its search cutoff when needed and includes tied neighbors; repeated directed edges are preserved. Original structure and atom ordering are retained. Distances/angles are computed by each native stage from stored vectors.
+
+`prepare` reuses the fixed official ZIP and the existing project deduplication, but stores a separate tensor-only graph library. Its version/config/source checksums are immutable, unresolved failures prevent completion, and all 55,712 IDs/atom counts must match the original library. Original task JSON files/splits are read, never overwritten. `GraphStore.get` checks each file and memoizes it; `collate_graphs` reconstructs a PyG Batch without labels. All bulk preparation runs in Slurm with spawn workers.

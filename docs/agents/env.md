@@ -72,3 +72,11 @@ MatterSim 1M checkpoint 由 `scripts/slurm/download_mattersim_checkpoint.sbatch`
 - 2026-11-02T02:12+08:00：888最终环境真实验收成功：Python3.10.12、torch2.8.0+cu128、CUDA12.8/RTX5090、numpy2.2.6、pymatgen2025.10.7、matplotlib3.10.3、pytest8.3.5、setuptools70.2.0、wheel0.45.1，项目metadata recursive-atomistic-backbones0.1.0，12项测试通过。正式work_root=/home/xmz/recursive/outputs/self_evolution/jarvis2021-seed123-final；完整图数据hash85da743bbe3ef70e6c429af2b7d026b20a375dac665a8d0485a4725e282ec376，891之前的实际pilot为890。
 
 - 2026-11-02T23:37:27+08:00：本次独立残差验证复用现有/home/xmz/recursive/outputs/self_evolution/runtime/cgcnn-seed123/venv，不创建新环境、不安装/更改依赖。服务器Python3.10.12/Torch2.8.0+cu128/numpy2.2.6/pymatgen2025.10.7/matplotlib3.10.3/pytest8.3.5，以Slurm环境检查为准；src通过入口sys.path访问新包。本地Python3.12/Torch2.11 CPU仅做回归，不能替代真实CUDA验收。
+
+## 2026-11-03T10:45:30+08:00 iComformer环境复用审计
+
+服务器基础环境已实测：Python3.10.12、torch2.8.0+cu128、torch-geometric2.6.1、torch-scatter2.1.2+pt28cu128、jarvis-tools2026.4.2、numpy2.2.6、scipy1.15.3、pymatgen2025.10.7、matplotlib3.10.3。现有/home/xmz/recursive/outputs/self_evolution/runtime/cgcnn-seed123/venv先前已由python3 -m venv --system-site-packages创建并安装pytest8.3.5等，完整旧创建/安装记录见上文；本任务只读复用它，不安装/升级任何依赖，也不改变系统或旧venv。
+
+iComformer AST源加载仅执行不变分支，所需PyG/scatter/Jarvis均已存在，未用的eComformer e3nn/torch_sparse和旧pydantic settings依赖不参与加载。正式Slurm check会强制核对核心版本、真实导入ABI、原生CPU单元，并保存pip freeze；后续GPU验收仍必须通过，不能凭metadata认定CUDA可用。本地真实单元环境为Python3.12/Torch2.11 CPU、PyG2.7、scatter2.1.2+pt211cpu、Jarvis2025.5.30，与服务器不同，不能替代服务器验收。
+
+官方README的Jarvis2022.9.16/PyTorch CUDA11.6环境与本次现代固定运行时不同，差异显式保留；目标是官方不变模型与周期几何在统一研究协议下的递归比较，不宣称逐字论文环境/划分/训练配置复现。

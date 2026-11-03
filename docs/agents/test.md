@@ -657,3 +657,7 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T09:50:26+08:00：诊断提交前验收通过：全仓库66项pytest，64.42秒；其中4项诊断覆盖手算/高相关但过量修正、ties/退化相关性、test标签隔离、tiny真实三方案缓存只读分析及9份PNG/PDF导出。初次全回归65通过/1绘图split索引错误，已修复并完整重跑66通过，无降低断言。ruff format/check、Python3.10 AST、bash -n、README/路径/diff检查通过；与已完成版本比较src/self_evolution、src/residual_scaling及两组配置零差异。下一步Guqq pull后Slurm CPU测试与批量诊断。
 
 - 2026-11-03T09:58:35+08:00：真实诊断验收通过：Slurm906 COMPLETED/ExitCode0:0，54秒；4项服务器测试8.65秒通过。72唯一残差行、48纠错行、28学习曲线完整，所有val MAE与原36点完全一致；133380验证材料行的e-d/gain重算、改善/变差/tie人数分区及benefit-harm净收益守恒通过。分析前后81输入文件SHA未变；26文件11507178字节下载SHA/大小一致。已目视检查学习曲线/全轮残差/纠错分布图，原指标口径清楚，完整和放大图均保留。无重训/新推理/test评估，生成物忽略；最终仅文档变更检查路径与diff即可。
+
+- 2026-11-03T10:26:34+08:00：iComformer实现前测试计划：官方源码/许可证/精确SHA审计；原生forward与包装器数值/梯度对齐、节点pool前边界和256→92投影；官方25邻居+晶格几何/边向量/角索引、batch/single、旋转/平移探针；tiny晶体三方案R0–2真实CPU训练/缓存/续训/源冻结/预算seed一致；完整库55712结构与原split/原子顺序绑定；Slurm真实GPU短链与完整缓存/直接链容差、最大图批次显存和环境门禁。依赖缺失的原生模型测试必须在专用服务器venv跑通，不能用stub替代验收。提交前本地适用回归/ruff/语法，服务器全部明显负载走Slurm；正式36点和纠错诊断完成后核验。
+
+- 2026-11-03T10:46:55+08:00：iComformer source/model/graphs阶段验收通过：5项真实依赖pytest（18.12秒），包括官方SHA/许可证、native输出/梯度/BN一致、batch/single、旋转几何、原生周期图逐边一致、投影detach/原输入冻结、tensor图SHA损坏拒绝。ruff通过（上游原文件不格式化），Python3.10 AST/两个bash -n/TOML/package-data/README/路径检查通过。人工最小输入缺props已通过构造Atoms可选字段适配修复；本地PyG导入捕获了未使用的torch-spline-conv旧DLL警告，但使用的PyG/scatter/Jarvis路径全部真实运行、测试退出0，未使用stub。服务器Linux原生ABI仍须Slurm验收。源第三方逐字保留，owned代码检查diff格式，上游仅查精确SHA。

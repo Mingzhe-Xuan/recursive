@@ -1,0 +1,5 @@
+# iComformer sequential scaling
+
+Independent four-property, seed123 experiment with rounds 0–2. Official invariant geometry and model are used, preserving completed CGCNN source/cache identities. Modules are `source` (pinned native declarations), `model` (projection and node boundary), `graphs` (separate full library), `training` (fixed normalization and resumable training), `pipeline` (three arms and paired caches), and `reporting` (validation curves and correction diagnostics).
+
+Three arms share one iComformer R0 per property: direct predicts the full target from previous-node features; raw_residual predicts cumulative corrections from raw atom features; feature_residual predicts corrections from its own previous-node features. The two residual arms match the corresponding iComformer direct stage's actual updates and seed. Original CGCNN data splits and R0 training-only normalization policy are reused; weights and geometry are backbone-specific. All test labels remain sealed. Artifacts live only in a separate ignored output tree.

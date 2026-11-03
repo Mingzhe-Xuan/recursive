@@ -96,3 +96,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-02T23:37:27+08:00：残差实验采用独立src/residual_scaling以保留旧checkpoint/core身份。节点缓存必须与累计物理单位预测成对归档；归一化固定R0，残差累加不能再次加均值。每轮仅从训练后的checkpoint选择，禁止用eta=0历史回退伪造单调曲线。匹配direct实际优化步数隔离预算，墙钟和投影参数差另行报告。
 
 - 2026-11-03T09:48:56+08:00：纠错诊断必须同时检查方向和幅度：Pearson=1也可能因过量修正而全部样本变差；报告MSE cross term与delta²代价、改善人数和MAE贡献。历史train loss是参数/BN随batch变化的online MSE，不能与val MAE直接作泛化差距；最佳checkpoint缓存提供同eval口径的train/val MAE/RMSE。新增诊断包放到独立src/recursive_diagnostics，避免改变已完成训练实现hash。
+
+- 2026-11-03T10:46:55+08:00：iComformer官方默认原生参数4966497；当前源包含comforemr import和MatformerConv父类名拼写错误，采用完整源SHA审计＋选择原始声明执行，只修复一个父类AST名称，不改数学。旧pydantic/eComformer依赖不应绑到不变分支。Jarvis Atoms.from_dict对缺props严格报错，使用同坐标/晶胞/元素的显式构造及props可选值保持数据兼容。本地未使用的PyG spline旧DLL可产生被捕获的Windows异常横幅，不能据此跳过实际使用的原生forward/grad/几何验收；服务器须另验ABI。

@@ -1,0 +1,31 @@
+{
+  "repository": "https://github.com/divelab/AIRS",
+  "commit": "594e8bad8cd0b24a207c818e09b39ccc0aebcd4d",
+  "files": {
+    "comformer.py": {
+      "upstream_path": "OpenMat/ComFormer/comformer/models/comformer.py",
+      "sha256": "cbc31c239cde9a49f1e3ee95e4dc0e256831a2f3b3f42b410fb4d87e2f2e7136",
+      "bytes": 8375
+    },
+    "transformer.py": {
+      "upstream_path": "OpenMat/ComFormer/comformer/models/transformer.py",
+      "sha256": "2733bbd7cafba40f0450d7fe0d86a4baeed5ad49303e65773e0baf29fa23d706",
+      "bytes": 11369
+    },
+    "utils.py": {
+      "upstream_path": "OpenMat/ComFormer/comformer/models/utils.py",
+      "sha256": "9b4bcbcc2de56fea2e717f00b56d1cae6573e3b3839f7668b812b7ddea978235",
+      "bytes": 4984
+    },
+    "graphs.py": {
+      "upstream_path": "OpenMat/ComFormer/comformer/graphs.py",
+      "sha256": "83cf6b9bc1d92184a9b389528f2e82b375d3689abff8bf7f4c109f8c8bc5502c",
+      "bytes": 15294
+    },
+    "LICENSE": {
+      "upstream_path": "LICENSE",
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+      "bytes": 35149
+    }
+  }
+}

@@ -20,6 +20,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "self_evolution.backbones.cgcnn.upstream" = ["*.json", "LICENSE", "README.md"]
+"icomformer_scaling.source" = ["upstream/*.py", "upstream/manifest.json", "upstream/LICENSE", "upstream/README.md"]
 
 [tool.pytest.ini_options]
 addopts = "-q"

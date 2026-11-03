@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "backbone": "icomformer",
+  "seed": 123,
+  "max_round": 2,
+  "tasks": ["formation_energy_peratom", "optb88vdw_bandgap", "optb88vdw_total_energy", "ehull"],
+  "variants": ["direct", "raw_residual", "feature_residual"],
+  "expected_structures": 55712,
+  "model": {"atom_input": 92, "hidden": 256, "edge_features": 256, "triplet_features": 256, "head_hidden": 256, "convolutions": 4},
+  "graph": {"cutoff": 4.0, "neighbors": 25},
+  "training": {"epochs": 300, "patience": 50, "batch_size": 64, "learning_rate": 0.001, "weight_decay": 0.0, "optimizer": "Adam", "scheduler": "constant"},
+  "cache": {"shard_size": 256},
+  "threads": 4,
+  "eta": 1.0,
+  "verification": {"atol": 0.00002, "rtol": 0.0001},
+  "initialization": "independent_random; same_direct_round_seed_for_residuals",
+  "budget": "residual_stages_match_this_backbone_direct_actual_updates",
+  "normalization": "fixed_R0_training_only_mean_and_sample_std",
+  "test_policy": "sealed_during_method_selection",
+  "native_deviations": "project_grouped_splits; training_only_normalization; Adam300_constant_patience50_instead_of_official_AdamW500_onecycle; batch_size_subject_to_documented_GPU_gate"
+}

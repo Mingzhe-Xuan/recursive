@@ -1,0 +1,5 @@
+# Invariant backbone adapter
+
+`IComformerStage(ModelConfig, recursive=False)` wraps the actual official iComformer. `forward_native` executes its unchanged forward. `encode_nodes` captures the fourth node layer output through a temporary hook; `readout` applies the official scatter mean, SiLU head and output layer. The hook executes the native head once before the explicit readout; it has no mutable head buffers or dropout. Parity tests cover output/gradients/state buffers.
+
+Recursive stages apply a learned linear `hidden -> 92` projection to detached previous-node features and replace only `Data.x` on a clone. The same fixed edge vectors and lattice directions are supplied; distance/angle embeddings are recomputed by each stage. Default widths and four layers match the official invariant model. Tiny tests may reduce widths, but never the four-layer count required by native forward. All outputs are normalized scalars; the pipeline defines absolute versus cumulative residual predictions.

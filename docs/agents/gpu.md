@@ -247,3 +247,7 @@
 - 2026-11-03T09:48:56+08:00：用户授权两项只读诊断。下一连接Guqq前已检查权限：先确认/home/xmz/recursive仓库存在并显式SOCKS代理git pull；仅在新outputs/recursive_diagnostics/cgcnn-seed123-r012-v1创建提交账本/日志并sbatch CPU analyze作业。该作业先跑诊断测试，再读取完成实验全库缓存/历史、计算train/val指标并绘图；所有批量计算在Slurm，无模型更新/真实重新训练/推理/test评估，旧893不释放。复用原venv不改依赖，不在服务器编辑Git源码。
 
 - 2026-11-03T09:51:54+08:00：诊断连接前登记：先仓库检查/显式代理git pull，只读查询outputs/recursive_diagnostics提交账本对应Slurm作业和日志；完成时下载现成JSON/CSV/图表及逐验证材料压缩记录，校验SHA/字节。无tensor加载/新计算/模型或作业更改，旧893保持held。
+
+- 2026-11-03T10:32:43+08:00：用户授权iComformer四性质0–2实验。下一连接先仓库检查/显式SOCKS代理git pull，仅检查集群/旧893状态、原数据ZIP与prepared/task路径、已有基础包metadata和旧图manifest原子数分布（轻量JSON统计）。不加载tensor/模型、不训练/构图/编译，不修改环境或源码；为专用iComformer环境与GPU资源规划收集信息。
+
+- 2026-11-03T10:46:55+08:00：下一连接Guqq先仓库检查/显式SOCKS代理pull源/图阶段提交，确认新目录不存在已提交作业后，在独立outputs/icomformer_scaling/jarvis2021-seed123-r012-v1登记ledger，提交CPU原生检查和afterok完整55712周期图准备。仅Slurm计算，现有venv只读复用，不安装任何包，保留旧893 held/CGCNN产物。图准备允许和本地训练流水线开发并行，formal训练尚不提交。
