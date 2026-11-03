@@ -679,3 +679,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T12:13:21+08:00：Slurm912完成（6分15秒）：原生GPUforward最大输出误差0，所有梯度对齐；direct R0/R1/R2及raw_residual、feature_residual各R1/R2全7阶段每阶段4次Adam更新，缓存55712结构/562055原子/256维，累计验证MAE、全链重算节点与预测在预定atol2e-5/rtol1e-4内通过。test标签未使用，正式训练913已成功通过配置/代码/图/资源SHA门控启动。
 
 - 2026-11-03T12:13:57+08:00：启动记录文档检查通过：README/计划相对链接存在、912真实JSON七阶段全覆盖/梯度/原生误差校验、913 running快照核对、旧两个科学训练包零改动、diff whitespace通过。
+
+- 2026-11-03T12:16:59+08:00：正式训练健康检查通过：913 RUNNING，形成能R0两个完整epoch/2786更新，train normalized MSE 0.077434，val MAE 0.167904；日志/历史JSON一致、无非有限损失或退出。最终文档diff whitespace检查通过。
