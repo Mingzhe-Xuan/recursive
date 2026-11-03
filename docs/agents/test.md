@@ -665,3 +665,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-03T10:58:28+08:00：服务器环境修复验收计划：907因Jarvis namespace碰撞SyntaxError失败，908未运行。需新venv实际import模块路径落在venv、版本2026.4.2、原生5测试通过；各wheel SHA/大小与PyPI元数据一致，安装不解析替换共享Torch。旧源码/环境不修改。原pytest/native标准不降低；bootstrap静态检查后提交，再经Slurm真实验收。
 
 - 2026-11-03T11:02:08+08:00：独立环境修复提交前静态验收通过：9个官方PyPI wheel条目共5671652字节，URL域/路径唯一性/SHA长度/大小/Python3.10 AST检查通过；bootstrap与check入口ruff、两sbatch bash -n通过。实际安装/原生测试仍待Slurm；仅替换失效pending908，不降低原生5测试或版本检查。venv内Jarvis实际模块路径增加断言，pip --ignore-installed --no-deps --no-index仅安装新venv，不卸载/覆盖共享包。
+
+- 2026-11-03T11:18:36+08:00：iComformer训练/缓存/诊断单元通过：2个新pipeline测试＋4个既有诊断测试共6项364.34秒通过，真实tiny四层iComformer三方案0–2、精确预算/seed/R0共享、缓存直接链、源文件不变、Adam/RNG中断恢复CPU逐权重一致、test标签隔离、诊断接入及缺失分支不得完成。新bootstrap 2项0.57秒通过：完整partial不联网复用，curl56但内容完整仅在SHA/大小全匹配时接受，损坏始终拒绝。ruff/Python3.10 AST/bash检查通过。旧source/model真实5测试已通过；本地未使用spline兼容警告不改变验收标准。下一步同步后先恢复固定wheel资源，再Slurm原生/集成检查及完整构图。

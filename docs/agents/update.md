@@ -205,3 +205,5 @@
 - 2026-11-03T10:46:55+08:00：完成官方iComformer源审计、原生模型/投影和单独周期图模块。原始4源码/仓库GPL LICENSE固定594e8bad8cd0，兼容父类拼写修复显式记录；实际native forward/grad/BN与包装器通过。五项本地真实单元通过；新增Slurm环境/原生CPU检查与全库构图入口，使用原ZIP和现有划分，旧模型和图不改。下一步先源/图阶段同步服务器，CPU通过后构图，同时实现训练缓存流水线。
 
 - 2026-11-03T11:02:08+08:00：修复iComformer环境namespace碰撞：907实际Jarvis import解析到共享旧Python2包，908被门禁阻止。新增独立venv引导和9个固定PyPI wheel清单，下载/创建venv为轻量管理，离线安装和原生验收仍Slurm；旧CGCNN环境不动。增加Jarvis实际模块必须位于新venv的断言，metadata不足以替代import检查。训练/缓存流水线继续本地开发，未正式训练。
+
+- 2026-11-03T11:18:36+08:00：完成iComformer训练/三分支缓存/恢复/验证报告和诊断接入。generic诊断仅增加可选implementation参数，默认CGCNN行为不变；真实三方案CPU集成和旧诊断6测试通过。环境下载在Jarvis wheel显示100%时curl56收尾失败；bootstrap现严格以文件SHA＋字节校验接收完整partial，未完成/损坏仍阻止，2单测通过。接下来同步并恢复环境/图准备，正式GPU任务尚未提交。

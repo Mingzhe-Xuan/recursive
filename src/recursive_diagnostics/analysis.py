@@ -30,7 +30,7 @@ def write_csv(path, values):
         writer.writerows(values)
 
 
-def analyze(study_root, prepared, output, make_plots=True):
+def analyze(study_root, prepared, output, make_plots=True, expected_implementation=None):
     study_root, prepared, output = map(Path, [study_root, prepared, output])
     if output.resolve() == study_root.resolve() or study_root.resolve() in output.resolve().parents:
         raise ValueError("diagnostic output must be outside the completed study")
@@ -84,7 +84,8 @@ def analyze(study_root, prepared, output, make_plots=True):
             if (
                 source["status"] != "complete"
                 or source["identity"]["task_sha256"] != digest(task)
-                or source["identity"]["implementation_hash"] != implementation_identity()
+                or source["identity"]["implementation_hash"]
+                != (expected_implementation or implementation_identity())
             ):
                 raise ValueError("source identity mismatch")
             seals[source_path], seals[task_path] = file_hash(source_path), file_hash(task_path)

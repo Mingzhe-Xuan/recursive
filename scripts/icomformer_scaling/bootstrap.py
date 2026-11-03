@@ -9,6 +9,57 @@ import sys
 from urllib.parse import urlparse
 
 
+def verified(path, artifact):
+    if not path.exists():
+        return False
+    data = path.read_bytes()
+    return len(data) == artifact["bytes"] and hashlib.sha256(data).hexdigest() == artifact["sha256"]
+
+
+def ensure_artifact(artifact, wheelhouse, proxy):
+    name = artifact["filename"]
+    if Path(name).name != name or urlparse(artifact["url"]).hostname != "files.pythonhosted.org":
+        raise ValueError("unexpected wheel path or source")
+    target = wheelhouse / name
+    if target.exists():
+        if not verified(target, artifact):
+            raise ValueError("existing wheel checksum/size mismatch")
+        return target
+    partial = target.with_suffix(target.suffix + ".partial")
+    if not verified(partial, artifact):
+        result = subprocess.run(
+            [
+                "curl",
+                "--silent",
+                "--show-error",
+                "--proxy",
+                proxy,
+                "--fail",
+                "--location",
+                "--connect-timeout",
+                "15",
+                "--max-time",
+                "300",
+                "--retry",
+                "3",
+                "--retry-delay",
+                "1",
+                "--continue-at",
+                "-",
+                "--output",
+                str(partial),
+                artifact["url"],
+            ],
+            check=False,
+        )
+        if not verified(partial, artifact):
+            if result.returncode:
+                raise subprocess.CalledProcessError(result.returncode, result.args)
+            raise ValueError("downloaded wheel checksum/size mismatch")
+    partial.replace(target)
+    return target
+
+
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument(
@@ -30,49 +81,8 @@ def main():
     wheelhouse.mkdir(exist_ok=True)
     manifest = json.loads(Path(__file__).with_name("runtime_wheels.json").read_text())
     for artifact in manifest["wheels"]:
-        name = artifact["filename"]
-        if (
-            Path(name).name != name
-            or urlparse(artifact["url"]).hostname != "files.pythonhosted.org"
-        ):
-            raise ValueError("unexpected wheel path or source")
-        target = wheelhouse / name
-        if not target.exists():
-            partial = target.with_suffix(target.suffix + ".partial")
-            subprocess.run(
-                [
-                    "curl",
-                    "--proxy",
-                    args.proxy,
-                    "--fail",
-                    "--location",
-                    "--connect-timeout",
-                    "15",
-                    "--max-time",
-                    "300",
-                    "--retry",
-                    "3",
-                    "--retry-delay",
-                    "1",
-                    "--continue-at",
-                    "-",
-                    "--output",
-                    str(partial),
-                    artifact["url"],
-                ],
-                check=True,
-            )
-            data = partial.read_bytes()
-            if (
-                len(data) != artifact["bytes"]
-                or hashlib.sha256(data).hexdigest() != artifact["sha256"]
-            ):
-                raise ValueError("downloaded wheel checksum/size mismatch")
-            partial.replace(target)
-        data = target.read_bytes()
-        if len(data) != artifact["bytes"] or hashlib.sha256(data).hexdigest() != artifact["sha256"]:
-            raise ValueError("existing wheel checksum/size mismatch")
-        print("VERIFIED", name, len(data), flush=True)
+        target = ensure_artifact(artifact, wheelhouse, args.proxy)
+        print("VERIFIED", target.name, target.stat().st_size, flush=True)
     print("BOOTSTRAP_READY; install only through the Slurm check job", flush=True)
 
 
