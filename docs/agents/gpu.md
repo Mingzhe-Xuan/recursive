@@ -273,3 +273,15 @@
 - 2026-11-03T12:03:50+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
 
 - 2026-11-03T12:05:36+08:00：连接Guqq，仓库检查后首先显式SOCKS git pull，提交新iComformer GPU七阶段验收及afterok依赖的正式四性质训练；只操作本任务账本/Slurm，不修改远端源码或旧作业。
+
+- 2026-11-03T12:06:10+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:07:16+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:08:38+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:10:24+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:12:19+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
+
+- 2026-11-03T12:13:21+08:00：连接Guqq前登记：先仓库检查/显式SOCKS代理git pull，仅查询独立iComformer提交账本对应Slurm作业/日志与图/验收/执行JSON metadata，不加载tensor、不构图或训练、不改旧893。快照保存本地忽略目录。
