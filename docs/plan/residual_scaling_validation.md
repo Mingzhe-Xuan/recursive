@@ -48,3 +48,36 @@
 | ehull | 143451 | 101871 | 245322 |
 
 两种方案总计1767548个新optimizer updates、八条分支、16个新训练阶段。预算来自已完成direct training.json，运行时仍逐项校验，不以本表代替来源身份。以旧四worker实测约32秒/epoch粗估约6小时，当前实现/争用吞吐不同，正式开始后按实测更新。
+
+## 2026-11-03 完成结果与解释
+
+独立905执行账本status=complete，八个worker分支均exit_code=0；16个新阶段完成，1767548个新optimizer updates，训练池账本墙钟21547.12秒（5.99小时）。汇总包含完整4×3×3=36个验证点。该计时不冒充GPU独占训练成本或最终汇总的精确Slurm结束时间。当前无新训练运行，旧893仍held。
+
+以下均为seed123验证MAE，原始性质单位，越低越好；三组各性质R0完全共享。
+
+| 性质 | 方案 | R0 | R1 | R2 |
+| --- | --- | ---: | ---: | ---: |
+| formation_energy_peratom | direct | 0.04822800 | 0.04402161 | 0.04341245 |
+| formation_energy_peratom | raw_residual | 0.04822800 | 0.04372176 | 0.04357859 |
+| formation_energy_peratom | feature_residual | 0.04822800 | 0.04417591 | 0.04396044 |
+| optb88vdw_bandgap | direct | 0.15850093 | 0.15119843 | 0.15229601 |
+| optb88vdw_bandgap | raw_residual | 0.15850093 | 0.15502157 | 0.15493573 |
+| optb88vdw_bandgap | feature_residual | 0.15850093 | 0.15098937 | 0.15057388 |
+| optb88vdw_total_energy | direct | 0.05124270 | 0.04670104 | 0.04668208 |
+| optb88vdw_total_energy | raw_residual | 0.05124270 | 0.04541679 | 0.04489824 |
+| optb88vdw_total_energy | feature_residual | 0.05124270 | 0.04554739 | 0.04550551 |
+| ehull | direct | 0.11916633 | 0.11350609 | 0.11466173 |
+| ehull | raw_residual | 0.11916633 | 0.11392108 | 0.11339428 |
+| ehull | feature_residual | 0.11916633 | 0.11286440 | 0.11262822 |
+
+两种残差方案的八条分支在R1→R2全部下降，降幅约0.055%–1.142%；direct的带隙与ehull分别回升约0.726%/1.018%。这表明在本次固定seed与预算下，残差累加的后续轮次下降更一致，但大部分增益仍来自R0→R1，未消除边际递减；仅两次递归不支持可持续scale的结论。
+
+按每个方案0–2轮各自最佳验证值比较（避免只拿direct退化后的R2作参照）：形成能仍direct R2最好0.04341245；带隙feature_residual R2=0.15057388，相对最佳direct R1改善0.413%；总能raw_residual R2=0.04489824，相对最佳direct R2改善3.821%；ehull feature_residual R2=0.11262822，相对最佳direct R1改善0.773%。其中总能提升较明显，形成能无优势，带隙/ehull增益小，应保留单seed限制。原始特征残差没有统一优于特征残差，不能据此断言反馈特征无用。
+
+完整性复核：28份全库缓存（12份direct导入＋16份新缓存）均55712结构/562055原子/64维float32，同一ID集合hash；20份直接链检查记录采用原固定atol2e-5+rtol1e-4。逐项检查checkpoint/manifest SHA、source来源、各分支自己的父预测/节点缓存、16阶段预算/seed/R0归一化、最佳累计验证MAE及CSV/JSON一致。原全分片tensor校验在905汇总中完成，本轮仅轻量metadata/SHA复核，没有重新训练、读取test评估或在登录节点加载tensor。
+
+服务器原始报告：outputs/residual_scaling/cgcnn-seed123-r012-v1/reports；本地只读副本：outputs/residual_scaling/cgcnn-seed123-evidence/reports。另由同36点生成overview与later_rounds四面板PNG/SVG/PDF，已目视检查（放大图使用五位小数以避免重复刻度）。CSV/JSON/图表和审计快照均Git忽略，不作为源码提交。
+
+这次是方案筛选，测试集继续封存；所有效果均非独立测试结果，也不宣称统计显著。当前不启动多seed、更深轮次或其他backbone，旧0–5轮实验继续暂停。
+
+来源报告SHA256：00d48ddb411053940eed81100b767cfd6c80a4adfc2bcf779c19c4e3f7db789d。
