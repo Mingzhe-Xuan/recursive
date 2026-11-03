@@ -1,14 +1,16 @@
 # 当前状态
 
-用户授权开展两项现有实验诊断：R1/R2修正量对父预测残差的相关性/逐材料改善，以及各轮train/val残差与学习曲线。正在实现独立只读诊断模块，不重新训练、不修改已完成实验和核心身份。原始CGCNN四性质seed123、三方案0–2均已完成；旧0–5/893继续暂停，测试集继续封存。
+用户要求的两项只读诊断已完成：Slurm906 CPU COMPLETED/ExitCode0:0、54秒，服务器4项诊断测试通过；72行train/val残差指标、48行纠错比较、28条历史曲线、133380条验证材料记录已核验。81输入SHA分析前后不变，无新训练/推理/权重或预测更新、无test评估。
+
+主要发现：feature残差R2验证Pearson降至0.013–0.031，raw仍约0.098–0.122；feature R2仅50%–52%材料更准。raw带隙R2训练MAE改善8.34%但验证仅0.055%，raw总能12.04%对1.14%，说明训练拟合与泛化收益明显分化。部分分支训练端也已平台/波动；raw最优epoch靠近预算末端，不能完全排除进一步优化的小幅收益。
+
+诊断本地结果outputs/recursive_diagnostics/cgcnn-seed123-evidence（26文件/SHA通过），服务器outputs/recursive_diagnostics/cgcnn-seed123-r012-v1。详细解释见docs/plan/residual_scaling_validation.md。原四性质CGCNN seed123三方案0–2实验完整，原旧0–5/893继续暂停，test封存，未启动其他性质/seed/backbone。既有两个训练包/配置均未变。
 
 # 当前计划
 
-1. 新增独立src/recursive_diagnostics（README、metrics及analysis）和scripts/recursive_diagnostics入口，不改src/self_evolution或src/residual_scaling。
-2. 同轮缓存定义e_prev=y-F_prev、delta=F_r-F_prev，train/val分别计算Pearson/Spearman、方向/幅度、改善人数、MAE/RMSE变化和误差分解；direct同样用相邻轮预测差作参照。
-3. 用最佳checkpoint eval缓存比较0–2训练/验证MAE/RMSE；历史online train MSE与val MAE分开画，计算最佳epoch/末期走势，明确无法重建未保存epoch的eval train MAE。
-4. 本地针对性单测/集成/静态检查通过后提交push，Guqq先登记/pull，仅Slurm CPU执行全库缓存分析与绘图；所有新输出独立目录、源文件SHA只读校验。
-5. 拉回诊断摘要和图表，解释纠错方向、幅度及泛化差距。仅分析train/val，不做系数调参/模型更新或新训练。
+1. 本轮诊断和验证完成，向用户展示相关性/材料改善比例、train/val分化及学习曲线，明确在线训练MSE与eval MAE的口径限制。
+2. 保留原始模型/预测/缓存/源SHA与新诊断结果；不重训、不调参、不启动额外实验，等待用户下一研究决策。
+3. 旧0–5训练及893继续暂停，测试集继续封存。
 
 # 变更记录
 
@@ -240,3 +242,5 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-03T09:41:08+08:00：进入用户指定的纠错与泛化诊断实现阶段。历史online训练MSE和val MAE口径不同，采用缓存eval指标直接比较，历史曲线分图呈现。下一步计划测试并实现独立诊断，保持已完成实验身份和测试集封存。
 
 - 2026-11-03T09:50:26+08:00：独立诊断实现与本地验收完成：66项通过，修复集成图表split索引后完整复核。进入服务器CPU分析阶段；下一步提交push、Guqq先pull再sbatch只读分析，不重训、不改既有产物或测试集。
+
+- 2026-11-03T09:58:35+08:00：完成纠错/泛化诊断：906 CPU退出0、4测试通过；26产物SHA/字节及72/48/28覆盖、133380材料行人数/误差贡献守恒与原验证MAE一致均复核。已目视检查学习/残差/纠错图。主要证据偏向弱泛化纠错与训练/验证分化，保留部分raw分支优化未完全收敛的限制。下一步只汇报，不自动新训。

@@ -91,3 +91,35 @@
 各轮最佳checkpoint的eval缓存统一计算训练/验证MAE/RMSE和父残差尺度，避免训练BN/时刻差异。历史曲线保留online train normalized MSE与val MAE的实际口径，分图，不把它们当作同一指标；报告最佳val epoch、末期训练/验证变化。没有保存的中间checkpoint不能补成逐epoch eval训练MAE，不重训补全。
 
 本地手算/退化情形/合成晶体三方案集成测试后，通过Slurm CPU加载全库archive、核对只读来源SHA、计算train/val指标与相关性/逐材料改善、生成学习曲线及图表。输出独立outputs/recursive_diagnostics；批量结果和图表全部忽略。
+
+## 2026-11-03 纠错方向与训练/验证诊断结果
+
+Slurm906 CPU作业COMPLETED/ExitCode0:0，54秒；先运行4项诊断测试8.65秒全部通过，再只读流式分析原有缓存。未重新训练/推理、未改变任何预测或权重、未访问test评估。结果72行train/val残差指标、48行相邻轮纠错指标、28条完整学习曲线及133380条验证材料记录；81个输入文件SHA在分析前后不变。26份产物11507178字节已拉回并逐文件校验SHA/大小，均Git忽略。
+
+定义父残差e=y-F_previous、修正delta=F_current-F_previous。以下相关性为验证集Pearson，R1针对R0残差、R2针对本分支R1残差；改善人数按逐材料绝对误差下降统计，tie_atol=1e-8原始单位。训练与验证MAE降幅均来自同一最佳checkpoint的eval预测缓存，不使用online训练MSE作直接泛化差距。
+
+| 性质 | 方案 | 验证相关性R1→R2 | R2验证改善人数/总数 | R1→R2训练MAE降幅 | R1→R2验证MAE降幅 |
+| --- | --- | --- | --- | ---: | ---: |
+| formation_energy_peratom | raw_residual | 0.3704 → 0.1217 | 2862/5569 (51.39%) | 2.933% | 0.327% |
+| formation_energy_peratom | feature_residual | 0.2428 → 0.0308 | 2870/5569 (51.54%) | 1.541% | 0.488% |
+| optb88vdw_bandgap | raw_residual | 0.1851 → 0.1198 | 2415/5565 (43.40%) | 8.338% | 0.055% |
+| optb88vdw_bandgap | feature_residual | 0.2244 → 0.0282 | 2884/5565 (51.82%) | 3.762% | 0.275% |
+| optb88vdw_total_energy | raw_residual | 0.2798 → 0.0990 | 2879/5565 (51.73%) | 12.037% | 1.142% |
+| optb88vdw_total_energy | feature_residual | 0.2649 → 0.0221 | 2808/5565 (50.46%) | 0.751% | 0.092% |
+| ehull | raw_residual | 0.1743 → 0.0981 | 2922/5531 (52.83%) | 0.982% | 0.462% |
+| ehull | feature_residual | 0.1698 → 0.0134 | 2770/5531 (50.08%) | 4.114% | 0.209% |
+
+两项检查的解释：
+
+- 递归特征残差R2验证Pearson仅0.0134–0.0308，Spearman0.0202–0.0885；原始特征残差R2仍约0.0981–0.1217。二者都比R1弱，feature分支下降更明显；在当前模型与协议下，可泛化的纠错方向明显减弱，但这不能证明所有剩余误差本身不可学习。
+- feature R2只有约50.08%–51.82%验证材料更准，raw R2范围43.40%–52.83%。raw带隙R2为2415/5565更准、3150更差，但改善贡献0.00725564与损害0.00716980相抵后净MAE仍下降0.00008584（0.0554%）：均值收益并不等于大多数材料获益。
+- 训练端与验证端分化：raw带隙R2训练MAE下降8.338%，验证仅0.055%；raw总能12.037%对1.142%；feature带隙3.762%对0.275%、ehull4.114%对0.209%。这更支持训练误差的进一步拟合没有充分泛化，而不是统一地认为所有分支仅缺训练轮数。
+- feature R2最佳val epoch分别形成能10/94、带隙55/137、总能30/99、ehull39/147，后面仍训练了大量epoch但没有刷新最优。R2后期带隙/ehull在线训练MSE继续下降而val近乎平台/波动。形成能feature和部分其他分支训练端也趋于平台/波动，不能把全部任务归为单一原因。
+- raw R2最优epoch89/94、131/137、96/99、129/147接近预算末端，不能完全排除继续优化仍有小幅收益；当前诊断不足以断言优化已完全收敛。
+- feature R2在形成能、总能、ehull上MAE微降而RMSE略升；MAE改善不代表所有误差尺度都改善。已额外报告方向正确率、过量修正、无中心余弦及MSE收益分解，最小二乘倍率只作诊断、未应用或调参。
+
+已有学习曲线的train值是训练模式、跨batch参数变化的online normalized MSE；val是epoch结束的eval MAE，二者分图标记，不能拿其数值直接相减。完整曲线和90百分位放大图均保留。缺失中间checkpoint，不能重建逐epoch eval train MAE，本次没有为补曲线重训。
+
+本地报告：outputs/recursive_diagnostics/cgcnn-seed123-evidence。summary.json完整嵌套指标，corrections.csv/residuals.csv/learning_curves.csv便于筛选，validation_materials.csv.gz提供逐材料原始纠错记录；train_validation_residuals.png对比统一eval口径0–2残差，learning_round_002_zoom.png显示第二轮学习走势，correction_round_002.png显示修正/父残差分布。9组PNG/PDF已目视检查。
+
+结论限于当前单seed与验证集选择协议：后续轮次呈现泛化纠错信号弱、改善与损害相抵、部分训练端饱和/波动的组合，不能用“只要加训练轮数”概括，也不能由此证明其他模型、输入或训练方法无效。没有新增训练/系数搜索或解封测试集。
