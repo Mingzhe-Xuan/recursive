@@ -1,18 +1,16 @@
 # 当前状态
 
-截至2026-11-04T08:43:20.988378+08:00，iComformer **913 RUNNING**（node221/RTX5090，20小时31分钟）。形成能 **direct R0–2已全部完成且缓存完成**：R0 300epoch/MAE 0.032786123；R1 198epoch/MAE 0.030492350；R2 128epoch/MAE 0.030555983。R1/R2均因patience50停止；首轮下降7.00%，第二轮相对R1上升0.21%，形成能direct单seed呈现首轮改善/后续趋平。
+截至2026-11-04T17:12:51.799777+08:00，iComformer **913 RUNNING**（node221/RTX5090，29小时）。形成能direct R0–2和raw_residual R1–2已训练/缓存完成（共5个独立阶段），目前 **feature_residual R1 epoch123/198**，171339/275814更新，当前最佳验证MAE 0.030064731（epoch112），尚未缓存/完成。随后还有feature_residual R2 128epoch，才进入下一性质。
 
-当前训练形成能 **raw_residual R1 epoch136/198**，189448/275814更新（预算匹配direct R1），当前最佳验证MAE 0.030144600（epoch132），尚未完成/缓存。raw_residual R2、feature_residual R1/R2及带隙/总能/ehull均尚未开始。未发现failure.json，损失/验证指标有限；test封存。
+形成能验证MAE（eV/atom）：direct 0.032786123→0.030492350→0.030555983；raw_residual 0.032786123→0.030014737→0.029957036，首轮改善8.45%，第二轮再改善0.19%。feature_residual R1尚未结束，不做最终跨轮结论。另三性质带隙/总能/ehull未启动。无failure.json，指标有限，test封存。
 
-CGCNN×2：CPU914已完成，GPU915 PENDING(Resources)、正式916 PENDING(Dependency)，唯一GPU被913占用。旧893仍held。两实验输出分别为 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`。
+CGCNN×2 GPU915仍PENDING(Resources)，正式916 PENDING(Dependency)；CPU914已通过，旧893保持held。两实验输出分别 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1`、`outputs/joint_cgcnn/seed123-double-v1`。
 
 # 当前计划
 
-1. 913继续完成形成能raw_residual R1/R2及feature_residual R1/R2，再按既定顺序训练带隙、总能、ehull；各残差轮匹配自身direct的实际更新预算。
-2. 分别报告direct与残差递归的R0–2变化，完整链结束后自动汇总纠错相关性、改善材料比例、train/val残差与CGCNN横比。当前只形成能direct已完整，不外推到其他性质或未结束残差组。
-3. 915在GPU释放后验收CGCNN×2，成功后916自动运行；不抢占913或恢复893。
-
-当前性能分析已完成：每epoch约96–98秒，训练/验证占主要耗时；三方案共28段且单GPU单进程串行。后续提速需先测量再决定调度/检查开销优化，未改变运行中协议或作业。
+1. 按现有协议继续形成能feature_residual R1/R2，再依次运行带隙、总能、ehull；未重排或改变训练预算。各残差轮精确匹配自身direct更新次数。
+2. 完整链结束后自动生成MAE曲线、纠错相关性、材料改善比例和train/val残差；当前已完成形成能direct与仅残差的0–2轮比较。
+3. 等913释放唯一GPU后915验收双CGCNN，成功解锁916；不抢占现有训练。
 
 # 变更记录
 
@@ -276,3 +274,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-04T08:44:13+08:00：完成本次只读查询：形成能direct R0/R1/R2均完成，MAE 0.032786123/0.030492350/0.030555983；raw_residual R1 epoch136/198。913正常、无失败，915/916仍排队。下一步按原任务继续其余残差轮和性质。
 
 - 2026-11-04T09:28:50+08:00：完成用户耗时解释：基于2026-11-04T08:43:20.988378+08:00快照的耗时分析：已记录训练/验证20.468小时，调度器总时长20.518小时，差额2.98分钟（包括当前尚未完成epoch与缓存/切换，不能全部归为缓存）。各轮平均95.75–97.80秒/epoch；R0 7.98h、R1 5.38h、R2 3.47h。每性质direct3段+raw残差2段+feature残差2段=7段，四性质28段；残差精确匹配direct预算，无独立early-stop。模型约497万参数/256维/4层/25近邻，CGCNN约8万/64维/3层/12邻居。最大结构batch32实测reserved25.35GiB，总显存31.37GiB，保守并发规则限制单进程。逐步全梯度finite检查和Python数据/分片读取可能增加开销，但未做profile，不能定量归因或承诺优化倍数。 未暂停、重排或修改现有训练；后续按用户实验优先级决定范围与资源调整。
+
+- 2026-11-04T17:12:40+08:00：进入用户请求的训练状态查询阶段；读取Slurm与JSON，不改变任务预算、调度或作业。
+
+- 2026-11-04T17:14:00+08:00：只读查询完成：913运行29h，形成能raw_residual R1/R2已完成；feature_residual R1 epoch123/198，暂时MAE 0.030064731。另三性质未启动，915/916仍等待。下一步按现有流程继续。
