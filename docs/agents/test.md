@@ -691,3 +691,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-04T00:46:21+08:00：本次仅状态查询/文档更新：实测JSON核验913 running、R0完整training/result/cache一致、R1未完成且167epoch、loss有限、failure集合为空、R1改善比例算术正确；快照路径存在与diff whitespace检查通过。未运行训练/推理/不必要单元测试。
 
 - 2026-11-04T08:44:13+08:00：本次仅进度查询与文档：核验真实913 running、direct三轮training/result/缓存完成标记、raw残差R1未完成与136/198预算、MAE有限/failure集合空；R0→R1及R1→R2比例算术校验、快照路径和diff whitespace通过。未运行训练/推理或重复单测。
+
+- 2026-11-04T09:28:50+08:00：本次仅耗时核验/文档：从既有JSON重新计算逐轮秒数、每epoch平均、训练/验证总时长与pool墙钟差，断言范围/有限性/并发1；读取训练循环/调度/模型确认预算/架构/最大图显存门控。未执行GPU profile，额外实现开销仅列待测，不作定量结论。diff whitespace通过。

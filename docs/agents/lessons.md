@@ -104,3 +104,5 @@ srun --jobid=<owned-allocation> --overlap可共享本任务GPU做短时诊断，
 - 2026-11-03T11:23:49+08:00：iComformer环境准备第三次阻塞后已复查已有网络经验：反向SOCKS长传输可在TLS收尾或中途断线。Jarvis大wheel已完整校验；剩余小wheel优先复用tmp/wheelhouse/cgcnn-inherited-bootstrap的相同SHA版本，并SFTP到新任务资源目录。未因网络失败放松哈希、不重新下载已完成资源、不改共享环境。
 
 - 2026-11-03T12:49:15+08:00：CGCNNStage.encode_nodes在递归分支会对输入特征detach，这是缓存训练的正确边界，但直接串联该接口会静默截断端到端梯度。joint_cgcnn明确复用native embedding/convs与projection实现可微桥接，并用全部参数梯度及首段非零梯度测试守护；第一段无用readout不注册，避免参数虚增或无梯度参数。架构说明见src/joint_cgcnn/model/README.md。
+
+- 2026-11-04T09:28:50+08:00：实验提交前需把三方案×轮次展开为实际独立训练段数，并结合pilot每epoch耗时和最大图显存决定的并发数给出总成本。iComformer本次四性质×7段=28段、单进程约97秒/epoch，完整研究需要多日。若目标是先判断跨性质的R0–2现象，优先跨性质完成direct链再补残差，比先完整跑完一个性质的三方案更快得到所需证据；变更已启动研究的预算或调度时仍应保留来源与对照说明。
