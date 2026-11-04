@@ -1,16 +1,21 @@
 # 当前状态
 
-截至2026-11-04T17:12:51.799777+08:00，iComformer **913 RUNNING**（node221/RTX5090，29小时）。形成能direct R0–2和raw_residual R1–2已训练/缓存完成（共5个独立阶段），目前 **feature_residual R1 epoch123/198**，171339/275814更新，当前最佳验证MAE 0.030064731（epoch112），尚未缓存/完成。随后还有feature_residual R2 128epoch，才进入下一性质。
+截至2026-11-05T01:07:28.410127+08:00，iComformer **913 RUNNING**（node221/RTX5090，36小时55分钟）。形成能三方案全部R0–2已完成：7个独立训练/全库缓存阶段齐全，性质进程exit0。目前进入 **带隙direct R0 epoch87/300**（121278更新），当前最佳验证MAE 0.151664355 eV（epoch87）；带隙尚未完成/缓存。总能和ehull尚未开始。无failure.json，指标有限，test封存。
 
-形成能验证MAE（eV/atom）：direct 0.032786123→0.030492350→0.030555983；raw_residual 0.032786123→0.030014737→0.029957036，首轮改善8.45%，第二轮再改善0.19%。feature_residual R1尚未结束，不做最终跨轮结论。另三性质带隙/总能/ehull未启动。无failure.json，指标有限，test封存。
+形成能验证MAE（eV/atom，三组共享R0）：
+- direct: 0.032786123 → 0.030492350 → 0.030555983
+- raw_residual: 0.032786123 → 0.030014737 → 0.029957036
+- feature_residual: 0.032786123 → 0.029913645 → 0.029882647
 
-CGCNN×2 GPU915仍PENDING(Resources)，正式916 PENDING(Dependency)；CPU914已通过，旧893保持held。两实验输出分别 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1`、`outputs/joint_cgcnn/seed123-double-v1`。
+feature_residual首轮改善8.76%，第二轮再改善0.10%；当前形成能显示首轮主要收益、后续收益微小，尚不外推其他性质/其他seed。
+
+CGCNN×2 GPU915仍PENDING(Resources)，正式916 PENDING(Dependency)；CPU914已通过、旧893保持held。输出根分别 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`。
 
 # 当前计划
 
-1. 按现有协议继续形成能feature_residual R1/R2，再依次运行带隙、总能、ehull；未重排或改变训练预算。各残差轮精确匹配自身direct更新次数。
-2. 完整链结束后自动生成MAE曲线、纠错相关性、材料改善比例和train/val残差；当前已完成形成能direct与仅残差的0–2轮比较。
-3. 等913释放唯一GPU后915验收双CGCNN，成功解锁916；不抢占现有训练。
+1. 913继续带隙direct R0–2、raw_residual R1–2、feature_residual R1–2，再依次总能/ehull。保留既有训练预算与匹配规则，未重排任务。
+2. 最终自动汇总四性质MAE曲线、纠错相关性、材料改善比例与train/val残差；目前形成能1/4性质全部三组完成。
+3. 915等待GPU释放后验收双CGCNN，成功后916运行；不抢占913或恢复893。
 
 # 变更记录
 
@@ -278,3 +283,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-04T17:12:40+08:00：进入用户请求的训练状态查询阶段；读取Slurm与JSON，不改变任务预算、调度或作业。
 
 - 2026-11-04T17:14:00+08:00：只读查询完成：913运行29h，形成能raw_residual R1/R2已完成；feature_residual R1 epoch123/198，暂时MAE 0.030064731。另三性质未启动，915/916仍等待。下一步按现有流程继续。
+
+- 2026-11-05T01:07:17+08:00：开始用户要求的训练进度查询；只读Slurm/日志/JSON，不调整训练或队列。
+
+- 2026-11-05T01:08:23+08:00：本次进度查询完成：形成能7阶段/三方案R0–2全部完成且exit0，feature残差MAE 0.029913645→0.029882647；当前带隙direct R0 epoch87。915/916仍排队，下一步按现有流程训练带隙。
