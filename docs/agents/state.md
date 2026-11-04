@@ -1,21 +1,16 @@
 # 当前状态
 
-截至2026-11-05T01:07:28.410127+08:00，iComformer **913 RUNNING**（node221/RTX5090，36小时55分钟）。形成能三方案全部R0–2已完成：7个独立训练/全库缓存阶段齐全，性质进程exit0。目前进入 **带隙direct R0 epoch87/300**（121278更新），当前最佳验证MAE 0.151664355 eV（epoch87）；带隙尚未完成/缓存。总能和ehull尚未开始。无failure.json，指标有限，test封存。
+用户明确要求停止iComformer、优先双CGCNN，已执行完成：**913 CANCELLED**，结束时间2026-11-05 01:15:37+08:00（用户scancel，ExitCode0:15）；**不得自动恢复iComformer**。停止前形成能全部三方案R0–2已完成，带隙direct R0最后完整checkpoint为epoch93（129642更新，最佳验证MAE0.151664355eV），其余两性质未启动。所有8阶段best.pt/last.pt、缓存、结果和全量图保留；停止元数据保存在iComformer work/control/user-stop-20261105-011537.json。
 
-形成能验证MAE（eV/atom，三组共享R0）：
-- direct: 0.032786123 → 0.030492350 → 0.030555983
-- raw_residual: 0.032786123 → 0.030014737 → 0.029957036
-- feature_residual: 0.032786123 → 0.029913645 → 0.029882647
+GPU已成功交接：**915 COMPLETED**（7秒），真实最大图batch64/5238原子、native组合、第一编码器/桥/第二编码器非零梯度、2epoch/4步短训及来源身份通过；峰值reserved 1.06GiB。**916 RUNNING**（node221/RTX5090，最新查询2026-11-05T01:16:25.505019+08:00），四性质形成能/带隙/总能/ehull各一个独立进程并行，workers4。旧893保持held。双CGCNN159197参数，固定Adam/.001/batch64/300上限/patience50，test封存。
 
-feature_residual首轮改善8.76%，第二轮再改善0.10%；当前形成能显示首轮主要收益、后续收益微小，尚不外推其他性质/其他seed。
-
-CGCNN×2 GPU915仍PENDING(Resources)，正式916 PENDING(Dependency)；CPU914已通过、旧893保持held。输出根分别 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`。
+双CGCNN输出 `outputs/joint_cgcnn/seed123-double-v1`，正式进度 `pool/execution.json`/`run/<task>/history.json`，最终对照 `reports`。iComformer输出 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 保留但训练已停止。
 
 # 当前计划
 
-1. 913继续带隙direct R0–2、raw_residual R1–2、feature_residual R1–2，再依次总能/ehull。保留既有训练预算与匹配规则，未重排任务。
-2. 最终自动汇总四性质MAE曲线、纠错相关性、材料改善比例与train/val残差；目前形成能1/4性质全部三组完成。
-3. 915等待GPU释放后验收双CGCNN，成功后916运行；不抢占913或恢复893。
+1. 916按既定协议完成四性质端到端训练，自动汇总joint与缓存direct R1的MAE/更新预算/训练及缓存成本；不更改已锁定模型或协议。
+2. 需要时只读查询双CGCNN的逐epoch状态及最终结果；iComformer仅保留/分析已有结果，除非用户重新明确要求，不恢复或重新提交。
+3. 保留所有停止前checkpoint和control审计记录；不干预旧893。
 
 # 变更记录
 
@@ -287,3 +282,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-05T01:07:17+08:00：开始用户要求的训练进度查询；只读Slurm/日志/JSON，不调整训练或队列。
 
 - 2026-11-05T01:08:23+08:00：本次进度查询完成：形成能7阶段/三方案R0–2全部完成且exit0，feature残差MAE 0.029913645→0.029882647；当前带隙direct R0 epoch87。915/916仍排队，下一步按现有流程训练带隙。
+
+- 2026-11-05T01:15:27+08:00：用户明确授权取消iComformer913，优先双CGCNN；进入Slurm取消/资源交接阶段，后续不自动恢复iComformer。
+
+- 2026-11-05T01:17:22+08:00：用户取消/资源交接阶段完成。913确认CANCELLED，停止位置带隙R0 epoch93且8阶段best/last均存在；915 GPU验收通过，916已在唯一GPU上四性质并行启动。iComformer自动恢复授权已撤回，后续仅跟踪双CGCNN。
