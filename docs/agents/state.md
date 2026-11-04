@@ -1,14 +1,16 @@
 # 当前状态
 
-截至2026-11-04T00:45:27.141210+08:00，iComformer **913 RUNNING**，已运行12小时33分钟，在node221/RTX5090训练形成能direct **R1 epoch167/300**。R0已满300epoch完成，最佳验证MAE 0.032786123 eV/atom（epoch284），全库缓存/结果已完成。R1当前最佳 0.030492350（epoch148），相对R0降低7.00%；最新epoch167验证MAE 0.031686476，尚未触发patience50，R1未结束/未缓存。形成能R2及两残差分支尚未开始，另外三性质尚未开始。未发现failure.json，训练MSE/验证MAE有限。
+截至2026-11-04T08:43:20.988378+08:00，iComformer **913 RUNNING**（node221/RTX5090，20小时31分钟）。形成能 **direct R0–2已全部完成且缓存完成**：R0 300epoch/MAE 0.032786123；R1 198epoch/MAE 0.030492350；R2 128epoch/MAE 0.030555983。R1/R2均因patience50停止；首轮下降7.00%，第二轮相对R1上升0.21%，形成能direct单seed呈现首轮改善/后续趋平。
 
-CGCNN×2独立对照：CPU914验收完成；GPU915 PENDING(Resources)，正式916 PENDING(Dependency)。唯一GPU由913占用，未抢占或取消；旧893保持held。双CGCNN159197参数、四性质seed123、64→92线性桥/唯一末端readout，主对照缓存direct R1。两实验输出分别为 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`；均不使用test标签选择方案。
+当前训练形成能 **raw_residual R1 epoch136/198**，189448/275814更新（预算匹配direct R1），当前最佳验证MAE 0.030144600（epoch132），尚未完成/缓存。raw_residual R2、feature_residual R1/R2及带隙/总能/ehull均尚未开始。未发现failure.json，损失/验证指标有限；test封存。
+
+CGCNN×2：CPU914已完成，GPU915 PENDING(Resources)、正式916 PENDING(Dependency)，唯一GPU被913占用。旧893仍held。两实验输出分别为 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 和 `outputs/joint_cgcnn/seed123-double-v1`。
 
 # 当前计划
 
-1. iComformer913继续单GPU/单性质进程顺序完成形成能、带隙、总能、ehull；每性质direct R0–2后raw_residual R1–2和feature_residual R1–2。验证和训练记录持续保存，测试标签封存。
-2. 跟踪R1完成后与R0比较、R2后判断收益是否递减；在完整链结束后自动汇总纠错相关性和train/val残差，当前不得把未完成R1或未启动R2当作最终scaling结论。
-3. CGCNN×2 CPU914已完成，GPU915等待资源、正式916等待915成功；不干预913或旧893。
+1. 913继续完成形成能raw_residual R1/R2及feature_residual R1/R2，再按既定顺序训练带隙、总能、ehull；各残差轮匹配自身direct的实际更新预算。
+2. 分别报告direct与残差递归的R0–2变化，完整链结束后自动汇总纠错相关性、改善材料比例、train/val残差与CGCNN横比。当前只形成能direct已完整，不外推到其他性质或未结束残差组。
+3. 915在GPU释放后验收CGCNN×2，成功后916自动运行；不抢占913或恢复893。
 
 # 变更记录
 
@@ -266,3 +268,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-04T00:45:18+08:00：进入iComformer进度查询阶段。仅读取Slurm/训练日志/JSON，保留CGCNN×2排队与既有实验；下一步报告实际轮次与验证指标。
 
 - 2026-11-04T00:46:21+08:00：完成用户要求的iComformer只读进度查询：913形成能direct R0完成/R1 epoch167，最佳MAE 0.032786123→0.030492350（阶段性降低7.00%）；R2和其余性质未启动，无错误记录。915/916仍排队。下一步按既有Slurm流程继续训练。
+
+- 2026-11-04T08:43:10+08:00：开始本次训练进度查询：登记后只读检查Slurm、history/training/result与失败JSON，不加载checkpoint、不修改运行作业。
+
+- 2026-11-04T08:44:13+08:00：完成本次只读查询：形成能direct R0/R1/R2均完成，MAE 0.032786123/0.030492350/0.030555983；raw_residual R1 epoch136/198。913正常、无失败，915/916仍排队。下一步按原任务继续其余残差轮和性质。
