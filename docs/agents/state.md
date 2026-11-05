@@ -1,16 +1,22 @@
 # 当前状态
 
-用户明确要求停止iComformer、优先双CGCNN，已执行完成：**913 CANCELLED**，结束时间2026-11-05 01:15:37+08:00（用户scancel，ExitCode0:15）；**不得自动恢复iComformer**。停止前形成能全部三方案R0–2已完成，带隙direct R0最后完整checkpoint为epoch93（129642更新，最佳验证MAE0.151664355eV），其余两性质未启动。所有8阶段best.pt/last.pt、缓存、结果和全量图保留；停止元数据保存在iComformer work/control/user-stop-20261105-011537.json。
+截至2026-11-05T09:04:01.299160+08:00，双CGCNN **916四性质训练及最终汇总全部完成**：pool执行账本complete、四个子任务exit0、reports/summary.json coverage4/4完整。Slurm队列仅剩旧893 held；916的控制器记录已过保留期，完成证据以任务账本/结果/汇总为准。iComformer913按用户要求已取消，不自动恢复，结果与checkpoint保留。
 
-GPU已成功交接：**915 COMPLETED**（7秒），真实最大图batch64/5238原子、native组合、第一编码器/桥/第二编码器非零梯度、2epoch/4步短训及来源身份通过；峰值reserved 1.06GiB。**916 RUNNING**（node221/RTX5090，最新查询2026-11-05T01:16:25.505019+08:00），四性质形成能/带隙/总能/ehull各一个独立进程并行，workers4。旧893保持held。双CGCNN159197参数，固定Adam/.001/batch64/300上限/patience50，test封存。
+主对照：同一图/分组验证划分/seed123，缓存特征分两次训练direct R1 vs 从零端到端双CGCNN。三项缓存法更好，ehull端到端更好：
+- formation_energy_peratom: cached R1 0.044021611；joint 0.046134645；joint MAE变化 +4.80%；编码器更新预算内joint 0.046134645。
+- optb88vdw_bandgap: cached R1 0.151198435；joint 0.165571488；joint MAE变化 +9.51%；编码器更新预算内joint 0.165571488。
+- optb88vdw_total_energy: cached R1 0.046701036；joint 0.050513593；joint MAE变化 +8.16%；编码器更新预算内joint 0.050513593。
+- ehull: cached R1 0.113506089；joint 0.092153662；joint MAE变化 -18.81%；编码器更新预算内joint 0.095244165。
 
-双CGCNN输出 `outputs/joint_cgcnn/seed123-double-v1`，正式进度 `pool/execution.json`/`run/<task>/history.json`，最终对照 `reports`。iComformer输出 `outputs/icomformer_scaling/jarvis2021-seed123-r012-v1` 保留但训练已停止。
+这是单seed验证集结果，test仍封存。编码器更新预算内比较胜负不变，ehull改善16.09%，该预算为更新次数近似而非严格等FLOPs。Joint默认159197参数，缓存两阶段合计训练167646参数（包括R0预训练用的首段读出）；最终direct推理结构相同。不将跨单位MAE直接平均。
+
+最终本地证据：`outputs/joint_cgcnn/seed123-evidence/final-summary.json`、`verified-comparison.json`；服务器原报告 `outputs/joint_cgcnn/seed123-double-v1/reports`。形成能/带隙/总能/ehull分别训练220/196/266/300epoch，端到端每性质训练耗时约1.95–2.88小时（四进程共享GPU，和历史任务耗时不作严格等资源比较）。
 
 # 当前计划
 
-1. 916按既定协议完成四性质端到端训练，自动汇总joint与缓存direct R1的MAE/更新预算/训练及缓存成本；不更改已锁定模型或协议。
-2. 需要时只读查询双CGCNN的逐epoch状态及最终结果；iComformer仅保留/分析已有结果，除非用户重新明确要求，不恢复或重新提交。
-3. 保留所有停止前checkpoint和control审计记录；不干预旧893。
+1. 本轮对照已完成并给出四性质结果；不新增训练，保留完整checkpoint、预测、历史与报告。
+2. 如继续研究，按用户新指令决定多seed复核或纠错/泛化诊断；不把当前单seed结果当作统计显著性或普遍容量结论。
+3. iComformer已取消且不自动恢复，旧893保持held。
 
 # 变更记录
 
@@ -286,3 +292,7 @@ DPA-2 的 2024Q1 Repformer 状态边界、本地实现与验收入口已经完�
 - 2026-11-05T01:15:27+08:00：用户明确授权取消iComformer913，优先双CGCNN；进入Slurm取消/资源交接阶段，后续不自动恢复iComformer。
 
 - 2026-11-05T01:17:22+08:00：用户取消/资源交接阶段完成。913确认CANCELLED，停止位置带隙R0 epoch93且8阶段best/last均存在；915 GPU验收通过，916已在唯一GPU上四性质并行启动。iComformer自动恢复授权已撤回，后续仅跟踪双CGCNN。
+
+- 2026-11-05T09:03:51+08:00：进入用户要求的最终横向对比阶段；先核对916结果/执行账本/来源与旧缓存R1，再给出四性质胜负和实际预算说明。
+
+- 2026-11-05T09:06:23+08:00：用户要求最终横比已完成。916四任务/汇总全部complete，来源/config/code/旧summary SHA一致；缓存direct R1在3/4性质胜出，joint在ehull MAE下降18.81%，编码器更新预算内仍下降16.09%。仅验证集seed123，不新增训练或恢复iComformer。

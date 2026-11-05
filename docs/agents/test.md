@@ -699,3 +699,5 @@ Slurm887权威审计：raw55723、unique55712、5个重复ID，JVASP-97311的3�
 - 2026-11-05T01:08:23+08:00：仅状态/文档检查：最新JSON确认形成能7个training/result/cache阶段完整且性质进程exit0、带隙R0未完成且87epoch/121278更新、无failure且MAE有限；三组共享R0及feature两轮改善算术、快照路径与diff whitespace校验通过。未执行额外训练/推理或单测。
 
 - 2026-11-05T01:17:22+08:00：用户授权取消/交接验收：连接后首先git pull，scontrol核对913任务名/用户/工作目录后scancel913；随后实际确认CANCELLED/EndTime，停止前8阶段best/last存在，未删除输出。915 GPU验收COMPLETED且三段梯度非零/最大批64/5238原子通过；916 RUNNING/4性质进程/并发4。元数据与快照断言、文档路径和diff whitespace检查通过；本次不修改训练源码，不重复单测。
+
+- 2026-11-05T09:06:23+08:00：最终对照核验：4/4任务exit0与coverage complete；报告config等于固定配置，执行/验收的自身源码hash和config hash一致；所有来源旧缓存summary SHA固定00d48...789d；4组MAE有限且非负，百分比独立重算一致，编码器预算内胜负一致，test_labels_used false。本地保存原summary和已核验对照JSON，原指标单位沿用TASKS，无跨单位均值。文档diff whitespace检查通过；本次无新代码/训练/推理，不重复单测。
